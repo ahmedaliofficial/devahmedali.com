@@ -50,9 +50,25 @@ const Page = () => (
 
             <div className="relative flex h-full flex-col">
               <h2 className="font-heading text-2xl font-semibold text-white md:text-3xl">Reach me directly</h2>
-              <p className="mt-3 text-base text-white/70">No forms required if you&apos;d rather not. Email and LinkedIn both reach me.</p>
+              <p className="mt-3 text-base text-white/70">Book a call if you&apos;d rather talk it through, or use the form. Either way works.</p>
 
-              <div className="mt-8 flex flex-col gap-4">
+              <a
+                href={site.socials.calendly}
+                target="_blank"
+                rel="noreferrer"
+                className="group mt-6 flex items-center gap-3 rounded-2xl bg-white p-4 transition-transform duration-300 hover:scale-[0.98]"
+              >
+                <span className="bg-default-900 grid size-10 shrink-0 place-items-center rounded-full text-white">
+                  <Icon icon="lucide:calendar-check" className="size-5" />
+                </span>
+                <span className="min-w-0 grow">
+                  <span className="text-default-900 block text-base font-semibold">Book a 30-min call</span>
+                  <span className="text-default-500 block text-sm">See my live availability and grab a slot</span>
+                </span>
+                <Icon icon="lucide:arrow-up-right" className="text-default-400 size-4.5 shrink-0 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
+
+              <div className="mt-4 flex flex-col gap-4">
                 <a href={`mailto:${site.email}`} className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 transition-colors hover:bg-white/10">
                   <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white/10 text-white">
                     <Icon icon="lucide:mail" className="size-5" />

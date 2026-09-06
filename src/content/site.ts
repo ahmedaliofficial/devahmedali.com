@@ -15,6 +15,7 @@ export const site = {
     github: 'https://github.com/ahmedaliofficial',
     linkedin: 'https://www.linkedin.com/in/devahmedali',
     trackhrs: 'https://trackhrs.com',
+    calendly: 'https://calendly.com/ahmedalidev786/30min',
   },
   seo: {
     description:

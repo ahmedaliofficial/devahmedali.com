@@ -21,7 +21,11 @@ const ContactCta = ({ heading = 'Have a system to build?', description = 'Whethe
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <RollUpButton href="/contact" label="Start a conversation" variant="light" icon="lucide:arrow-right" />
-            <a href={`mailto:${site.email}`} className="group inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-3.5 text-sm font-medium text-white backdrop-blur-md transition-all duration-300 hover:scale-95">
+            <a href={site.socials.calendly} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-3.5 text-sm font-medium text-white backdrop-blur-md transition-all duration-300 hover:scale-95">
+              <Icon icon="lucide:calendar-check" className="size-4.5" />
+              Book a call
+            </a>
+            <a href={`mailto:${site.email}`} className="group inline-flex items-center gap-2 text-sm font-medium text-white/70 transition-colors hover:text-white">
               <Icon icon="lucide:mail" className="size-4.5" />
               {site.email}
             </a>
