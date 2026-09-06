@@ -7,12 +7,11 @@ export const hysabKytab: CaseStudy = {
     description: 'Backend architecture for a B2B/B2C personal finance platform serving digital banking leaders: Golang and NestJS microservices, Kafka pipelines handling 100K+ financial events per day, and five databases behind one service layer.',
   },
   hero: {
-    eyebrow: 'Jaffer Business Systems · FinTech',
+    eyebrow: 'FinTech · Personal Finance Platform',
     title: 'Hysab Kytab',
     subtitle: 'A B2B/B2C personal finance platform used by digital banks, where a rounding error is a customer complaint and downtime is a headline.',
-    role: 'Backend Engineer & Architect',
-    period: 'Oct 2024 – Apr 2026',
-    links: [{ label: 'hysabkytab.com', href: 'https://hysabkytab.com', icon: 'lucide:external-link' }],
+    role: 'Backend Architecture & Distributed Systems',
+    links: [{ label: 'Visit hysabkytab.com', href: 'https://hysabkytab.com', icon: 'lucide:external-link' }],
   },
   stats: [
     { value: '100K+', label: 'Financial events per day', description: 'Across a three-broker Kafka cluster' },

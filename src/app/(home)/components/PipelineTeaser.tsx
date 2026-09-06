@@ -1,7 +1,5 @@
-import PipelineMini from '@/components/portfolio/PipelineMini'
 import RollUpButton from '@/components/ui/RollUpButton'
 import SectionHeading from '@/components/ui/SectionHeading'
-import { trackhrs } from '@/content/case-studies/trackhrs'
 import { impactStats } from '@/content/skills'
 
 const principles = [
@@ -19,12 +17,10 @@ const PipelineTeaser = () => (
         tone="dark"
         eyebrow="How I think about systems"
         title="Every arrow in a diagram is a decision"
-        description="Architecture is mostly about choosing what happens when something goes wrong. Here is the shape most of my systems take, and why each stage exists."
+        description="Architecture is mostly about choosing what happens when something goes wrong. Three rules shape almost everything I build."
       />
 
-      <PipelineMini steps={trackhrs.pipelineMini ?? []} tone="dark" className="mt-10 md:mt-12" />
-
-      <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-10">
+      <div className="mt-10 grid grid-cols-1 gap-8 md:mt-12 md:grid-cols-3 md:gap-10">
         {principles.map((principle) => (
           <div key={principle.title}>
             <h3 className="font-heading text-lg font-semibold text-white">{principle.title}</h3>

@@ -1,6 +1,8 @@
 import TechMarquee from '@/components/portfolio/TechMarquee'
 import SectionHeading from '@/components/ui/SectionHeading'
 import { skillGroups } from '@/content/skills'
+import { Icon } from '@iconify/react'
+import Link from 'next/link'
 
 const TechStack = () => (
   <section id="stack" className="scroll-mt-32 py-14 md:py-20">
@@ -11,13 +13,12 @@ const TechStack = () => (
     <TechMarquee className="mt-10 md:mt-12" />
 
     <div className="container">
-      <div className="border-default-200 mt-10 grid grid-cols-1 gap-x-10 gap-y-8 border-t pt-8 sm:grid-cols-2 lg:grid-cols-4">
-        {skillGroups.map((group) => (
-          <div key={group.title}>
-            <h3 className="text-default-900 text-sm font-semibold tracking-wide uppercase">{group.title}</h3>
-            <p className="text-default-500 mt-2.5 text-sm leading-relaxed">{group.items.join(' · ')}</p>
-          </div>
-        ))}
+      <div className="border-default-200 mt-10 flex flex-col items-center gap-3 border-t pt-8">
+        <p className="text-default-500 max-w-4xl text-center text-sm md:text-base">{skillGroups.map((group) => group.title).join(' · ')}</p>
+        <Link href="/about#toolkit" className="text-default-900 inline-flex items-center gap-1.5 text-sm font-medium underline decoration-2 underline-offset-4 transition-opacity hover:opacity-70">
+          See the full toolkit
+          <Icon icon="lucide:arrow-right" className="size-4" />
+        </Link>
       </div>
     </div>
   </section>

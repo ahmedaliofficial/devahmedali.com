@@ -18,17 +18,19 @@ const PipelineMini = ({ steps, tone = 'dark', className = '' }: PipelineMiniProp
   const arrowClasses = isDark ? 'text-white/30' : 'text-default-300'
 
   return (
-    <div className={`grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 ${className}`}>
+    <div className={`grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6 ${className}`}>
       {steps.map((step, index) => (
-        <div key={step.step} className="relative flex items-stretch">
-          <div className={`w-full rounded-2xl border p-5 ${cardClasses} lg:mx-2`}>
+        <div key={step.step} className="relative">
+          <div className={`flex h-full flex-col rounded-2xl border p-5 ${cardClasses}`}>
             <span className={`mb-3 inline-grid size-9 place-items-center rounded-full ${nodeClasses}`}>{step.icon ? <Icon icon={step.icon} className="size-4.5" /> : <span className="text-sm font-semibold">{step.step}</span>}</span>
             <h3 className={`font-heading text-base font-semibold ${titleClasses}`}>{step.title}</h3>
             <p className={`mt-1 text-sm ${bodyClasses}`}>{step.description}</p>
           </div>
 
+          {/* Centred in the grid gap: left-full puts it at the card edge, ms-3 walks to the
+              gap midpoint (half of gap-6), and -translate-x-1/2 centres the icon on that point. */}
           {index < steps.length - 1 && (
-            <Icon aria-hidden="true" icon="lucide:chevron-right" className={`absolute top-1/2 -right-2 hidden size-5 -translate-y-1/2 lg:block ${arrowClasses}`} />
+            <Icon aria-hidden="true" icon="lucide:chevron-right" className={`absolute top-1/2 left-full ms-3 hidden size-5 -translate-x-1/2 -translate-y-1/2 lg:block ${arrowClasses}`} />
           )}
         </div>
       ))}

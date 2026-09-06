@@ -7,12 +7,11 @@ export const omnivision: CaseStudy = {
     description: 'A real-time AI workplace safety platform: Python/FastAPI vision inference, Kafka ingestion pipelines and RabbitMQ fan-out delivering WhatsApp and email alerts within seconds of an incident.',
   },
   hero: {
-    eyebrow: 'Jaffer Business Systems · Computer Vision',
+    eyebrow: 'Computer Vision · Real-Time Alerting',
     title: 'OmniVision',
     subtitle: 'Real-time AI workplace safety — enterprise smoke and anomaly detection where the entire value of the system is measured in seconds.',
-    role: 'Backend & Platform Engineer',
-    period: 'Oct 2024 – Apr 2026',
-    links: [{ label: 'jbs.live/omnivision', href: 'https://jbs.live/omnivision', icon: 'lucide:external-link' }],
+    role: 'Backend & Platform Architecture',
+    links: [{ label: 'View OmniVision', href: 'https://jbs.live/omnivision', icon: 'lucide:external-link' }],
   },
   stats: [
     { value: 'Seconds', label: 'Incident to alert', description: 'From detection to a phone in someone’s hand' },

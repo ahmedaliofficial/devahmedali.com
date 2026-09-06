@@ -36,35 +36,37 @@ const principles = [
   },
 ]
 
-const experience = [
+const domains = [
   {
-    role: 'Senior Technical Officer',
-    company: 'TeamX Pakistan',
-    period: 'Apr 2026 – Present',
-    description: 'Leading 20+ engineers across AgentX and client-facing AI, ecommerce and CMS products. Set the architecture standards and service boundaries that cut cross-team integration issues by over 50%, and mentor engineers on system design and running production well.',
-    tags: ['Leadership', 'AI platforms', 'System design'],
+    title: 'FinTech & regulated systems',
+    description: 'Personal finance platforms delivered to digital banks, where precision is non-negotiable and downtime is a headline. Multi-database consolidation, encrypted transaction flow, audit trails and bank-grade availability.',
+    tags: ['Golang', 'Kafka', 'Multi-database', 'gRPC'],
+    icon: 'lucide:landmark',
   },
   {
-    role: 'Backend Engineer',
-    company: 'Jaffer Business Systems (JBS Global)',
-    period: 'Oct 2024 – Apr 2026',
-    description: 'Architected the backend for Hysab Kytab, a personal finance platform used by digital banks including Temenos and Interswitch. Built OmniVision, a real-time AI workplace safety platform. Brought GCP costs down ~25% through infrastructure and observability work.',
-    tags: ['FinTech', 'Kafka', 'Golang', 'Multi-database'],
+    title: 'AI & intelligent products',
+    description: 'Real-time computer vision and alerting, RAG pipelines, advisory chatbots and multi-agent platforms that generate working software. AI built as a service with evaluation and failure paths, not a demo.',
+    tags: ['LangChain', 'FastAPI', 'Multi-agent', 'MCP'],
+    icon: 'lucide:brain-circuit',
   },
   {
-    role: 'Team Lead & Senior Software Engineer',
-    company: 'TeamX Pakistan',
-    period: 'Feb 2022 – Oct 2024',
-    description: 'Led a 5-person team building chat, CMS and ecommerce platforms serving thousands of concurrent users. Introduced Kubernetes and Docker, cutting manual deployment effort by ~70% and keeping environment issues out of production.',
-    tags: ['Kubernetes', 'NestJS', 'Next.js'],
+    title: 'SaaS & product engineering',
+    description: 'Founding and shipping a live SaaS end to end — desktop agent, microservices, billing, admin portal and the deployment pipeline underneath. Plus MVPs taken from nothing to production for other teams.',
+    tags: ['NestJS', 'Rust · Tauri', 'Kubernetes', 'BullMQ'],
+    icon: 'lucide:rocket',
   },
   {
-    role: 'Full Stack Developer',
-    company: 'Deevloopers',
-    period: 'Nov 2020 – Jan 2022',
-    description: 'Built six client web applications on React, Node.js and Laravel with REST APIs and ERP integrations, owning the full delivery cycle from database design through to hosting.',
-    tags: ['React', 'Node.js', 'Laravel'],
+    title: 'Ecommerce, CMS & ERP delivery',
+    description: 'Hundreds of client platforms across ecommerce, content management and ERP integration — high-traffic storefronts, admin systems and the third-party integrations that hold a business together.',
+    tags: ['Next.js', 'Laravel', 'REST', 'Integrations'],
+    icon: 'lucide:shopping-cart',
   },
+]
+
+const leadership = [
+  { value: '20+', label: 'Engineers led', description: 'Across AI, ecommerce and CMS product lines' },
+  { value: '50%+', label: 'Fewer integration issues', description: 'From clear service boundaries and ownership' },
+  { value: '~70%', label: 'Less deployment effort', description: 'Kubernetes and Docker replacing manual releases' },
 ]
 
 const certifications = ['Microservices Foundations — Kong', 'Docker Foundations — Docker', 'Microsoft Azure AI Essentials — Microsoft', 'Generative AI with Multi-Agent LangChain', 'Machine Learning Foundations: Statistics']
@@ -140,33 +142,38 @@ const Page = () => (
 
     <section className="py-12 md:py-20">
       <div className="container">
-        <SectionHeading align="left" eyebrow="Experience" title="Where I&apos;ve done it" />
+        <SectionHeading align="left" eyebrow="Domains" title="Where I&apos;ve done it" description="The kinds of systems I've spent the most time inside — and what each one taught me about designing for its particular failure mode." />
 
-        <div className="mt-10 flex flex-col gap-4">
-          {experience.map((role) => (
-            <div key={`${role.company}-${role.period}`} className="border-default-200 rounded-3xl border bg-white p-6 md:p-8">
-              <div className="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between md:gap-6">
-                <div>
-                  <h3 className="font-heading text-default-900 text-xl font-semibold">{role.role}</h3>
-                  <p className="text-default-600 mt-0.5 text-base font-medium">{role.company}</p>
-                </div>
-                <p className="text-default-500 shrink-0 text-sm">{role.period}</p>
-              </div>
+        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
+          {domains.map((domain) => (
+            <div key={domain.title} className="border-default-200 rounded-3xl border bg-white p-6 md:p-8">
+              <span className="bg-default-100 text-default-700 mb-5 inline-grid size-11 place-items-center rounded-full">
+                <Icon icon={domain.icon} className="size-5" />
+              </span>
 
-              <p className="text-default-500 mt-4 text-base">{role.description}</p>
+              <h3 className="font-heading text-default-900 text-xl font-semibold">{domain.title}</h3>
+              <p className="text-default-500 mt-2.5 text-base">{domain.description}</p>
 
-              <div className="mt-4 flex flex-wrap gap-1.5">
-                {role.tags.map((tag) => (
+              <div className="mt-5 flex flex-wrap gap-1.5">
+                {domain.tags.map((tag) => (
                   <Chip key={tag}>{tag}</Chip>
                 ))}
               </div>
             </div>
           ))}
         </div>
+
+        <div className="border-default-200 mt-10 rounded-3xl border bg-white p-6 md:p-8">
+          <h3 className="font-heading text-default-900 text-base font-semibold">Leading teams</h3>
+          <p className="text-default-500 mt-2 max-w-2xl text-base">Alongside the architecture work, I lead engineering teams — setting standards, drawing service boundaries and mentoring engineers on system design and what it takes to run production well.</p>
+          <div className="mt-6">
+            <StatsBand stats={leadership} columns={3} />
+          </div>
+        </div>
       </div>
     </section>
 
-    <section className="py-12 md:py-20">
+    <section id="toolkit" className="scroll-mt-32 py-12 md:py-20">
       <div className="container">
         <SectionHeading align="left" eyebrow="Toolkit" title="What I work with" />
 

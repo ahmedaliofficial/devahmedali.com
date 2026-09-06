@@ -6,6 +6,7 @@ import BlogTeaser from './components/BlogTeaser'
 import FeaturedWork from './components/FeaturedWork'
 import Hero from './components/Hero'
 import PipelineTeaser from './components/PipelineTeaser'
+import ReferenceFlows from './components/ReferenceFlows'
 import Services from './components/Services'
 import TechStack from './components/TechStack'
 
@@ -34,6 +35,7 @@ const Page = () => {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Hero />
       <Services />
+      <ReferenceFlows />
       <FeaturedWork />
       <PipelineTeaser />
       <TechStack />

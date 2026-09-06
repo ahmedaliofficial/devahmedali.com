@@ -7,12 +7,11 @@ export const agentx: CaseStudy = {
     description: 'A multi-agent LangChain and FastAPI platform that generates production-ready full-stack applications from natural language, with Figma-to-code, Supabase provisioning and MCP tool orchestration.',
   },
   hero: {
-    eyebrow: 'TeamX Pakistan · AI Platform',
+    eyebrow: 'AI Platform · Multi-Agent Systems',
     title: 'AgentX',
     subtitle: 'A multi-agent platform that turns a natural language prompt into a production-ready full-stack application — and code a human can still maintain afterwards.',
-    role: 'Senior Technical Officer · Architecture & Integrations',
-    period: 'Apr 2026 – Present',
-    links: [{ label: 'agentx.teamx.ae', href: 'https://agentx.teamx.ae', icon: 'lucide:external-link' }],
+    role: 'Architecture & Integrations Lead',
+    links: [{ label: 'View AgentX', href: 'https://agentx.teamx.ae', icon: 'lucide:external-link' }],
   },
   stats: [
     { value: '20+', label: 'Engineers led', description: 'Across AgentX and client product lines' },
