@@ -20,7 +20,7 @@ const faqs = [
   },
   {
     question: 'Do you work with teams outside Pakistan?',
-    answer: `Yes — ${site.availability.toLowerCase()}. Most of my work is with distributed teams, and I'm used to overlapping across time zones.`,
+    answer: `Yes. ${site.availability}. Most of my work is with distributed teams, and I'm used to overlapping across time zones.`,
   },
   {
     question: 'Can you review an architecture we already have?',
@@ -38,7 +38,7 @@ const Page = () => (
       <div className="container">
         <p className="text-default-500 text-sm font-medium tracking-wide uppercase">Contact</p>
         <h1 className="font-heading text-default-900 mt-3 max-w-4xl text-4xl leading-tight font-medium tracking-tight md:text-6xl lg:text-7xl">Let&apos;s talk about what you&apos;re building</h1>
-        <p className="text-default-500 mt-5 max-w-3xl text-lg md:text-xl">Tell me the shape of the problem — the system, the constraint, and what &quot;working&quot; would look like. I&apos;ll tell you how I&apos;d approach it.</p>
+        <p className="text-default-500 mt-5 max-w-3xl text-lg md:text-xl">Tell me the shape of the problem: the system, the constraint, and what &quot;working&quot; would look like. I&apos;ll tell you how I&apos;d approach it.</p>
       </div>
     </section>
 
@@ -50,7 +50,7 @@ const Page = () => (
 
             <div className="relative flex h-full flex-col">
               <h2 className="font-heading text-2xl font-semibold text-white md:text-3xl">Reach me directly</h2>
-              <p className="mt-3 text-base text-white/70">No forms required if you&apos;d rather not — email and LinkedIn both reach me.</p>
+              <p className="mt-3 text-base text-white/70">No forms required if you&apos;d rather not. Email and LinkedIn both reach me.</p>
 
               <div className="mt-8 flex flex-col gap-4">
                 <a href={`mailto:${site.email}`} className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 transition-colors hover:bg-white/10">

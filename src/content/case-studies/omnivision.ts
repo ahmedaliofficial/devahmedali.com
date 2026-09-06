@@ -3,13 +3,13 @@ import type { CaseStudy } from './types'
 export const omnivision: CaseStudy = {
   slug: 'omnivision',
   meta: {
-    title: 'OmniVision — Real-time AI workplace safety',
+    title: 'OmniVision: Real-time AI workplace safety',
     description: 'A real-time AI workplace safety platform: Python/FastAPI vision inference, Kafka ingestion pipelines and RabbitMQ fan-out delivering WhatsApp and email alerts within seconds of an incident.',
   },
   hero: {
     eyebrow: 'Computer Vision · Real-Time Alerting',
     title: 'OmniVision',
-    subtitle: 'Real-time AI workplace safety — enterprise smoke and anomaly detection where the entire value of the system is measured in seconds.',
+    subtitle: 'Real-time AI workplace safety: enterprise smoke and anomaly detection where the entire value of the system is measured in seconds.',
     role: 'Backend & Platform Architecture',
     links: [{ label: 'View OmniVision', href: 'https://jbs.live/omnivision', icon: 'lucide:external-link' }],
   },
@@ -21,7 +21,7 @@ export const omnivision: CaseStudy = {
   overview: {
     heading: 'A safety system is only worth the seconds it saves',
     paragraphs: [
-      'OmniVision watches enterprise sites for smoke, safety anomalies and operational events, and tells someone about it immediately. Unlike an analytics product, its usefulness collapses if an alert arrives late — a detection that lands five minutes after a fire started is not a feature.',
+      'OmniVision watches enterprise sites for smoke, safety anomalies and operational events, and tells someone about it immediately. Unlike an analytics product, its usefulness collapses if an alert arrives late. A detection that lands five minutes after a fire started is not a feature.',
       'That single constraint drove the architecture. Video inference is computationally heavy and bursty; alerting has to be immediate and reliable. Coupling them directly would mean either a slow alert or a stalled pipeline, so they were separated by an event backbone from the start.',
       'I built the Python/FastAPI backend with Kafka ingestion pipelines and RabbitMQ fan-out, so detection, alerting and analytics each scale on their own terms and one slow channel never delays another.',
     ],

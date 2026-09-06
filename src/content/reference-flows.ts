@@ -13,7 +13,7 @@ export type ReferenceFlow = {
   steps: FlowStep[]
 }
 
-/** Reference architectures for the kinds of systems clients ask for most —
+/** Reference architectures for the kinds of systems clients ask for most,
  *  shown on the homepage so the process is visible before a call. */
 export const referenceFlows: ReferenceFlow[] = [
   {
@@ -34,7 +34,7 @@ export const referenceFlows: ReferenceFlow[] = [
   {
     id: 'agents',
     title: 'Multi-agent & automation platform',
-    description: 'Agents that complete a process by calling real tools — every step reviewable, not one opaque generation.',
+    description: 'Agents that complete a process by calling real tools, with every step reviewable rather than one opaque generation.',
     icon: 'lucide:workflow',
     accent: 'primary',
     steps: [

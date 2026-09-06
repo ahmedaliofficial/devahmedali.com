@@ -3,13 +3,13 @@ import type { CaseStudy } from './types'
 export const agentx: CaseStudy = {
   slug: 'agentx',
   meta: {
-    title: 'AgentX — Multi-agent AI full-stack app builder',
+    title: 'AgentX: Multi-agent AI full-stack app builder',
     description: 'A multi-agent LangChain and FastAPI platform that generates production-ready full-stack applications from natural language, with Figma-to-code, Supabase provisioning and MCP tool orchestration.',
   },
   hero: {
     eyebrow: 'AI Platform · Multi-Agent Systems',
     title: 'AgentX',
-    subtitle: 'A multi-agent platform that turns a natural language prompt into a production-ready full-stack application — and code a human can still maintain afterwards.',
+    subtitle: 'A multi-agent platform that turns a natural language prompt into a production-ready full-stack application, and code a human can still maintain afterwards.',
     role: 'Architecture & Integrations Lead',
     links: [{ label: 'View AgentX', href: 'https://agentx.teamx.ae', icon: 'lucide:external-link' }],
   },
@@ -22,8 +22,8 @@ export const agentx: CaseStudy = {
     heading: 'Generated code still has to be code someone can own',
     paragraphs: [
       'AgentX generates production-ready full-stack applications from natural language prompts. It is a multi-agent system built on LangChain and FastAPI, where specialised agents handle planning, schema design, UI generation and tool orchestration rather than one model attempting everything at once.',
-      'The interesting problem is not generation — it is the gap between an abstract requirement and a concrete database schema and component tree. A prompt like “let users book appointments” implies entities, relationships, states and screens that nobody stated, and getting them wrong compounds through every file the system writes.',
-      'I built the integration layer: Figma-to-code, Supabase provisioning, and MCP tool orchestration. The constraint I designed against throughout was maintainability — generated output that a human team has to inherit is only valuable if it looks like code they would have written.',
+      'The interesting problem is not generation. It is the gap between an abstract requirement and a concrete database schema and component tree. A prompt like “let users book appointments” implies entities, relationships, states and screens that nobody stated, and getting them wrong compounds through every file the system writes.',
+      'I built the integration layer: Figma-to-code, Supabase provisioning, and MCP tool orchestration. The constraint I designed against throughout was maintainability: generated output that a human team has to inherit is only valuable if it looks like code they would have written.',
     ],
   },
   problems: [
@@ -93,10 +93,10 @@ export const agentx: CaseStudy = {
   ],
   pipeline: {
     heading: 'From prompt to running application',
-    intro: 'Each agent owns a narrow decision. Splitting the work this way is what makes the output reviewable — you can point at the stage that got something wrong instead of re-rolling the whole generation.',
+    intro: 'Each agent owns a narrow decision. Splitting the work this way is what makes the output reviewable, because you can point at the stage that got something wrong instead of re-rolling the whole generation.',
     steps: [
       { step: 1, title: 'Natural language or Figma input', description: 'The system accepts a written prompt or an existing Figma design as the starting specification.', tech: ['LangChain', 'Figma API'], icon: 'lucide:message-square-code' },
-      { step: 2, title: 'Planning agent', description: 'Requirements are decomposed into entities, relationships and screens — the step that decides whether everything downstream is coherent.', tech: ['Multi-agent', 'LangChain'], icon: 'lucide:workflow' },
+      { step: 2, title: 'Planning agent', description: 'Requirements are decomposed into entities, relationships and screens. This is the step that decides whether everything downstream is coherent.', tech: ['Multi-agent', 'LangChain'], icon: 'lucide:workflow' },
       { step: 3, title: 'Schema design', description: 'Concrete database schemas are derived from the plan, with relationships and constraints made explicit rather than implied.', tech: ['Schema generation', 'Supabase'], icon: 'lucide:database' },
       { step: 4, title: 'Specialised codegen agents', description: 'Separate agents generate backend services and UI components, each working within the shared plan.', tech: ['LangChain', 'FastAPI'], icon: 'lucide:code' },
       { step: 5, title: 'MCP tool orchestration', description: 'Agents call real tools through the Model Context Protocol, so they act on actual systems rather than describing intentions.', tech: ['MCP', 'Tool calling'], icon: 'lucide:plug' },

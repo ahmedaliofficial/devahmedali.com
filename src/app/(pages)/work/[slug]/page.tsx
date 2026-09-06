@@ -268,7 +268,7 @@ const Page = async ({ params }: PageProps) => {
         </div>
       </section>
 
-      <ContactCta heading="Building something like this?" description="If any of the problems above look familiar, I can help — whether that's a full architecture or a second opinion on the one you have." />
+      <ContactCta heading="Building something like this?" description="If any of the problems above look familiar, I can help, whether that's a full architecture or a second opinion on the one you have." />
     </>
   )
 }

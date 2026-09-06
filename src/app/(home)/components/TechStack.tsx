@@ -7,7 +7,7 @@ import Link from 'next/link'
 const TechStack = () => (
   <section id="stack" className="scroll-mt-32 py-14 md:py-20">
     <div className="container">
-      <SectionHeading eyebrow="Toolkit" title="The stack I reach for" description="Chosen per problem rather than per fashion — these are the tools I've taken to production often enough to know their failure modes." />
+      <SectionHeading eyebrow="Toolkit" title="The stack I reach for" description="Chosen per problem rather than per fashion. These are the tools I've taken to production often enough to know their failure modes." />
     </div>
 
     <TechMarquee className="mt-10 md:mt-12" />

@@ -9,7 +9,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'About',
-  description: 'Ahmed Ali — software architect and engineering lead with six years across FinTech, AI and SaaS. How I work, what I believe about architecture, and the experience behind it.',
+  description: 'Ahmed Ali is a software architect and engineering lead with six years across FinTech, AI and SaaS. How I work, what I believe about architecture, and the experience behind it.',
   alternates: { canonical: '/about' },
 }
 
@@ -31,7 +31,7 @@ const principles = [
   },
   {
     title: 'Build for the engineer who inherits it',
-    description: 'Clever code is a liability the moment its author moves on. I optimise for the person reading it a year from now — which is often me.',
+    description: 'Clever code is a liability the moment its author moves on. I optimise for the person reading it a year from now, which is often me.',
     icon: 'lucide:users',
   },
 ]
@@ -51,13 +51,13 @@ const domains = [
   },
   {
     title: 'SaaS & product engineering',
-    description: 'Founding and shipping a live SaaS end to end — desktop agent, microservices, billing, admin portal and the deployment pipeline underneath. Plus MVPs taken from nothing to production for other teams.',
+    description: 'Founding and shipping a live SaaS end to end: desktop agent, microservices, billing, admin portal and the deployment pipeline underneath. Plus MVPs taken from nothing to production for other teams.',
     tags: ['NestJS', 'Rust · Tauri', 'Kubernetes', 'BullMQ'],
     icon: 'lucide:rocket',
   },
   {
     title: 'Ecommerce, CMS & ERP delivery',
-    description: 'Hundreds of client platforms across ecommerce, content management and ERP integration — high-traffic storefronts, admin systems and the third-party integrations that hold a business together.',
+    description: 'Hundreds of client platforms across ecommerce, content management and ERP integration, covering high-traffic storefronts, admin systems and the third-party integrations that hold a business together.',
     tags: ['Next.js', 'Laravel', 'REST', 'Integrations'],
     icon: 'lucide:shopping-cart',
   },
@@ -69,7 +69,7 @@ const leadership = [
   { value: '~70%', label: 'Less deployment effort', description: 'Kubernetes and Docker replacing manual releases' },
 ]
 
-const certifications = ['Microservices Foundations — Kong', 'Docker Foundations — Docker', 'Microsoft Azure AI Essentials — Microsoft', 'Generative AI with Multi-Agent LangChain', 'Machine Learning Foundations: Statistics']
+const certifications = ['Microservices Foundations (Kong)', 'Docker Foundations (Docker)', 'Microsoft Azure AI Essentials (Microsoft)', 'Generative AI with Multi-Agent LangChain', 'Machine Learning Foundations: Statistics']
 
 const Page = () => (
   <>
@@ -87,7 +87,7 @@ const Page = () => (
               <p>
                 Most of what I do sits at the point where a product starts outgrowing its original architecture. That is rarely a coding problem. It is usually a boundaries problem, a data-flow problem, or a set of trade-offs nobody wrote down when the first version shipped.
               </p>
-              <p>I also founded TrackHRS, which taught me the parts of software that architecture diagrams leave out — pricing, support, deployment on a Sunday, and the difference between a system that works and a product people pay for.</p>
+              <p>I also founded TrackHRS, which taught me the parts of software that architecture diagrams leave out: pricing, support, deployment on a Sunday, and the difference between a system that works and a product people pay for.</p>
             </div>
           </div>
 
@@ -143,7 +143,7 @@ const Page = () => (
 
     <section className="py-12 md:py-20">
       <div className="container">
-        <SectionHeading align="left" eyebrow="Domains" title="Where I&apos;ve done it" description="The kinds of systems I've spent the most time inside — and what each one taught me about designing for its particular failure mode." />
+        <SectionHeading align="left" eyebrow="Domains" title="Where I&apos;ve done it" description="The kinds of systems I've spent the most time inside, and what each one taught me about designing for its particular failure mode." />
 
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
           {domains.map((domain) => (
@@ -166,7 +166,7 @@ const Page = () => (
 
         <div className="border-default-200 mt-10 rounded-3xl border bg-white p-6 md:p-8">
           <h3 className="font-heading text-default-900 text-base font-semibold">Leading teams</h3>
-          <p className="text-default-500 mt-2 max-w-2xl text-base">Alongside the architecture work, I lead engineering teams — setting standards, drawing service boundaries and mentoring engineers on system design and what it takes to run production well.</p>
+          <p className="text-default-500 mt-2 max-w-2xl text-base">Alongside the architecture work, I lead engineering teams, setting standards, drawing service boundaries and mentoring engineers on system design and what it takes to run production well.</p>
           <div className="mt-6">
             <StatsBand stats={leadership} columns={3} />
           </div>

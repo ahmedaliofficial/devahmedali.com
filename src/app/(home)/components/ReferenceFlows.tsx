@@ -16,7 +16,7 @@ const ReferenceFlows = () => (
       <SectionHeading
         eyebrow="Reference architectures"
         title="How I&apos;d build what you&apos;re asking for"
-        description="The four systems clients ask for most often, and the shape each one takes before a single line is written. Yours will differ in the details — the structure rarely does."
+        description="The four systems clients ask for most often, and the shape each one takes before a single line is written. Yours will differ in the details, but the structure rarely does."
       />
 
       <div className="mt-10 grid grid-cols-1 gap-4 md:mt-12">

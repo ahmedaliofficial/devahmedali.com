@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Blog',
-  description: 'Notes on distributed systems, event-driven architecture and production AI — written from the incidents rather than the documentation.',
+  description: 'Notes on distributed systems, event-driven architecture and production AI, written from the incidents rather than the documentation.',
   alternates: { canonical: '/blog' },
 }
 
@@ -20,14 +20,14 @@ const Page = () => {
         <div className="container">
           <p className="text-default-500 text-sm font-medium tracking-wide uppercase">Writing</p>
           <h1 className="font-heading text-default-900 mt-3 max-w-4xl text-4xl leading-tight font-medium tracking-tight md:text-6xl lg:text-7xl">Notes on building systems</h1>
-          <p className="text-default-500 mt-5 max-w-3xl text-lg md:text-xl">Mostly the things I wish someone had told me before the incident, not after — distributed systems, event pipelines and AI that has to survive real users.</p>
+          <p className="text-default-500 mt-5 max-w-3xl text-lg md:text-xl">Mostly the things I wish someone had told me before the incident, not after. Distributed systems, event pipelines and AI that has to survive real users.</p>
         </div>
       </section>
 
       <section className="pb-16 md:pb-24">
         <div className="container">
           {posts.length === 0 ? (
-            <p className="text-default-500 text-lg">No posts published yet — the first ones are on their way.</p>
+            <p className="text-default-500 text-lg">No posts published yet. The first ones are on their way.</p>
           ) : (
             <div className="flex flex-col gap-4">
               {posts.map((post) => (

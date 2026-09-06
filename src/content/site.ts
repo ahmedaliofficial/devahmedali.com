@@ -7,7 +7,7 @@ export const site = {
   /** Supporting line that carries the breadth the title alone cannot */
   specialisms: 'Distributed systems · AI platforms · Full-stack delivery',
   tagline: 'I design systems that scale.',
-  intro: 'I architect event-driven backends, cloud infrastructure and production AI systems — from first diagram to live traffic.',
+  intro: 'I architect event-driven backends, cloud infrastructure and production AI systems, from first diagram to live traffic.',
   location: 'Karachi, Pakistan',
   availability: 'Open to remote and hybrid work worldwide',
   email: 'ahmedalidev786@gmail.com',
@@ -19,7 +19,7 @@ export const site = {
   },
   seo: {
     description:
-      'Ahmed Ali is a software architect and engineering lead specialising in distributed systems, event-driven microservices and production AI. Case studies in FinTech, workplace safety and SaaS — from architecture to deployment.',
+      'Ahmed Ali is a software architect and engineering lead specialising in distributed systems, event-driven microservices and production AI. Case studies in FinTech, workplace safety and SaaS, covering architecture through to deployment.',
     keywords: [
       'software architect',
       'engineering lead',

@@ -88,7 +88,7 @@ export type CaseStudy = {
     intro?: string
     layers: ArchitectureLayer[]
   }
-  /** Full service map — only larger platforms need one */
+  /** Full service map; only larger platforms need one */
   serviceComponents?: ServiceComponent[]
   /** 4-step summary used on cards and the home teaser */
   pipelineMini?: PipelineStep[]

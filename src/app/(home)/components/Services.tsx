@@ -24,7 +24,7 @@ const dotClasses: Record<string, string> = {
 const Services = () => (
   <section id="services" className="scroll-mt-32 py-14 md:py-20">
     <div className="container">
-      <SectionHeading eyebrow="What I do" title="Four things I build, end to end" description="From the product your customers use down to the pipelines and infrastructure underneath it — designed, built and taken to production." />
+      <SectionHeading eyebrow="What I do" title="Four things I build, end to end" description="From the product your customers use down to the pipelines and infrastructure underneath it, designed, built and taken to production." />
 
       <div className="mt-10 grid grid-cols-1 gap-4 md:mt-12 lg:grid-cols-2">
         {serviceAreas.map((area) => (

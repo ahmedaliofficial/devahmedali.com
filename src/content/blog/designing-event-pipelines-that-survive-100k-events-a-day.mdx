@@ -7,17 +7,17 @@ tags: ['Kafka', 'Distributed Systems', 'Architecture']
 
 Most teams reach for Kafka because they expect volume. Volume turns out to be the part that takes care of itself. Partition the topic, add consumers, and throughput scales roughly the way the diagram promised.
 
-What does not take care of itself is everything around the happy path. In the financial pipelines I have worked on — the ones moving north of 100,000 events a day — almost every incident traced back to one of four things, and none of them were about raw speed.
+What does not take care of itself is everything around the happy path. In the financial pipelines I have worked on, the ones moving north of 100,000 events a day, almost every incident traced back to one of four things, and none of them were about raw speed.
 
 ## A consumer restart is not a clean boundary
 
 The moment you acknowledge an offset matters more than most people plan for. Acknowledge before you finish processing and a restart silently drops events. Acknowledge after, and a restart replays them.
 
-Replay is the correct choice, but it is only survivable if the work downstream is idempotent. That is a design constraint you accept up front, not a bug you fix later — retrofitting idempotency onto a pipeline that assumed exactly-once delivery means touching every consumer you wrote.
+Replay is the correct choice, but it is only survivable if the work downstream is idempotent. That is a design constraint you accept up front, not a bug you fix later. Retrofitting idempotency onto a pipeline that assumed exactly-once delivery means touching every consumer you wrote.
 
 ## Two replicas will see the same event
 
-Once you run more than one replica — and you will, because that is the point — you need something outside the process to decide which one counts.
+Once you run more than one replica, and you will, because that is the point, you need something outside the process to decide which one counts.
 
 A Redis key check does this in O(1):
 
@@ -29,7 +29,7 @@ if (!isFirst) return // another replica already has this one
 
 The `NX` flag is the whole mechanism. It is unglamorous, it costs a millisecond, and it eliminates an entire category of "our numbers are wrong and we cannot explain why" investigations.
 
-Pick the TTL deliberately. It needs to outlive your worst realistic replay window, and nothing longer — a dedup key that never expires is just a memory leak with good intentions.
+Pick the TTL deliberately. It needs to outlive your worst realistic replay window, and nothing longer. A dedup key that never expires is just a memory leak with good intentions.
 
 ## Write amplification is the quiet cost
 
@@ -44,11 +44,11 @@ if (buffer.length >= 100 || elapsed >= 5_000) {
 }
 ```
 
-With a window of 100 items or 5 seconds, I have seen up to 100× fewer immediate writes on the ingest path. The cost is bounded staleness — a dashboard can be up to five seconds behind. For activity analytics that is invisible. For a payment confirmation it would be unacceptable. The window is a product decision wearing an engineering costume.
+With a window of 100 items or 5 seconds, I have seen up to 100× fewer immediate writes on the ingest path. The cost is bounded staleness: a dashboard can be up to five seconds behind. For activity analytics that is invisible. For a payment confirmation it would be unacceptable. The window is a product decision wearing an engineering costume.
 
 ## Slow work does not belong on the ingest path
 
-The most common way a healthy pipeline falls over is that someone adds a call to something slow — a model, a third-party API, an enrichment service — directly inside the consumer.
+The most common way a healthy pipeline falls over is that someone adds a call to something slow, such as a model, a third-party API or an enrichment service, directly inside the consumer.
 
 Now ingestion is coupled to the p99 of a system you do not control. When that dependency degrades, consumer lag climbs, and the backlog grows faster than you can drain it.
 
@@ -58,10 +58,10 @@ Around that worker, three things earn their place:
 
 - **A circuit breaker**, so a dead dependency fails fast instead of consuming every worker with timeouts.
 - **Exponential backoff**, so recovery does not arrive as a thundering herd.
-- **A dead-letter collection**, so poison messages leave the queue instead of blocking it forever — with a scheduled reprocessor to drain it once the cause is fixed.
+- **A dead-letter collection**, so poison messages leave the queue instead of blocking it forever, with a scheduled reprocessor to drain it once the cause is fixed.
 
 ## What actually keeps you up at night
 
 Throughput is a capacity planning question, and capacity planning is tractable. You measure, you add partitions, you add replicas.
 
-Correctness under concurrency is different. It does not degrade gracefully and it rarely announces itself — you find out weeks later when someone asks why two reports disagree. That is the part worth designing first, while the diagram is still cheap to change.
+Correctness under concurrency is different. It does not degrade gracefully and it rarely announces itself. You find out weeks later when someone asks why two reports disagree. That is the part worth designing first, while the diagram is still cheap to change.

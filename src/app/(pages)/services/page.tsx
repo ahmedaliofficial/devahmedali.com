@@ -10,7 +10,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Services',
-  description: 'Backend engineering, system architecture, AI and agent systems, automation, web and ecommerce platforms, cloud and scaling, plus architecture and code audits — delivered end to end.',
+  description: 'Backend engineering, system architecture, AI and agent systems, automation, web and ecommerce platforms, cloud and scaling, plus architecture and code audits, delivered end to end.',
   alternates: { canonical: '/services' },
 }
 
@@ -30,7 +30,7 @@ const Page = () => (
         <p className="text-default-500 text-sm font-medium tracking-wide uppercase">Services</p>
         <h1 className="font-heading text-default-900 mt-3 max-w-4xl text-4xl leading-tight font-medium tracking-tight md:text-6xl lg:text-7xl">What I can build for you</h1>
         <p className="text-default-500 mt-5 max-w-3xl text-lg md:text-xl">
-          Ten services across the full stack of a modern product — from the backend and architecture underneath it to the AI, automation and infrastructure around it. Most engagements combine two or three.
+          Ten services across the full stack of a modern product, from the backend and architecture underneath it to the AI, automation and infrastructure around it. Most engagements combine two or three.
         </p>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -74,7 +74,7 @@ const Page = () => (
 
     <section className="py-12 md:py-16">
       <div className="container">
-        <SectionHeading align="left" eyebrow="Reference architectures" title="How I&apos;d approach the common ones" description="The shape each of these systems takes before a line is written. Yours will differ in the details — the structure rarely does." />
+        <SectionHeading align="left" eyebrow="Reference architectures" title="How I&apos;d approach the common ones" description="The shape each of these systems takes before a line is written. Yours will differ in the details, but the structure rarely does." />
 
         <div className="mt-10 grid grid-cols-1 gap-4">
           {referenceFlows.map((flow) => (
@@ -117,7 +117,7 @@ const Page = () => (
       </div>
     </section>
 
-    <ContactCta heading="Not sure which of these you need?" description="Describe the problem in a couple of sentences and I'll tell you what I'd actually do about it — including when the answer is that you don't need me." />
+    <ContactCta heading="Not sure which of these you need?" description="Describe the problem in a couple of sentences and I'll tell you what I'd actually do about it, including when the answer is that you don't need me." />
   </>
 )
 

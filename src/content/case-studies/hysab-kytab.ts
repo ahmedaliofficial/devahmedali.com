@@ -3,7 +3,7 @@ import type { CaseStudy } from './types'
 export const hysabKytab: CaseStudy = {
   slug: 'hysab-kytab',
   meta: {
-    title: 'Hysab Kytab — FinTech platform for digital banks',
+    title: 'Hysab Kytab: FinTech platform for digital banks',
     description: 'Backend architecture for a B2B/B2C personal finance platform serving digital banking leaders: Golang and NestJS microservices, Kafka pipelines handling 100K+ financial events per day, and five databases behind one service layer.',
   },
   hero: {
@@ -21,7 +21,7 @@ export const hysabKytab: CaseStudy = {
   overview: {
     heading: 'One financial picture from many disagreeing sources',
     paragraphs: [
-      'Hysab Kytab gives banking customers a single view of their money — balances, spending, categories and insights — aggregated across multiple banks. It is delivered to digital banking leaders including Temenos and Interswitch, which means it inherits their reliability expectations rather than a startup’s.',
+      'Hysab Kytab gives banking customers a single view of their money, covering balances, spending, categories and insights, aggregated across multiple banks. It is delivered to digital banking leaders including Temenos and Interswitch, which means it inherits their reliability expectations rather than a startup’s.',
       'The core difficulty was consolidation. Every upstream source had its own database, its own format and its own idea of when data is correct: PostgreSQL, MongoDB, MySQL, Oracle and SQL Server all had to end up behind one coherent service layer without losing precision or slowing the app down.',
       'I architected a distributed microservices ecosystem in Golang and NestJS, using Golang for the performance-critical core services and event-driven processing to keep aggregation off the request path entirely.',
     ],

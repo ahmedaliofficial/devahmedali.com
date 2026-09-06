@@ -3,13 +3,13 @@ import type { CaseStudy } from './types'
 export const trackhrs: CaseStudy = {
   slug: 'trackhrs',
   meta: {
-    title: 'TrackHRS — Distributed time tracking & activity intelligence',
+    title: 'TrackHRS: Distributed time tracking & activity intelligence',
     description: 'Founder and architect of TrackHRS: a Rust desktop agent, 8 NestJS microservices and an event-driven activity intelligence pipeline built on Kafka, Redis, BullMQ and MongoDB.',
   },
   hero: {
     eyebrow: 'Founder · Product & Architecture',
     title: 'TrackHRS',
-    subtitle: 'A distributed time tracking and activity intelligence platform — desktop agent, web apps and event-driven microservices, designed and shipped end to end.',
+    subtitle: 'A distributed time tracking and activity intelligence platform: desktop agent, web apps and event-driven microservices, designed and shipped end to end.',
     role: 'Founder & Lead Architect',
     links: [{ label: 'Visit trackhrs.com', href: 'https://trackhrs.com', icon: 'lucide:external-link' }],
   },
@@ -22,7 +22,7 @@ export const trackhrs: CaseStudy = {
     heading: 'Turning raw desktop activity into decisions people trust',
     paragraphs: [
       'TrackHRS is a full-stack time tracking and activity intelligence platform for distributed teams. It combines a native desktop agent, two web applications and a set of event-driven microservices that capture work activity, classify it, and turn it into analytics HR and operations teams can act on.',
-      'The hard part was never the dashboard — it was the path between a keystroke on someone’s laptop and a number a manager is willing to trust. That path has to stay accurate when the network drops, stay fast when traffic spikes, and never double-count an event because two replicas processed it at once.',
+      'The hard part was never the dashboard. It was the path between a keystroke on someone’s laptop and a number a manager is willing to trust. That path has to stay accurate when the network drops, stay fast when traffic spikes, and never double-count an event because two replicas processed it at once.',
       'I designed the architecture around asynchronous pipelines, cache-first reads and multi-replica-safe processing, so each of those failure modes is handled by a specific mechanism rather than by hope.',
     ],
   },
@@ -115,13 +115,13 @@ export const trackhrs: CaseStudy = {
   pipeline: {
     heading: 'The activity intelligence pipeline',
     intro:
-      'This is the core of the product. Every step exists to solve a specific failure mode — duplicate events, write amplification, a slow model call blocking ingest, or a stale dashboard. Read top to bottom, it is the journey from one keystroke to one number on a manager’s screen.',
+      'This is the core of the product. Every step exists to solve a specific failure mode: duplicate events, write amplification, a slow model call blocking ingest, or a stale dashboard. Read top to bottom, it is the journey from one keystroke to one number on a manager’s screen.',
     steps: [
       { step: 1, title: 'Desktop activity event', description: 'Captured by the Tauri agent and sent over a secure API boundary. If the network is down, it buffers locally in SQLite first.', tech: ['Tauri 2', 'Rust', 'SQLite'], icon: 'lucide:monitor' },
       { step: 2, title: 'Kafka topic', description: 'High-throughput ingestion, deliberately decoupled from everything downstream so a slow consumer can never slow down capture.', tech: ['Apache Kafka'], icon: 'lucide:git-branch' },
-      { step: 3, title: 'Activity consumer', description: 'Processes the stream with partition-aware scaling — add replicas and throughput grows with the consumer group.', tech: ['NestJS', 'Consumer groups'], icon: 'lucide:cpu' },
+      { step: 3, title: 'Activity consumer', description: 'Processes the stream with partition-aware scaling, so adding replicas grows throughput with the consumer group.', tech: ['NestJS', 'Consumer groups'], icon: 'lucide:cpu' },
       { step: 4, title: 'Redis dedup', description: 'An O(1) key check makes processing multi-replica-safe, so the same event is never counted twice.', tech: ['Redis'], icon: 'lucide:copy-check' },
-      { step: 5, title: 'Batch service', description: 'Collects up to 100 items or a 5-second window before writing — up to 100× fewer immediate database writes on the hot path.', tech: ['Batching'], icon: 'lucide:layers' },
+      { step: 5, title: 'Batch service', description: 'Collects up to 100 items or a 5-second window before writing, giving up to 100× fewer immediate database writes on the hot path.', tech: ['Batching'], icon: 'lucide:layers' },
       { step: 6, title: 'MongoDB bulk upsert', description: 'A document model that fits evolving activity payloads and organisation structures, paired with indexed reporting queries.', tech: ['MongoDB', 'Replica set'], icon: 'lucide:database' },
       { step: 7, title: 'BullMQ classification queue', description: 'Classification runs as a background job, keeping latency-sensitive writes off the same path as heavier work.', tech: ['BullMQ', 'Redis'], icon: 'lucide:list-checks' },
       { step: 8, title: 'Classifier API', description: 'A bearer-key FastAPI service, so the ML lifecycle and its dependencies iterate independently of the TypeScript services.', tech: ['Python', 'FastAPI'], icon: 'lucide:brain' },

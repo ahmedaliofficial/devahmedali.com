@@ -12,7 +12,7 @@ const FeaturedWork = () => {
         <SectionHeading
           eyebrow="Selected work"
           title="Systems I designed and shipped"
-          description="Four platforms, each with a different constraint at its centre — throughput, precision, latency or ambiguity. Every case study walks the architecture and the full pipeline, not the feature list."
+          description="Four platforms, each with a different constraint at its centre: throughput, precision, latency or ambiguity. Every case study walks the architecture and the full pipeline, not the feature list."
         />
 
         <div className="mt-10 flex flex-col gap-4 md:mt-12">
@@ -27,7 +27,7 @@ const FeaturedWork = () => {
 
         <div className="mt-10 flex flex-col items-center gap-5">
           <p className="text-default-500 max-w-2xl text-center text-base">
-            These four go deep. Behind them sit <span className="text-default-900 font-medium">500+ delivered projects</span> — ecommerce and CMS platforms, ERP integrations, AI chatbots and agents, automation and internal tools — across client work and products of my own.
+            These four go deep. Behind them sit <span className="text-default-900 font-medium">500+ delivered projects</span>, covering ecommerce and CMS platforms, ERP integrations, AI chatbots and agents, automation and internal tools, across client work and products of my own.
           </p>
           <RollUpButton href="/work" label="See all case studies" variant="outline" icon="lucide:arrow-right" />
         </div>

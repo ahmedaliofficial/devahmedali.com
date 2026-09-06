@@ -42,7 +42,7 @@ export const skillGroups: SkillGroup[] = [
   },
 ]
 
-/** Logos for the marquee strip — Iconify simple-icons set */
+/** Logos for the marquee strip (Iconify simple-icons set) */
 export const techLogos: { name: string; icon: string }[] = [
   { name: 'NestJS', icon: 'simple-icons:nestjs' },
   { name: 'Go', icon: 'simple-icons:go' },
@@ -74,7 +74,7 @@ export const headlineStats = [
   { value: '20+', label: 'Engineers led', description: 'Across AI, ecommerce and CMS product lines' },
 ]
 
-/** Measured outcomes — shown on the dark approach section */
+/** Measured outcomes shown on the dark approach section */
 export const impactStats = [
   { value: '60%+', label: 'Lower read latency', description: 'Redis cache-first strategy on a FinTech platform' },
   { value: '25%', label: 'Cloud cost reduction', description: 'GCP rightsizing and observability work' },

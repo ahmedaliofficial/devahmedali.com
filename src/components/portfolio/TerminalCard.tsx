@@ -17,8 +17,8 @@ const toneClasses = {
   dim: 'text-default-400',
 }
 
-/** Code-built hero visual — replaces the template's app screenshots. */
-const TerminalCard = ({ title = 'ahmed@prod — activity-pipeline', lines, className = '' }: TerminalCardProps) => (
+/** Code-built hero visual, replacing the template's app screenshots. */
+const TerminalCard = ({ title = 'ahmed@prod: activity-pipeline', lines, className = '' }: TerminalCardProps) => (
   <div className={`bg-default-900 overflow-hidden rounded-2xl border border-white/10 shadow-2xl ${className}`}>
     <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3">
       <span aria-hidden="true" className="flex gap-1.5">

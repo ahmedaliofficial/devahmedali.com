@@ -39,7 +39,7 @@ const Hero = () => (
         <h1 className="mt-5 max-w-4xl text-4xl leading-[1.1] font-medium tracking-tight text-white md:text-6xl lg:mt-7.5 lg:text-[84px]">{site.tagline}</h1>
 
         <p className="mt-5 max-w-2xl text-lg text-white/70 md:text-xl lg:mt-7">
-          I&apos;m {site.name} — a software architect and engineering lead. I design and build event-driven backends, web and ecommerce platforms, cloud infrastructure and production AI systems, and lead the teams that ship them.
+          I&apos;m {site.name}, a software architect and engineering lead. I design and build event-driven backends, web and ecommerce platforms, cloud infrastructure and production AI systems, and lead the teams that ship them.
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:mt-10">

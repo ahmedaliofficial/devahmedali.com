@@ -51,7 +51,7 @@ export const POST = async (request: Request) => {
   const to = process.env.CONTACT_TO_EMAIL ?? site.email
   const from = process.env.CONTACT_FROM_EMAIL ?? 'onboarding@resend.dev'
 
-  // Without a key configured the site still works — the client falls back to a mailto link.
+  // Without a key configured the site still works; the client falls back to a mailto link.
   if (!apiKey) {
     return NextResponse.json({ error: 'Email delivery is not configured yet.', fallback: true }, { status: 503 })
   }

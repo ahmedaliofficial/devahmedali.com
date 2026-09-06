@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Work',
-  description: 'Case studies in distributed systems, FinTech, real-time AI and SaaS — each one walking the architecture from first constraint to production pipeline.',
+  description: 'Case studies in distributed systems, FinTech, real-time AI and SaaS, each one walking the architecture from first constraint to production pipeline.',
   alternates: { canonical: '/work' },
 }
 
@@ -19,7 +19,7 @@ const Page = () => {
           <p className="text-default-500 text-sm font-medium tracking-wide uppercase">Case studies</p>
           <h1 className="font-heading text-default-900 mt-3 max-w-4xl text-4xl leading-tight font-medium tracking-tight md:text-6xl lg:text-7xl">Systems I designed and shipped</h1>
           <p className="text-default-500 mt-5 max-w-3xl text-lg md:text-xl">
-            Each of these platforms had a different constraint at its centre — throughput, precision, latency or ambiguity. The write-ups follow the architecture rather than the feature list, because the architecture is where the decisions live.
+            Each of these platforms had a different constraint at its centre: throughput, precision, latency or ambiguity. The write-ups follow the architecture rather than the feature list, because the architecture is where the decisions live.
           </p>
         </div>
       </section>

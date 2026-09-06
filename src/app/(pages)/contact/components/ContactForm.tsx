@@ -15,7 +15,7 @@ const intents: Record<string, { subject: string; placeholder: string }> = {
   },
   hire: {
     subject: 'Role enquiry',
-    placeholder: 'Tell me about the role or the team — what you are building and what you need someone to own.',
+    placeholder: 'Tell me about the role or the team: what you are building and what you need someone to own.',
   },
   audit: {
     subject: 'Architecture / code audit',
@@ -68,14 +68,14 @@ const ContactForm = () => {
           <Icon icon="lucide:check" className="size-6" />
         </span>
         <h2 className="font-heading text-default-900 text-2xl font-semibold">Message sent</h2>
-        <p className="text-default-500 mt-2.5 text-base">Thanks for reaching out — I&apos;ll get back to you within a day or so. If it&apos;s urgent, email me directly at {site.email}.</p>
+        <p className="text-default-500 mt-2.5 text-base">Thanks for reaching out. I&apos;ll get back to you within a day or so. If it&apos;s urgent, email me directly at {site.email}.</p>
       </div>
     )
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      {/* Honeypot — hidden from people, tempting to bots */}
+      {/* Honeypot: hidden from people, tempting to bots */}
       <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="pointer-events-none absolute h-0 w-0 opacity-0" />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
