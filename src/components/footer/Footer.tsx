@@ -14,6 +14,7 @@ const linkClasses = 'text-default-600 hover:text-default-900 text-base transitio
 
 const exploreLinks: FooterLink[] = [
   { label: 'Home', href: '/' },
+  { label: 'Services', href: '/services' },
   { label: 'Work', href: '/work' },
   { label: 'About', href: '/about' },
   { label: 'Blog', href: '/blog' },

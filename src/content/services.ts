@@ -27,9 +27,9 @@ export const serviceAreas: ServiceArea[] = [
   },
   {
     number: '03',
-    title: 'AI systems & automation',
-    description: 'AI that ships as a service with failure paths and evaluation — not a demo that degrades quietly for six months.',
-    services: ['Chatbots & conversational agents', 'Multi-agent & agentic workflows', 'RAG pipelines & vector search', 'Analytics & intelligence engines', 'Generative APIs & MCP tool integration', 'Workflow & business process automation'],
+    title: 'AI, agents & automation',
+    description: 'AI that ships as a service with failure paths, tracing and evaluation — not a demo that degrades quietly for six months.',
+    services: ['Chatbots & conversational agents', 'LangGraph & multi-agent workflows', 'Custom MCP servers & tool integration', 'RAG pipelines & vector search', 'Agent SDK & generative APIs', 'LangSmith tracing & evaluation', 'Analytics & intelligence engines', 'Workflow & process automation'],
     icon: 'lucide:brain-circuit',
     accent: 'primary-6',
   },

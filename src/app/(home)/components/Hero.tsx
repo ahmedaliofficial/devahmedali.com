@@ -43,8 +43,8 @@ const Hero = () => (
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:mt-10">
-          <RollUpButton href="/work" label="View my work" variant="light" icon="lucide:arrow-right" />
-          <RollUpButton href="/contact" label="Get in touch" variant="glass" />
+          <RollUpButton href="/contact?intent=consultation" label="Get a consultation" variant="light" icon="lucide:arrow-right" />
+          <RollUpButton href="/contact?intent=hire" label="Hire me" variant="glass" />
         </div>
 
         <div className="mt-6 flex items-center gap-4 text-sm text-white/50">

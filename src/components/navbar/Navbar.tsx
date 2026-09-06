@@ -13,10 +13,10 @@ export type NavItem = {
 }
 
 const navItems: NavItem[] = [
+  { label: 'Services', href: '/services' },
   { label: 'Work', href: '/work' },
   { label: 'About', href: '/about' },
   { label: 'Blog', href: '/blog' },
-  { label: 'Contact', href: '/contact' },
 ]
 
 const Navbar = () => {
@@ -59,7 +59,9 @@ const Navbar = () => {
     <header>
       <div className="nav-sticky navbar fixed inset-x-0 top-0 z-120 w-full">
         <div className="container py-3.5 md:py-5 lg:py-7.5">
-          <div className="flex w-full items-center justify-between rounded-lg bg-white px-3 py-2 md:rounded-2xl lg:justify-center lg:bg-transparent lg:px-0 lg:py-0">
+          {/* .container drops its padding at lg, so the pills would otherwise sit flush
+              against the viewport edges between 1024px and the 1200px max-width. */}
+          <div className="flex w-full items-center justify-between rounded-lg bg-white px-3 py-2 md:rounded-2xl lg:justify-center lg:bg-transparent lg:mx-6 lg:px-0 lg:py-0 xl:mx-0">
             <div className="flex rounded-[20px] bg-white lg:min-w-43.75 lg:p-3 lg:shadow-lg">
               <Logo />
             </div>
@@ -89,23 +91,14 @@ const Navbar = () => {
             <div className="hidden h-2.5 w-full transition-all duration-500 ease-in-out in-[.nav-sticky-on]:w-2.5 lg:flex"></div>
 
             <div className="flex items-center gap-1.25 rounded-[20px] bg-white lg:p-1.5 lg:shadow-lg">
-              <a
-                href={site.socials.github}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="GitHub"
-                className="bg-default-200 group relative hidden size-8.75 items-center justify-center overflow-hidden rounded-lg transition-all duration-300 md:h-12.5 md:w-12.5 md:rounded-2xl lg:flex"
-              >
-                <div className="relative flex size-5 items-center justify-center overflow-hidden">
-                  <Icon icon="tabler:brand-github" className="text-default-800 absolute size-5 transition-transform duration-300 group-hover:-translate-y-6" />
-                  <Icon icon="tabler:brand-github" className="text-default-800 absolute size-5 translate-y-6 transition-transform duration-300 group-hover:translate-y-0" />
-                </div>
-              </a>
+              <Link href="/contact?intent=hire" className="text-default-800 hover:bg-default-200 hidden rounded-2xl px-5 py-4 text-sm font-medium whitespace-nowrap transition-all lg:block">
+                Hire me
+              </Link>
 
-              <Link href="/contact" className="bg-default-900 group relative hidden overflow-hidden rounded-2xl px-6 py-4 text-sm font-medium text-white transition-all duration-300 hover:scale-95 lg:block">
+              <Link href="/contact?intent=consultation" className="bg-default-900 group relative hidden overflow-hidden rounded-2xl px-6 py-4 text-sm font-medium text-white transition-all duration-300 hover:scale-95 lg:block">
                 <span className="relative block h-5 overflow-hidden whitespace-nowrap">
-                  <span className="block transition-transform duration-300 group-hover:-translate-y-full">Let&apos;s talk</span>
-                  <span className="absolute inset-x-0 top-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0">Let&apos;s talk</span>
+                  <span className="block transition-transform duration-300 group-hover:-translate-y-full">Get a consultation</span>
+                  <span className="absolute inset-x-0 top-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0">Get a consultation</span>
                 </span>
               </Link>
 
@@ -149,16 +142,24 @@ const Navbar = () => {
             )
           })}
 
-          <div className="border-default-200 mt-3 flex items-center gap-2 border-t pt-3">
-            <a href={site.socials.github} target="_blank" rel="noreferrer" aria-label="GitHub" className="bg-default-200 text-default-800 inline-flex size-9 items-center justify-center rounded-full">
-              <Icon icon="tabler:brand-github" className="size-4.5" />
-            </a>
-            <a href={site.socials.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className="bg-default-200 text-default-800 inline-flex size-9 items-center justify-center rounded-full">
-              <Icon icon="tabler:brand-linkedin" className="size-4.5" />
-            </a>
-            <Link href="/contact" onClick={closeMenu} className="bg-default-900 ms-auto rounded-full px-5 py-2.5 text-sm font-medium text-white transition-all hover:scale-95">
-              Let&apos;s talk
-            </Link>
+          <div className="border-default-200 mt-3 flex flex-col gap-2 border-t pt-3">
+            <div className="flex items-center gap-2">
+              <Link href="/contact?intent=consultation" onClick={closeMenu} className="bg-default-900 grow rounded-full px-5 py-3 text-center text-sm font-medium text-white transition-all hover:scale-95">
+                Get a consultation
+              </Link>
+              <Link href="/contact?intent=hire" onClick={closeMenu} className="border-default-300 text-default-900 shrink-0 rounded-full border px-5 py-3 text-sm font-medium transition-all hover:scale-95">
+                Hire me
+              </Link>
+            </div>
+
+            <div className="flex items-center gap-2 pt-1">
+              <a href={site.socials.github} target="_blank" rel="noreferrer" aria-label="GitHub" className="bg-default-200 text-default-800 inline-flex size-9 items-center justify-center rounded-full">
+                <Icon icon="tabler:brand-github" className="size-4.5" />
+              </a>
+              <a href={site.socials.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className="bg-default-200 text-default-800 inline-flex size-9 items-center justify-center rounded-full">
+                <Icon icon="tabler:brand-linkedin" className="size-4.5" />
+              </a>
+            </div>
           </div>
         </div>
       </div>

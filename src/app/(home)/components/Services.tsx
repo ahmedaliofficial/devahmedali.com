@@ -1,3 +1,4 @@
+import RollUpButton from '@/components/ui/RollUpButton'
 import SectionHeading from '@/components/ui/SectionHeading'
 import { serviceAreas } from '@/content/services'
 import { Icon } from '@iconify/react'
@@ -51,6 +52,10 @@ const Services = () => (
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="mt-10 flex justify-center">
+        <RollUpButton href="/services" label="Explore all services" variant="outline" icon="lucide:arrow-right" />
       </div>
     </div>
   </section>

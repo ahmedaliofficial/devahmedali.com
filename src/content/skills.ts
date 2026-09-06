@@ -21,9 +21,9 @@ export const skillGroups: SkillGroup[] = [
     items: ['Apache Kafka', 'RabbitMQ', 'BullMQ', 'Redis', 'Socket.io'],
   },
   {
-    title: 'AI & LLM engineering',
+    title: 'AI & agent engineering',
     icon: 'lucide:brain-circuit',
-    items: ['LangChain', 'RAG pipelines', 'Multi-agent systems', 'MCP', 'Prompt engineering', 'Vector databases'],
+    items: ['LangChain', 'LangGraph', 'LangSmith', 'Agent SDKs', 'Model Context Protocol', 'Custom MCP servers', 'RAG pipelines', 'Multi-agent systems', 'Vector databases', 'Prompt engineering', 'Evaluation & tracing'],
   },
   {
     title: 'Databases',
