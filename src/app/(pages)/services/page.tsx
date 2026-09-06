@@ -89,7 +89,7 @@ const Page = () => (
                   <p className="text-default-500 mt-2 text-sm md:text-base">{flow.description}</p>
                 </div>
 
-                <ProcessFlow steps={flow.steps} className="grow" />
+                <ProcessFlow steps={flow.steps} accent={flow.accent} className="grow" />
               </div>
             </div>
           ))}

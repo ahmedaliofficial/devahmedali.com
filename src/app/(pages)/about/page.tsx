@@ -106,7 +106,7 @@ const Page = () => (
                 </div>
                 <div>
                   <dt className="text-default-500 text-sm">Education</dt>
-                  <dd className="text-default-900 font-medium">BS Software Engineering, Virtual University of Pakistan (2025)</dd>
+                  <dd className="text-default-900 font-medium">BS Software Engineering, Virtual University of Pakistan</dd>
                 </div>
               </dl>
             </div>
