@@ -1,34 +1,32 @@
-import { Metadata } from 'next'
-import About from './components/About'
-import Download from './components/Download'
-import Faq from './components/Faq'
-import Features from './components/Features'
-import Feedback from './components/Feedback'
+import ContactCta from '@/components/ContactCta'
+import { DEFAULT_PAGE_TITLE } from '@/config/constants'
+import { site } from '@/content/site'
+import type { Metadata } from 'next'
+import BlogTeaser from './components/BlogTeaser'
+import FeaturedWork from './components/FeaturedWork'
 import Hero from './components/Hero'
-import SmartAssist from './components/SmartAssist'
-import Stats from './components/Stats'
-import StorySlider from './components/StorySlider'
-import Users from './components/Users'
-import Work from './components/Work'
+import PipelineTeaser from './components/PipelineTeaser'
+import Services from './components/Services'
+import TechStack from './components/TechStack'
+import TrustBar from './components/TrustBar'
 
 export const metadata: Metadata = {
-  title: 'Home',
+  title: DEFAULT_PAGE_TITLE,
+  description: site.seo.description,
+  alternates: { canonical: '/' },
 }
 
 const Page = () => {
   return (
     <>
       <Hero />
-      <About />
-      <Features />
-      <Work />
-      <Users />
-      <Stats />
-      <SmartAssist />
-      <StorySlider />
-      <Feedback />
-      <Faq />
-      <Download />
+      <TrustBar />
+      <Services />
+      <FeaturedWork />
+      <PipelineTeaser />
+      <TechStack />
+      <BlogTeaser />
+      <ContactCta />
     </>
   )
 }

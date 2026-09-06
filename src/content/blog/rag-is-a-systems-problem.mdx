@@ -1,0 +1,50 @@
+---
+title: 'RAG is a systems problem, not a prompt problem'
+description: 'The demo works on day one and degrades quietly for six months. Retrieval quality, freshness and failure behaviour decide whether a RAG system survives contact with real users — the prompt barely moves the needle.'
+date: '2026-09-02'
+tags: ['AI', 'RAG', 'Architecture']
+---
+
+Every retrieval-augmented generation project has the same first week. You chunk some documents, embed them, wire up a vector search, and the answers are startlingly good. Everyone agrees it is nearly done.
+
+Then it goes to real users, and the failure reports start arriving. Not dramatic failures — the model rarely says anything obviously insane. It says something plausible and slightly wrong, which is considerably worse.
+
+Almost every time I have debugged this, the prompt was fine. The system around it was not.
+
+## Retrieval is the product
+
+If the right chunk is not in the context window, no amount of prompt engineering recovers it. The model will answer from whatever you did retrieve, confidently, because that is what it is for.
+
+This makes retrieval quality the single highest-leverage thing to measure, and the thing teams measure least. Before touching the prompt, I want to know: for a set of real questions, is the correct source document in the top *k* results? That number is usually far lower than anyone expects, and it explains most of the bad answers on its own.
+
+Chunking is where a lot of that recall is lost. Splitting on a fixed token count cheerfully cuts a table in half and separates a heading from the paragraph it governs. Splitting on document structure — sections, headings, natural boundaries — keeps chunks semantically whole. Overlap helps, but overlap is compensation for a bad boundary, not a substitute for a good one.
+
+## Stale is a failure mode
+
+A vector index is a cache of your knowledge base, and every cache has an invalidation story whether you wrote one or not.
+
+Someone updates a policy document. The index still holds the old embedding. The system now answers questions using superseded information, with no signal that anything is wrong — the retrieval succeeded, the generation succeeded, and the answer is out of date.
+
+This needs the same treatment as any other derived data: a re-embedding path triggered by source changes, and metadata on every chunk recording where it came from and when it was indexed. That metadata is also what lets you cite sources, which is the cheapest trust mechanism available.
+
+## Design what happens when it fails
+
+Three failure modes are worth explicit handling, because the default behaviour for each is bad:
+
+**Retrieval finds nothing relevant.** The default is to hand the model an empty or weak context and let it improvise. Better to detect a low similarity score and say you do not know. "I could not find this in the documentation" is a good answer. A fabricated one is not.
+
+**The model or vector store is unavailable.** These are network calls to systems you do not control, and they deserve the same treatment as any other unreliable dependency: timeouts, circuit breakers, and a degraded path that fails fast instead of hanging.
+
+**The answer is wrong but confident.** You cannot eliminate this, so you make it visible. Citations let a user check the source. Logging the retrieved chunks alongside the answer lets you reconstruct what happened when someone reports a bad response — without that trace, every investigation starts from zero.
+
+## Evaluation, or you are guessing
+
+The uncomfortable part of shipping RAG is that quality regressions are invisible without measurement. Change a chunking strategy, swap an embedding model, adjust *k* — did it get better? Nobody can tell by trying three questions by hand.
+
+A small evaluation set is enough to start. Fifty real questions with known-correct sources, run on every meaningful change, measuring retrieval recall separately from answer quality. Separating those two numbers is what tells you whether a bad answer came from bad retrieval or bad generation — and they have completely different fixes.
+
+## The architecture is the differentiator
+
+The generation step is largely commoditised. Everyone has access to the same models, and they improve underneath you regardless of what you do.
+
+What separates a RAG system that holds up from one that quietly rots is everything else: how documents are chunked, how the index stays fresh, what happens when retrieval comes back empty, and whether anyone would notice a regression. Those are ordinary systems engineering problems. They just happen to have a model at the end of the pipeline.
