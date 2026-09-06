@@ -15,7 +15,7 @@ const terminalLines = [
 ]
 
 const Hero = () => (
-  <section className="bg-default-900 relative flex flex-col items-center justify-center overflow-hidden pt-32 pb-14 md:pt-40 md:pb-16 lg:pt-44">
+  <section className="bg-default-900 relative flex flex-col items-center justify-center overflow-hidden pt-32 pb-28 md:pt-40 md:pb-36 lg:pt-44">
     <span
       aria-hidden="true"
       className="absolute inset-0 opacity-[0.07]"
