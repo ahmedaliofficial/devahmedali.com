@@ -5,10 +5,23 @@ import { Icon } from '@iconify/react'
 import type { Metadata } from 'next'
 import ContactForm from './components/ContactForm'
 
+const CONTACT_DESCRIPTION = 'Get in touch with Ahmed Ali about architecture reviews, backend and distributed systems work, infrastructure and scaling, or production AI.'
+
 export const metadata: Metadata = {
   title: 'Contact',
-  description: 'Get in touch with Ahmed Ali about architecture reviews, backend and distributed systems work, infrastructure and scaling, or building an AI system that has to reach production.',
+  description: CONTACT_DESCRIPTION,
   alternates: { canonical: '/contact' },
+  openGraph: {
+    type: 'website',
+    title: 'Contact Ahmed Ali',
+    description: CONTACT_DESCRIPTION,
+    url: '/contact',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contact Ahmed Ali',
+    description: CONTACT_DESCRIPTION,
+  },
 }
 
 const faqs = [

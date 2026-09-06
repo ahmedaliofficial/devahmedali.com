@@ -10,7 +10,7 @@ export const site = {
   intro: 'I architect event-driven backends, cloud infrastructure and production AI systems, from first diagram to live traffic.',
   availability: 'Open to remote and hybrid work worldwide',
   email: 'ahmedalidev786@gmail.com',
-  url: 'https://devahmedali.click',
+  url: 'https://devahmedali.com',
   socials: {
     github: 'https://github.com/ahmedaliofficial',
     linkedin: 'https://www.linkedin.com/in/devahmedali',
@@ -19,7 +19,7 @@ export const site = {
   },
   seo: {
     description:
-      'Ahmed Ali is a software architect and engineering lead specialising in distributed systems, event-driven microservices and production AI. Case studies in FinTech, workplace safety and SaaS, covering architecture through to deployment.',
+      'Ahmed Ali is a software architect and engineering lead specialising in distributed systems, event-driven microservices and production AI systems.',
     keywords: [
       'software architect',
       'engineering lead',

@@ -5,6 +5,8 @@ import path from 'node:path'
 export type PostMeta = {
   slug: string
   title: string
+  /** Shorter title for the <title> tag and SERP display; falls back to `title` when the H1-style title already fits. */
+  seoTitle?: string
   description: string
   date: string
   tags: string[]
@@ -32,6 +34,7 @@ const parseFile = (filename: string): Post | null => {
   return {
     slug,
     title: String(data.title ?? slug),
+    seoTitle: data.seoTitle ? String(data.seoTitle) : undefined,
     description: String(data.description ?? ''),
     date: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
     tags: Array.isArray(data.tags) ? data.tags.map(String) : [],

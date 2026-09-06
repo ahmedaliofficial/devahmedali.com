@@ -26,7 +26,7 @@ const jsonLd = {
   description: site.seo.description,
   url: site.url,
   email: `mailto:${site.email}`,
-  sameAs: [site.socials.github, site.socials.linkedin, site.socials.trackhrs],
+  sameAs: [site.socials.github, site.socials.linkedin],
   knowsAbout: ['Distributed Systems', 'System Design', 'Event-Driven Architecture', 'Microservices', 'Apache Kafka', 'Kubernetes', 'AI Engineering', 'RAG Pipelines'],
 }
 

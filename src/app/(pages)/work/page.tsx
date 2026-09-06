@@ -1,6 +1,7 @@
 import ContactCta from '@/components/ContactCta'
 import CaseStudyCard from '@/components/portfolio/CaseStudyCard'
 import { caseStudies } from '@/content/case-studies'
+import { site } from '@/content/site'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -9,11 +10,24 @@ export const metadata: Metadata = {
   alternates: { canonical: '/work' },
 }
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: caseStudies.map((study, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: study.hero.title,
+    url: `${site.url}/work/${study.slug}`,
+  })),
+}
+
 const Page = () => {
   const [flagship, ...rest] = caseStudies
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
       <section className="pt-32.5 pb-12 md:pt-40 md:pb-16 lg:pt-50">
         <div className="container">
           <p className="text-default-500 text-sm font-medium tracking-wide uppercase">Case studies</p>

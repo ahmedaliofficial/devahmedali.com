@@ -28,11 +28,17 @@ export const generateMetadata = async ({ params }: PageProps): Promise<Metadata>
     title: study.meta.title,
     description: study.meta.description,
     alternates: { canonical: `/work/${study.slug}` },
+    keywords: [...site.seo.keywords, ...study.stack],
     openGraph: {
       type: 'article',
       title: study.meta.title,
       description: study.meta.description,
       url: `/work/${study.slug}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: study.meta.title,
+      description: study.meta.description,
     },
   }
 }
@@ -55,9 +61,22 @@ const Page = async ({ params }: PageProps) => {
     ],
   }
 
+  const creativeWorkJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: study.hero.title,
+    headline: study.meta.title,
+    description: study.meta.description,
+    image: `${site.url}/opengraph-image`,
+    url: `${site.url}/work/${study.slug}`,
+    creator: { '@type': 'Person', name: site.name, url: site.url },
+    keywords: study.stack.join(', '),
+  }
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(creativeWorkJsonLd) }} />
 
       {/* Hero */}
       <section className="pt-32.5 pb-12 md:pt-40 md:pb-16 lg:pt-50">

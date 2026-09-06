@@ -4,7 +4,7 @@ export const hysabKytab: CaseStudy = {
   slug: 'hysab-kytab',
   meta: {
     title: 'Hysab Kytab: FinTech platform for digital banks',
-    description: 'Backend architecture for a B2B/B2C personal finance platform serving digital banking leaders: Golang and NestJS microservices, Kafka pipelines handling 100K+ financial events per day, and five databases behind one service layer.',
+    description: 'Backend architecture for a B2B/B2C finance platform serving digital banks: Golang and NestJS microservices, 100K+ Kafka events a day, five databases.',
   },
   hero: {
     eyebrow: 'FinTech · Personal Finance Platform',

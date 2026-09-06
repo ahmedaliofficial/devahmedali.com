@@ -41,7 +41,7 @@ const Footer = () => {
             </div>
 
             <div className="lg:max-w-md">
-              <h2 className="mb-2.5 text-xl font-medium md:text-2xl">Have a system to build?</h2>
+              <h3 className="mb-2.5 text-xl font-medium md:text-2xl">Have a system to build?</h3>
               <p className="text-default-500 mb-5 text-lg">{site.availability}. Tell me what you&apos;re building and I&apos;ll tell you how I&apos;d architect it.</p>
 
               <a href={`mailto:${site.email}`} className="bg-default-900 group inline-flex items-center gap-2 rounded-full px-6 py-3.5 font-medium text-white transition-all hover:scale-95">

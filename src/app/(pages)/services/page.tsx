@@ -1,5 +1,6 @@
 import ContactCta from '@/components/ContactCta'
 import ProcessFlow from '@/components/portfolio/ProcessFlow'
+import Accordion from '@/components/ui/Accordion'
 import Chip from '@/components/ui/Chip'
 import RollUpButton from '@/components/ui/RollUpButton'
 import SectionHeading from '@/components/ui/SectionHeading'
@@ -9,10 +10,53 @@ import { site } from '@/content/site'
 import { Icon } from '@iconify/react'
 import type { Metadata } from 'next'
 
+const SERVICES_DESCRIPTION = 'Backend engineering, system architecture, AI and agent systems, automation, web platforms, cloud and scaling, plus architecture and code audits.'
+
 export const metadata: Metadata = {
   title: 'Software Architecture & AI Engineering Services',
-  description: 'Backend engineering, system architecture, AI and agent systems, automation, web and ecommerce platforms, cloud and scaling, plus architecture and code audits, delivered end to end.',
+  description: SERVICES_DESCRIPTION,
   alternates: { canonical: '/services' },
+  keywords: [...site.seo.keywords, ...serviceCatalog.map((service) => service.title)],
+  openGraph: {
+    type: 'website',
+    title: 'Software Architecture & AI Engineering Services',
+    description: SERVICES_DESCRIPTION,
+    url: '/services',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Software Architecture & AI Engineering Services',
+    description: SERVICES_DESCRIPTION,
+  },
+}
+
+const serviceFaqs = [
+  {
+    question: 'How do I know if I need a consultation call or full project delivery?',
+    answer: 'A consultation call is for a decision you need to get right, such as an architecture or build-versus-buy call. Project delivery is for a defined product or platform, owned end to end from architecture through to production.',
+  },
+  {
+    question: 'Do you work end to end, or just on isolated pieces like an audit?',
+    answer: 'Both. Architecture and code audits are a structured look at a system you already have, ending in prioritised findings with effort estimates. Project delivery covers the full build when you need new work shipped.',
+  },
+  {
+    question: "What if I only need a second opinion, not new code?",
+    answer: 'That is exactly what a consultation call or an architecture review is for: an honest look at what is actually the problem and what it would cost to fix, without committing to a build.',
+  },
+  {
+    question: 'Can you join an existing team rather than run a separate project?',
+    answer: 'Yes. The ongoing partner or full-time model embeds me with your team as an architect or engineering lead, setting standards, mentoring engineers and owning technical direction long term.',
+  },
+]
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: serviceFaqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
 }
 
 const accentClasses: Record<string, string> = {
@@ -26,6 +70,8 @@ const accentClasses: Record<string, string> = {
 
 const Page = () => (
   <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+
     <section className="pt-32.5 pb-12 md:pt-40 md:pb-16 lg:pt-50">
       <div className="container">
         <p className="text-default-500 text-sm font-medium tracking-wide uppercase">Services</p>
@@ -115,6 +161,13 @@ const Page = () => (
             </div>
           ))}
         </div>
+      </div>
+    </section>
+
+    <section className="py-12 md:py-20">
+      <div className="container">
+        <SectionHeading align="left" eyebrow="Before you ask" title="Not sure which of these you need?" />
+        <Accordion items={serviceFaqs} className="mt-10 max-w-3xl" />
       </div>
     </section>
 

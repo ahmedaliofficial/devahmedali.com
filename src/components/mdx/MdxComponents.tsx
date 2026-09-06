@@ -4,7 +4,7 @@ import type { ComponentProps } from 'react'
 /** Element overrides handed to <MDXRemote components={...} />. Typed against the
  *  intrinsic elements they replace so we don't need @types/mdx. */
 type MdxComponentMap = {
-  [K in 'h2' | 'h3' | 'p' | 'a' | 'ul' | 'ol' | 'li' | 'strong' | 'blockquote' | 'pre' | 'code' | 'hr']: (props: ComponentProps<K>) => React.ReactElement
+  [K in 'h2' | 'h3' | 'p' | 'a' | 'ul' | 'ol' | 'li' | 'strong' | 'blockquote' | 'pre' | 'code' | 'hr' | 'table' | 'thead' | 'tbody' | 'tr' | 'th' | 'td']: (props: ComponentProps<K>) => React.ReactElement
 }
 
 export const mdxComponents: MdxComponentMap = {
@@ -77,4 +77,32 @@ export const mdxComponents: MdxComponentMap = {
     </code>
   ),
   hr: (props) => <hr className="border-default-200 my-10" {...props} />,
+  table: ({ children, ...props }) => (
+    <div className="border-default-200 my-6 overflow-x-auto rounded-2xl border">
+      <table className="w-full border-collapse text-left text-sm md:text-base" {...props}>
+        {children}
+      </table>
+    </div>
+  ),
+  thead: ({ children, ...props }) => (
+    <thead className="bg-default-100" {...props}>
+      {children}
+    </thead>
+  ),
+  tbody: ({ children, ...props }) => (
+    <tbody className="divide-default-200 divide-y" {...props}>
+      {children}
+    </tbody>
+  ),
+  tr: ({ children, ...props }) => <tr {...props}>{children}</tr>,
+  th: ({ children, ...props }) => (
+    <th className="text-default-900 px-4 py-3 font-semibold" {...props}>
+      {children}
+    </th>
+  ),
+  td: ({ children, ...props }) => (
+    <td className="text-default-600 px-4 py-3 align-top" {...props}>
+      {children}
+    </td>
+  ),
 }

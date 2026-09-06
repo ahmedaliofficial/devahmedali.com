@@ -3,8 +3,8 @@ import type { CaseStudy } from './types'
 export const trackhrs: CaseStudy = {
   slug: 'trackhrs',
   meta: {
-    title: 'TrackHRS: Distributed time tracking & activity intelligence',
-    description: 'Founder and architect of TrackHRS: a Rust desktop agent, 8 NestJS microservices and an event-driven activity intelligence pipeline built on Kafka, Redis, BullMQ and MongoDB.',
+    title: 'TrackHRS: time tracking & activity intelligence',
+    description: 'Founder and architect of TrackHRS: a Rust desktop agent and 8 NestJS microservices in an event-driven pipeline built on Kafka, Redis and MongoDB.',
   },
   hero: {
     eyebrow: 'Founder · Product & Architecture',

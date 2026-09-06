@@ -4,7 +4,7 @@ export const agentx: CaseStudy = {
   slug: 'agentx',
   meta: {
     title: 'AgentX: Multi-agent AI full-stack app builder',
-    description: 'A multi-agent LangChain and FastAPI platform that generates production-ready full-stack applications from natural language, with Figma-to-code, Supabase provisioning and MCP tool orchestration.',
+    description: 'A multi-agent LangChain and FastAPI platform generating production-ready full-stack apps from natural language, with Figma-to-code and MCP tools.',
   },
   hero: {
     eyebrow: 'AI Platform · Multi-Agent Systems',

@@ -1,6 +1,7 @@
 ---
 title: 'LangChain vs LangGraph: choosing the right abstraction for agent workflows'
-description: 'LangChain chains are a pipeline. LangGraph graphs are a state machine. The moment your agent needs to loop, branch on its own output, or wait for a human, you have already outgrown a chain, whether or not you have noticed yet.'
+seoTitle: 'LangChain vs LangGraph: the right abstraction'
+description: "LangChain chains are a pipeline. LangGraph graphs are a state machine. The moment your agent needs to loop or branch on its own output, you've outgrown a chain."
 date: '2026-09-05'
 tags: ['AI', 'LangGraph', 'LangChain', 'Agents']
 ---
@@ -8,6 +9,14 @@ tags: ['AI', 'LangGraph', 'LangChain', 'Agents']
 LangChain and LangGraph get discussed as competitors more often than they should. They solve different problems, and the confusion mostly comes from LangGraph having grown out of the LangChain ecosystem, sharing components, tooling and a lot of vocabulary with it.
 
 The distinction that actually matters is structural: a LangChain chain is built to be a pipeline. A LangGraph graph is built to be a state machine. That difference decides which one fits your problem long before either framework's feature list does.
+
+| | LangChain (chain) | LangGraph (graph) |
+| --- | --- | --- |
+| Structure | Linear pipeline | Explicit graph, can cycle back to earlier nodes |
+| Control flow | Runs the same shape every time | Conditional edges decide the next step |
+| State | Local variables, one invocation | Explicit, checkpointable state object |
+| Good for | RAG Q&A, summarisation, classification | Plan revision, human-in-the-loop, multi-agent handoffs |
+| Reach for it when | The process never revisits a step it already completed | The process needs to loop back based on something that happened later |
 
 ## What a chain is good at
 

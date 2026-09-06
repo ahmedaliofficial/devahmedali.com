@@ -44,7 +44,7 @@ const Hero = () => (
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:mt-10">
           <RollUpButton href={site.socials.calendly} label="Get a consultation" variant="light" icon="lucide:arrow-right" external />
-          <RollUpButton href={site.socials.linkedin} label="Hire me" variant="glass" external />
+          <RollUpButton href={site.socials.calendly} label="Hire me" variant="glass" external />
         </div>
 
         <div className="mt-6 flex items-center gap-2 text-sm text-white/50">

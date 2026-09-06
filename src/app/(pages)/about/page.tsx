@@ -7,10 +7,36 @@ import { headlineStats, skillGroups } from '@/content/skills'
 import { Icon } from '@iconify/react'
 import type { Metadata } from 'next'
 
+const ABOUT_DESCRIPTION = 'Ahmed Ali is a software architect and engineering lead with six years across FinTech, AI and SaaS. How I work and what I believe about architecture.'
+
 export const metadata: Metadata = {
   title: 'About',
-  description: 'Ahmed Ali is a software architect and engineering lead with six years across FinTech, AI and SaaS. How I work, what I believe about architecture, and the experience behind it.',
+  description: ABOUT_DESCRIPTION,
   alternates: { canonical: '/about' },
+  openGraph: {
+    type: 'profile',
+    title: 'About Ahmed Ali',
+    description: ABOUT_DESCRIPTION,
+    url: '/about',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About Ahmed Ali',
+    description: ABOUT_DESCRIPTION,
+  },
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  jobTitle: site.roleFull,
+  description: ABOUT_DESCRIPTION,
+  url: `${site.url}/about`,
+  email: `mailto:${site.email}`,
+  sameAs: [site.socials.github, site.socials.linkedin],
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Virtual University of Pakistan' },
+  knowsAbout: ['Distributed Systems', 'System Design', 'Event-Driven Architecture', 'Microservices', 'Apache Kafka', 'Kubernetes', 'AI Engineering', 'RAG Pipelines'],
 }
 
 const principles = [
@@ -73,6 +99,8 @@ const certifications = ['Microservices Foundations (Kong)', 'Docker Foundations 
 
 const Page = () => (
   <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
     <section className="pt-32.5 pb-12 md:pt-40 md:pb-16 lg:pt-50">
       <div className="container">
         <p className="text-default-500 text-sm font-medium tracking-wide uppercase">About</p>

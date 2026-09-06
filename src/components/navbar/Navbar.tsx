@@ -91,7 +91,7 @@ const Navbar = () => {
             <div className="hidden h-2.5 w-full transition-all duration-500 ease-in-out in-[.nav-sticky-on]:w-2.5 lg:flex"></div>
 
             <div className="flex items-center gap-1.25 rounded-[20px] bg-white lg:p-1.5 lg:shadow-lg">
-              <a href={site.socials.linkedin} target="_blank" rel="noreferrer" className="text-default-800 hover:bg-default-200 hidden rounded-2xl px-5 py-4 text-sm font-medium whitespace-nowrap transition-all lg:block">
+              <a href={site.socials.calendly} target="_blank" rel="noreferrer" className="text-default-800 hover:bg-default-200 hidden rounded-2xl px-5 py-4 text-sm font-medium whitespace-nowrap transition-all lg:block">
                 Hire me
               </a>
 
@@ -147,7 +147,7 @@ const Navbar = () => {
               <a href={site.socials.calendly} target="_blank" rel="noreferrer" onClick={closeMenu} className="bg-default-900 grow rounded-full px-5 py-3 text-center text-sm font-medium text-white transition-all hover:scale-95">
                 Get a consultation
               </a>
-              <a href={site.socials.linkedin} target="_blank" rel="noreferrer" onClick={closeMenu} className="border-default-300 text-default-900 shrink-0 rounded-full border px-5 py-3 text-sm font-medium transition-all hover:scale-95">
+              <a href={site.socials.calendly} target="_blank" rel="noreferrer" onClick={closeMenu} className="border-default-300 text-default-900 shrink-0 rounded-full border px-5 py-3 text-sm font-medium transition-all hover:scale-95">
                 Hire me
               </a>
             </div>

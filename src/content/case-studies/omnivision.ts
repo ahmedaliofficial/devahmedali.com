@@ -4,7 +4,7 @@ export const omnivision: CaseStudy = {
   slug: 'omnivision',
   meta: {
     title: 'OmniVision: Real-time AI workplace safety',
-    description: 'A real-time AI workplace safety platform: Python/FastAPI vision inference, Kafka ingestion pipelines and RabbitMQ fan-out delivering WhatsApp and email alerts within seconds of an incident.',
+    description: 'A real-time AI workplace safety platform: Python/FastAPI vision inference and Kafka/RabbitMQ pipelines delivering alerts within seconds of an incident.',
   },
   hero: {
     eyebrow: 'Computer Vision · Real-Time Alerting',

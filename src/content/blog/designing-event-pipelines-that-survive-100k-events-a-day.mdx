@@ -1,6 +1,6 @@
 ---
 title: 'Designing event pipelines that survive 100K events a day'
-description: 'Throughput is the easy part. The hard part is what happens when a consumer restarts mid-batch, two replicas see the same event, or the model you call takes eight seconds instead of eighty milliseconds.'
+description: 'Throughput is the easy part. The hard part is a consumer restart mid-batch, two replicas double-counting an event, or a slow model call on the ingest path.'
 date: '2026-08-14'
 tags: ['Kafka', 'Distributed Systems', 'Architecture']
 ---

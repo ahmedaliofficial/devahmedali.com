@@ -8,6 +8,7 @@ import type { Metadata } from 'next'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import remarkGfm from 'remark-gfm'
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -21,10 +22,13 @@ export const generateMetadata = async ({ params }: PageProps): Promise<Metadata>
 
   if (!post) return { title: 'Post not found' }
 
+  const seoTitle = post.seoTitle ?? post.title
+
   return {
-    title: post.title,
+    title: seoTitle,
     description: post.description,
     alternates: { canonical: `/blog/${post.slug}` },
+    keywords: [...site.seo.keywords, ...post.tags],
     openGraph: {
       type: 'article',
       title: post.title,
@@ -33,6 +37,11 @@ export const generateMetadata = async ({ params }: PageProps): Promise<Metadata>
       publishedTime: post.date,
       authors: [site.name],
       tags: post.tags,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seoTitle,
+      description: post.description,
     },
   }
 }
@@ -48,6 +57,7 @@ const Page = async ({ params }: PageProps) => {
     '@type': 'BlogPosting',
     headline: post.title,
     description: post.description,
+    image: `${site.url}/opengraph-image`,
     datePublished: post.date,
     dateModified: post.date,
     keywords: post.tags.join(', '),
@@ -96,7 +106,7 @@ const Page = async ({ params }: PageProps) => {
           </header>
 
           <div className="border-default-200 mt-10 max-w-3xl border-t pt-4">
-            <MDXRemote source={post.content} components={mdxComponents} />
+            <MDXRemote source={post.content} components={mdxComponents} options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }} />
           </div>
 
           <div className="border-default-200 mt-12 flex max-w-3xl items-center gap-4 border-t pt-8">
