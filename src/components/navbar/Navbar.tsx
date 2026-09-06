@@ -95,12 +95,12 @@ const Navbar = () => {
                 Hire me
               </Link>
 
-              <Link href="/contact?intent=consultation" className="bg-default-900 group relative hidden overflow-hidden rounded-2xl px-6 py-4 text-sm font-medium text-white transition-all duration-300 hover:scale-95 lg:block">
+              <a href={site.socials.calendly} target="_blank" rel="noreferrer" className="bg-default-900 group relative hidden overflow-hidden rounded-2xl px-6 py-4 text-sm font-medium text-white transition-all duration-300 hover:scale-95 lg:block">
                 <span className="relative block h-5 overflow-hidden whitespace-nowrap">
                   <span className="block transition-transform duration-300 group-hover:-translate-y-full">Get a consultation</span>
                   <span className="absolute inset-x-0 top-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0">Get a consultation</span>
                 </span>
-              </Link>
+              </a>
 
               <div className="flex items-center lg:hidden">
                 <button
@@ -144,9 +144,9 @@ const Navbar = () => {
 
           <div className="border-default-200 mt-3 flex flex-col gap-2 border-t pt-3">
             <div className="flex items-center gap-2">
-              <Link href="/contact?intent=consultation" onClick={closeMenu} className="bg-default-900 grow rounded-full px-5 py-3 text-center text-sm font-medium text-white transition-all hover:scale-95">
+              <a href={site.socials.calendly} target="_blank" rel="noreferrer" onClick={closeMenu} className="bg-default-900 grow rounded-full px-5 py-3 text-center text-sm font-medium text-white transition-all hover:scale-95">
                 Get a consultation
-              </Link>
+              </a>
               <Link href="/contact?intent=hire" onClick={closeMenu} className="border-default-300 text-default-900 shrink-0 rounded-full border px-5 py-3 text-sm font-medium transition-all hover:scale-95">
                 Hire me
               </Link>

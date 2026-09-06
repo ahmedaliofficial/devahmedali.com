@@ -5,6 +5,7 @@ import RollUpButton from '@/components/ui/RollUpButton'
 import SectionHeading from '@/components/ui/SectionHeading'
 import { referenceFlows } from '@/content/reference-flows'
 import { engagementModels, serviceCatalog } from '@/content/service-catalog'
+import { site } from '@/content/site'
 import { Icon } from '@iconify/react'
 import type { Metadata } from 'next'
 
@@ -34,7 +35,7 @@ const Page = () => (
         </p>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          <RollUpButton href="/contact?intent=consultation" label="Get a consultation" icon="lucide:arrow-right" />
+          <RollUpButton href={site.socials.calendly} label="Get a consultation" icon="lucide:arrow-right" external />
           <RollUpButton href="/work" label="See the work" variant="outline" />
         </div>
       </div>

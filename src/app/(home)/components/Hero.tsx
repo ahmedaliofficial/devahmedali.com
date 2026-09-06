@@ -43,7 +43,7 @@ const Hero = () => (
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:mt-10">
-          <RollUpButton href="/contact?intent=consultation" label="Get a consultation" variant="light" icon="lucide:arrow-right" />
+          <RollUpButton href={site.socials.calendly} label="Get a consultation" variant="light" icon="lucide:arrow-right" external />
           <RollUpButton href="/contact?intent=hire" label="Hire me" variant="glass" />
         </div>
 
