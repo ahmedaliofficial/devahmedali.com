@@ -8,7 +8,6 @@ export const site = {
   specialisms: 'Distributed systems · AI platforms · Full-stack delivery',
   tagline: 'I design systems that scale.',
   intro: 'I architect event-driven backends, cloud infrastructure and production AI systems, from first diagram to live traffic.',
-  location: 'Karachi, Pakistan',
   availability: 'Open to remote and hybrid work worldwide',
   email: 'ahmedalidev786@gmail.com',
   url: 'https://devahmedali.click',

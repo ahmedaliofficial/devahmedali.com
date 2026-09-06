@@ -39,7 +39,7 @@ const Image = () =>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ color: '#ffffff', fontSize: '28px', fontWeight: 600 }}>{site.name}</div>
-            <div style={{ color: '#a1a1aa', fontSize: '20px' }}>{site.location}</div>
+            <div style={{ color: '#a1a1aa', fontSize: '20px' }}>{site.availability}</div>
           </div>
         </div>
 

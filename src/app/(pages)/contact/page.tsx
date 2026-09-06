@@ -19,7 +19,7 @@ const faqs = [
       'Architecture and system design, backend and API engineering, event-driven pipelines, infrastructure and scaling, and AI systems that need to run in production rather than in a notebook. I also take on MVPs where getting the foundations right matters more than shipping in two weeks.',
   },
   {
-    question: 'Do you work with teams outside Pakistan?',
+    question: 'Do you work with international teams?',
     answer: `Yes. ${site.availability}. Most of my work is with distributed teams, and I'm used to overlapping across time zones.`,
   },
   {
@@ -86,8 +86,8 @@ const Page = () => (
 
               <div className="mt-auto pt-8">
                 <p className="flex items-center gap-2 text-sm text-white/60">
-                  <Icon icon="lucide:map-pin" className="size-4" />
-                  {site.location}
+                  <Icon icon="lucide:globe" className="size-4" />
+                  {site.availability}
                 </p>
                 <p className="mt-2 flex items-center gap-2 text-sm text-white/60">
                   <Icon icon="lucide:clock" className="size-4" />

@@ -47,13 +47,9 @@ const Hero = () => (
           <RollUpButton href="/contact?intent=hire" label="Hire me" variant="glass" />
         </div>
 
-        <div className="mt-6 flex items-center gap-4 text-sm text-white/50">
-          <span className="inline-flex items-center gap-1.5">
-            <Icon icon="lucide:map-pin" className="size-4" />
-            {site.location}
-          </span>
-          <span aria-hidden="true" className="h-4 w-px bg-white/20" />
-          <span>Remote &amp; hybrid</span>
+        <div className="mt-6 flex items-center gap-2 text-sm text-white/50">
+          <Icon icon="lucide:globe" className="size-4" />
+          <span>{site.availability}</span>
         </div>
 
         <TerminalCard lines={terminalLines} className="mt-10 w-full max-w-3xl text-start lg:mt-12" />

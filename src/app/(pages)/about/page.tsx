@@ -82,7 +82,7 @@ const Page = () => (
           <div className="lg:col-span-7">
             <div className="text-default-500 flex flex-col gap-4 text-lg md:text-xl">
               <p>
-                I&apos;m {site.name}, a software architect and engineering lead based in {site.location}. Six years in, my work has moved from writing FinTech backends to designing the systems around them and leading the teams that build them.
+                I&apos;m {site.name}, a software architect and engineering lead. Six years in, my work has moved from writing FinTech backends to designing the systems around them and leading the teams that build them.
               </p>
               <p>
                 Most of what I do sits at the point where a product starts outgrowing its original architecture. That is rarely a coding problem. It is usually a boundaries problem, a data-flow problem, or a set of trade-offs nobody wrote down when the first version shipped.
@@ -99,10 +99,6 @@ const Page = () => (
                   <dt className="text-default-500 text-sm">Role</dt>
                   <dd className="text-default-900 font-medium">{site.roleFull}</dd>
                   <dd className="text-default-500 mt-0.5 text-sm">{site.specialisms}</dd>
-                </div>
-                <div>
-                  <dt className="text-default-500 text-sm">Based in</dt>
-                  <dd className="text-default-900 font-medium">{site.location}</dd>
                 </div>
                 <div>
                   <dt className="text-default-500 text-sm">Availability</dt>

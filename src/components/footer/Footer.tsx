@@ -77,7 +77,7 @@ const Footer = () => {
         <div className="border-default-200 mt-6 grid grid-cols-1 gap-5 border-t pt-5 md:mt-8 md:pt-7.5 lg:mt-16">
           <div className="flex flex-col items-center justify-start gap-5 md:flex-row md:justify-between md:gap-6">
             <p className="text-default-600 text-base md:text-lg">
-              © {year} {site.name}. {site.location}.
+              © {year} {site.name}. All rights reserved.
             </p>
 
             <div className="flex flex-wrap items-center justify-start gap-x-5 gap-y-2 md:justify-end">

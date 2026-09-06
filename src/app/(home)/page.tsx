@@ -24,7 +24,6 @@ const jsonLd = {
   description: site.seo.description,
   url: site.url,
   email: `mailto:${site.email}`,
-  address: { '@type': 'PostalAddress', addressLocality: 'Karachi', addressCountry: 'PK' },
   sameAs: [site.socials.github, site.socials.linkedin, site.socials.trackhrs],
   knowsAbout: ['Distributed Systems', 'System Design', 'Event-Driven Architecture', 'Microservices', 'Apache Kafka', 'Kubernetes', 'AI Engineering', 'RAG Pipelines'],
 }
