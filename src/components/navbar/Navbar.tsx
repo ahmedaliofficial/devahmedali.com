@@ -1,13 +1,11 @@
 'use client'
 
-import appStoreIcon from '@/assets/images/icons/app-store.svg'
-import playStoreIcon from '@/assets/images/icons/play-store.svg'
-import logo from '@/assets/images/logo.svg'
+import Logo from '@/components/Logo'
+import { site } from '@/content/site'
 import { Icon } from '@iconify/react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 export type NavItem = {
   label: string
@@ -15,35 +13,14 @@ export type NavItem = {
 }
 
 const navItems: NavItem[] = [
-  { label: 'Features', href: '/home#features' },
-  { label: 'Usecase', href: '/home#usecase' },
-  { label: 'Metrics', href: '/home#metrics' },
-  { label: 'Smart Assist', href: '/home#smart-assist' },
-]
-
-const dropdownItems: NavItem[] = [
-  { label: 'Home', href: '/home' },
+  { label: 'Work', href: '/work' },
   { label: 'About', href: '/about' },
-  { label: 'Pricing', href: '/pricing' },
+  { label: 'Blog', href: '/blog' },
   { label: 'Contact', href: '/contact' },
-  { label: 'Waitlist', href: '/waitlist' },
-  { label: 'Download', href: '/download' },
-  { label: 'FAQs', href: '/faqs' },
-  { label: 'Privacy Policy', href: '/privacy-policy' },
 ]
 
 const Navbar = () => {
   const pathname = usePathname()
-  const [currentHash, setCurrentHash] = useState('')
-
-  useEffect(() => {
-    setCurrentHash(window.location.hash)
-    const handleHashChange = () => {
-      setCurrentHash(window.location.hash)
-    }
-    window.addEventListener('hashchange', handleHashChange)
-    return () => window.removeEventListener('hashchange', handleHashChange)
-  }, [])
 
   const closeMenu = () => {
     const overlay = document.getElementById('mobile-menu')
@@ -53,10 +30,6 @@ const Navbar = () => {
   }
 
   useEffect(() => {
-    if (!window.location.hash) {
-      window.scrollTo(0, 0)
-    }
-    setCurrentHash(window.location.hash)
     closeMenu()
   }, [pathname])
 
@@ -77,67 +50,18 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  useEffect(() => {
-    const normalizedPathname = pathname === '/' ? '/home' : pathname
-    if (normalizedPathname !== '/home') return
-
-    const handleScrollSpy = () => {
-      const sections = ['features', 'usecase', 'metrics', 'smart-assist']
-      const scrollPosition = window.scrollY + window.innerHeight / 3
-
-      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 50) {
-        setCurrentHash('#smart-assist')
-        return
-      }
-
-      if (window.scrollY < 100) {
-        setCurrentHash('')
-        return
-      }
-
-      let currentActive = ''
-      for (const id of sections) {
-        const el = document.getElementById(id)
-        if (el) {
-          const top = el.offsetTop
-          const bottom = top + el.offsetHeight
-          if (scrollPosition >= top && scrollPosition < bottom) {
-            currentActive = `#${id}`
-          }
-        }
-      }
-
-      if (currentActive) {
-        setCurrentHash(currentActive)
-      }
-    }
-
-    window.addEventListener('scroll', handleScrollSpy)
-    handleScrollSpy()
-    return () => window.removeEventListener('scroll', handleScrollSpy)
-  }, [pathname])
-
   const checkActive = (href: string) => {
-    const [basePath, hash] = href.split('#')
-    const normalizedPathname = pathname === '/' ? '/home' : pathname
-    const normalizedBasePath = basePath === '/' ? '/home' : basePath
-
-    if (normalizedPathname !== normalizedBasePath) return false
-    if (hash) {
-      return currentHash === `#${hash}`
-    }
-    return !currentHash
+    if (href === '/') return pathname === '/'
+    return pathname === href || pathname.startsWith(`${href}/`)
   }
 
   return (
     <header>
       <div className="nav-sticky navbar fixed inset-x-0 top-0 z-120 w-full">
         <div className="container py-3.5 md:py-5 lg:py-7.5">
-          <div className="flex w-full items-center justify-between rounded-lg bg-white md:rounded-2xl lg:justify-center lg:bg-transparent">
-            <div className="flex min-w-[175px] rounded-[20px] bg-white px-3 py-1.5 md:py-4 lg:p-4 lg:shadow-lg">
-              <Link href="/" onClick={() => setCurrentHash('')}>
-                <Image src={logo} alt="" className="h-7.5 md:h-8" />
-              </Link>
+          <div className="flex w-full items-center justify-between rounded-lg bg-white px-3 py-2 md:rounded-2xl lg:justify-center lg:bg-transparent lg:px-0 lg:py-0">
+            <div className="flex rounded-[20px] bg-white lg:min-w-43.75 lg:p-3 lg:shadow-lg">
+              <Logo />
             </div>
 
             <div className="hidden h-2.5 w-full transition-all duration-500 ease-in-out in-[.nav-sticky-on]:w-2.5 lg:flex"></div>
@@ -151,10 +75,6 @@ const Navbar = () => {
                       <li key={index}>
                         <Link
                           href={item.href}
-                          onClick={() => {
-                            const hash = item.href.split('#')[1]
-                            setCurrentHash(hash ? `#${hash}` : '')
-                          }}
                           className={`flex items-center justify-center rounded-2xl px-7 py-4 text-sm font-medium transition-all ${isActive ? 'bg-default-200 text-default-800' : 'text-default-700 hover:bg-default-200 hover:text-default-800'}`}
                         >
                           {item.label}
@@ -162,71 +82,32 @@ const Navbar = () => {
                       </li>
                     )
                   })}
-
-                  <li className="hs-dropdown relative inline-flex [--trigger:hover]">
-                    <button
-                      id="hs-dropdown-hover-event"
-                      type="button"
-                      className="hs-dropdown-toggle hover:bg-default-200 hover:text-default-800 flex items-center justify-center gap-1 rounded-2xl px-7 py-4 text-sm transition-all focus:outline-hidden disabled:pointer-events-none disabled:opacity-50"
-                      aria-haspopup="menu"
-                      aria-expanded="false"
-                      aria-label="Dropdown"
-                    >
-                      Pages
-                      <Icon icon="lucide:chevron-down" className="size-4" />
-                    </button>
-
-                    <div
-                      className="hs-dropdown-menu duration hs-dropdown-open:opacity-100 mt-2 hidden min-w-44 rounded-xl bg-white opacity-0 transition-[opacity,margin] before:absolute before:inset-s-0 before:-top-4 before:h-4 before:w-full after:absolute after:inset-s-0 after:-bottom-4 after:h-4 after:w-full"
-                      role="menu"
-                      aria-orientation="vertical"
-                      aria-labelledby="hs-dropdown-hover-event"
-                    >
-                      <div className="space-y-0.5 p-2.5">
-                        {dropdownItems.map((item, index) => {
-                          const isActive = checkActive(item.href)
-                          return (
-                            <Link
-                              key={index}
-                              href={item.href}
-                              onClick={() => {
-                                const hash = item.href.split('#')[1]
-                                setCurrentHash(hash ? `#${hash}` : '')
-                              }}
-                              className={`flex items-center gap-x-3.5 rounded-lg px-2.5 py-1.5 text-sm transition-all ${isActive ? 'bg-default-200 text-default-800 font-medium' : 'text-default-600 hover:text-default-800 hover:bg-default-200'}`}
-                            >
-                              {item.label}
-                            </Link>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  </li>
                 </ul>
               </div>
             </div>
 
             <div className="hidden h-2.5 w-full transition-all duration-500 ease-in-out in-[.nav-sticky-on]:w-2.5 lg:flex"></div>
 
-            <div className="flex items-center gap-1.25 rounded-[20px] bg-white p-1.5 shadow-lg lg:shadow-lg">
-              <a href="https://www.apple.com/in/app-store/" target="_blank" aria-label="App Store" className="bg-default-200 group relative flex size-8.75 items-center justify-center overflow-hidden rounded-lg transition-all duration-300 md:h-12.5 md:w-12.5 md:rounded-2xl">
-                <div className="relative flex items-center justify-center overflow-hidden">
-                  <Image src={appStoreIcon} alt="Icon" className="size-4.5 transition-transform duration-300 group-hover:-translate-y-6 md:size-6" />
-                  <Image src={appStoreIcon} alt="Icon" className="absolute size-4.5 translate-y-6 transition-transform duration-300 group-hover:translate-y-0 md:size-6" />
+            <div className="flex items-center gap-1.25 rounded-[20px] bg-white lg:p-1.5 lg:shadow-lg">
+              <a
+                href={site.socials.github}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="GitHub"
+                className="bg-default-200 group relative hidden size-8.75 items-center justify-center overflow-hidden rounded-lg transition-all duration-300 md:h-12.5 md:w-12.5 md:rounded-2xl lg:flex"
+              >
+                <div className="relative flex size-5 items-center justify-center overflow-hidden">
+                  <Icon icon="tabler:brand-github" className="text-default-800 absolute size-5 transition-transform duration-300 group-hover:-translate-y-6" />
+                  <Icon icon="tabler:brand-github" className="text-default-800 absolute size-5 translate-y-6 transition-transform duration-300 group-hover:translate-y-0" />
                 </div>
               </a>
 
-              <a
-                href="https://play.google.com/store/games?device=windows"
-                target="_blank"
-                aria-label="App Store"
-                className="bg-default-200 group relative flex size-8.75 items-center justify-center overflow-hidden rounded-lg transition-all duration-300 md:h-12.5 md:w-12.5 md:rounded-2xl"
-              >
-                <div className="relative flex items-center justify-center overflow-hidden">
-                  <Image src={playStoreIcon} alt="Icon" className="size-4.5 transition-transform duration-300 group-hover:-translate-y-6 md:size-6" />
-                  <Image src={playStoreIcon} alt="Icon" className="absolute size-4.5 translate-y-6 transition-transform duration-300 group-hover:translate-y-0 md:size-6" />
-                </div>
-              </a>
+              <Link href="/contact" className="bg-default-900 group relative hidden overflow-hidden rounded-2xl px-6 py-4 text-sm font-medium text-white transition-all duration-300 hover:scale-95 lg:block">
+                <span className="relative block h-5 overflow-hidden">
+                  <span className="block transition-transform duration-300 group-hover:-translate-y-full">Let&apos;s talk</span>
+                  <span className="absolute inset-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0">Let&apos;s talk</span>
+                </span>
+              </Link>
 
               <div className="flex items-center lg:hidden">
                 <button
@@ -235,7 +116,8 @@ const Navbar = () => {
                   aria-expanded="false"
                   aria-controls="mobile-menu"
                   data-hs-overlay="#mobile-menu"
-                  className="bg-default-200 flex size-8.75 items-center justify-center overflow-hidden rounded-lg transition-all duration-300 md:h-12.5 md:w-12.5 md:rounded-2xl"
+                  aria-label="Open menu"
+                  className="bg-default-200 flex size-9.5 items-center justify-center overflow-hidden rounded-lg transition-all duration-300 md:h-12.5 md:w-12.5 md:rounded-2xl"
                 >
                   <Icon icon="tabler:align-right" className="size-6" />
                 </button>
@@ -247,49 +129,36 @@ const Navbar = () => {
 
       <div
         id="mobile-menu"
-        className="hs-overlay hs-overlay-open:translate-y-0 md:hs-overlay-open:top-24 hs-overlay-open:top-18 hs-overlay-open:opacity-100 fixed inset-x-0 top-0 z-110 mx-4 hidden h-50 -translate-y-full transform overflow-hidden rounded-lg bg-white opacity-0 shadow-xl transition-all duration-300 [--body-scroll:true] md:mx-5"
+        className="hs-overlay hs-overlay-open:translate-y-0 md:hs-overlay-open:top-24 hs-overlay-open:top-18 hs-overlay-open:opacity-100 fixed inset-x-0 top-0 z-110 mx-4 hidden -translate-y-full transform overflow-hidden rounded-2xl bg-white opacity-0 shadow-xl transition-all duration-300 [--body-scroll:true] md:mx-5"
         role="dialog"
         tabIndex={-1}
         aria-labelledby="mobile-menu-label"
       >
-        <div className="flex max-h-50 flex-col overflow-y-auto p-3">
-          {navItems.map((item, index) => (
-            <Link
-              key={index}
-              href={item.href}
-              onClick={() => {
-                const hash = item.href.split('#')[1]
-                setCurrentHash(hash ? `#${hash}` : '')
-                closeMenu()
-              }}
-              className="group text-default-600 hover:text-primary flex items-center p-1.5 text-base font-medium transition-all"
-            >
-              {item.label}
+        <div className="flex flex-col p-4">
+          {navItems.map((item, index) => {
+            const isActive = checkActive(item.href)
+            return (
+              <Link
+                key={index}
+                href={item.href}
+                onClick={closeMenu}
+                className={`flex items-center rounded-lg px-3 py-2.5 text-base font-medium transition-all ${isActive ? 'bg-default-200 text-default-900' : 'text-default-600 hover:bg-default-100 hover:text-default-900'}`}
+              >
+                {item.label}
+              </Link>
+            )
+          })}
+
+          <div className="border-default-200 mt-3 flex items-center gap-2 border-t pt-3">
+            <a href={site.socials.github} target="_blank" rel="noreferrer" aria-label="GitHub" className="bg-default-200 text-default-800 inline-flex size-9 items-center justify-center rounded-full">
+              <Icon icon="tabler:brand-github" className="size-4.5" />
+            </a>
+            <a href={site.socials.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className="bg-default-200 text-default-800 inline-flex size-9 items-center justify-center rounded-full">
+              <Icon icon="tabler:brand-linkedin" className="size-4.5" />
+            </a>
+            <Link href="/contact" onClick={closeMenu} className="bg-default-900 ms-auto rounded-full px-5 py-2.5 text-sm font-medium text-white transition-all hover:scale-95">
+              Let&apos;s talk
             </Link>
-          ))}
-
-          <div className="hs-accordion">
-            <button type="button" className="hs-accordion-toggle group text-default-600 hover:text-primary flex items-center p-1.5 text-base font-medium transition-all" aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
-              Pages
-              <Icon icon="tabler:chevron-down" className="ms-4" />
-            </button>
-
-            <div className="hs-accordion-content hidden w-full overflow-hidden ps-5 pb-4 transition-[height]">
-              {dropdownItems.map((item, index) => (
-                <Link
-                  key={index}
-                  href={item.href}
-                  onClick={() => {
-                    const hash = item.href.split('#')[1]
-                    setCurrentHash(hash ? `#${hash}` : '')
-                    closeMenu()
-                  }}
-                  className="text-default-600 hover:text-default-800 hover:bg-default-200 flex items-center gap-x-3.5 rounded-lg px-2.5 py-1.5 text-base focus:outline-hidden"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </div>
           </div>
         </div>
       </div>

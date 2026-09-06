@@ -2,6 +2,7 @@ import '@/assets/css/style.css'
 import favicon from '@/assets/images/favicon.ico'
 import AppProvidersWrapper from '@/components/wrappers/AppProvidersWrapper'
 import { DEFAULT_PAGE_TITLE } from '@/config/constants'
+import { site } from '@/content/site'
 import type { Metadata } from 'next'
 import { Google_Sans_Flex, Stack_Sans_Headline } from 'next/font/google'
 import 'swiper/css'
@@ -21,15 +22,31 @@ const stackSansHeadline = Stack_Sans_Headline({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
   title: {
-    template: `%s | ${DEFAULT_PAGE_TITLE}`,
+    template: `%s | ${site.name}`,
     default: DEFAULT_PAGE_TITLE,
   },
   icons: { icon: favicon.src },
-  description: 'Habitline is a modern and fully responsive mobile app and SaaS landing page template built with Tailwind CSS 4. Perfect for AI startups, productivity apps, software products, digital platforms, and modern web applications.',
-  keywords: ['mobile app template', 'saas landing page', 'tailwind css template', 'ai startup website', 'app landing page', 'productivity app template', 'software website template', 'startup landing page', 'web app template', 'saas html template'],
-  authors: [{ name: 'Unifato' }],
+  description: site.seo.description,
+  keywords: [...site.seo.keywords],
+  authors: [{ name: site.name, url: site.url }],
+  creator: site.name,
   robots: 'index, follow',
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    siteName: site.name,
+    title: DEFAULT_PAGE_TITLE,
+    description: site.seo.description,
+    url: site.url,
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: DEFAULT_PAGE_TITLE,
+    description: site.seo.description,
+  },
 }
 
 type RootLayoutProps = {

@@ -1,1 +1,1 @@
-export const DEFAULT_PAGE_TITLE = 'Habitline - Mobile App & SaaS Landing Page Tailwind CSS 4 Template'
+export const DEFAULT_PAGE_TITLE = 'Ahmed Ali — Solution Architect · Distributed Systems & AI'
