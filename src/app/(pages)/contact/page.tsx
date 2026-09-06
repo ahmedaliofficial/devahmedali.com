@@ -3,7 +3,6 @@ import SectionHeading from '@/components/ui/SectionHeading'
 import { site } from '@/content/site'
 import { Icon } from '@iconify/react'
 import type { Metadata } from 'next'
-import { Suspense } from 'react'
 import ContactForm from './components/ContactForm'
 
 export const metadata: Metadata = {
@@ -126,9 +125,7 @@ const Page = () => (
           </div>
 
           <div className="p-6 md:p-10 lg:col-span-7">
-            <Suspense fallback={<div className="bg-default-100 h-125 animate-pulse rounded-2xl" />}>
-              <ContactForm />
-            </Suspense>
+            <ContactForm />
           </div>
         </div>
       </div>

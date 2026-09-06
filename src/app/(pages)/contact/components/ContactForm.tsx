@@ -2,34 +2,15 @@
 
 import { site } from '@/content/site'
 import { Icon } from '@iconify/react'
-import { useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 
 type FormState = 'idle' | 'sending' | 'sent' | 'error'
-
-/** Presets driven by the ?intent= param on the "Get a consultation" / "Hire me" CTAs. */
-const intents: Record<string, { subject: string; placeholder: string }> = {
-  consultation: {
-    subject: 'Consultation request',
-    placeholder: 'What are you building, and where is it getting difficult? A couple of sentences is plenty to start.',
-  },
-  hire: {
-    subject: 'Role enquiry',
-    placeholder: 'Tell me about the role or the team: what you are building and what you need someone to own.',
-  },
-  audit: {
-    subject: 'Architecture / code audit',
-    placeholder: 'What does the system look like today, and what is prompting the review?',
-  },
-}
 
 const inputClasses = 'border-default-200 bg-default-100 text-default-900 placeholder:text-default-400 focus:border-default-400 w-full rounded-2xl border px-4 py-3 text-base transition-all focus:outline-none'
 
 const ContactForm = () => {
   const [state, setState] = useState<FormState>('idle')
   const [error, setError] = useState('')
-  const searchParams = useSearchParams()
-  const intent = intents[searchParams.get('intent') ?? '']
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -98,14 +79,14 @@ const ContactForm = () => {
         <label htmlFor="subject" className="text-default-700 mb-1.5 block text-sm font-medium">
           Subject
         </label>
-        <input id="subject" name="subject" type="text" maxLength={200} defaultValue={intent?.subject ?? ''} placeholder="What's this about?" className={inputClasses} />
+        <input id="subject" name="subject" type="text" maxLength={200} placeholder="What's this about?" className={inputClasses} />
       </div>
 
       <div>
         <label htmlFor="message" className="text-default-700 mb-1.5 block text-sm font-medium">
           Message
         </label>
-        <textarea id="message" name="message" required rows={6} maxLength={5000} placeholder={intent?.placeholder ?? "Tell me what you're building, and where it's getting hard."} className={`${inputClasses} resize-y`} />
+        <textarea id="message" name="message" required rows={6} maxLength={5000} placeholder="Tell me what you're building, and where it's getting hard." className={`${inputClasses} resize-y`} />
       </div>
 
       {state === 'error' && (
