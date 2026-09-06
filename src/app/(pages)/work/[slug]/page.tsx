@@ -6,6 +6,7 @@ import StatsBand from '@/components/portfolio/StatsBand'
 import Chip from '@/components/ui/Chip'
 import SectionHeading from '@/components/ui/SectionHeading'
 import { caseStudies, getAdjacentCaseStudies, getCaseStudy } from '@/content/case-studies'
+import { site } from '@/content/site'
 import { Icon } from '@iconify/react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -44,8 +45,20 @@ const Page = async ({ params }: PageProps) => {
 
   const { previous, next } = getAdjacentCaseStudies(slug)
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+      { '@type': 'ListItem', position: 2, name: 'Work', item: `${site.url}/work` },
+      { '@type': 'ListItem', position: 3, name: study.hero.title, item: `${site.url}/work/${study.slug}` },
+    ],
+  }
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+
       {/* Hero */}
       <section className="pt-32.5 pb-12 md:pt-40 md:pb-16 lg:pt-50">
         <div className="container">

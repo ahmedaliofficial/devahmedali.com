@@ -1,0 +1,56 @@
+---
+title: 'LangChain vs LangGraph: choosing the right abstraction for agent workflows'
+description: 'LangChain chains are a pipeline. LangGraph graphs are a state machine. The moment your agent needs to loop, branch on its own output, or wait for a human, you have already outgrown a chain, whether or not you have noticed yet.'
+date: '2026-09-05'
+tags: ['AI', 'LangGraph', 'LangChain', 'Agents']
+---
+
+LangChain and LangGraph get discussed as competitors more often than they should. They solve different problems, and the confusion mostly comes from LangGraph having grown out of the LangChain ecosystem, sharing components, tooling and a lot of vocabulary with it.
+
+The distinction that actually matters is structural: a LangChain chain is built to be a pipeline. A LangGraph graph is built to be a state machine. That difference decides which one fits your problem long before either framework's feature list does.
+
+## What a chain is good at
+
+A chain is a linear or lightly branching sequence: retrieve documents, format a prompt, call a model, parse the output. Data flows one direction, through a sequence of steps that runs the same shape every time.
+
+```ts
+const chain = retriever.pipe(formatPrompt).pipe(model).pipe(outputParser)
+const result = await chain.invoke({ question: userQuestion })
+```
+
+This is the right shape for a huge amount of real work: RAG question answering, summarisation, classification, most of what a single well-scoped LLM call needs to do. The code reads the way the process actually runs, start to finish, and there is no state to reason about beyond "what came out of the last step."
+
+## Where a chain runs out of road
+
+The moment your process needs to loop back based on its own output, the linear pipeline stops matching the shape of the problem.
+
+Concretely: an agent drafts a plan, executes step one, discovers the result was wrong, and needs to revise the plan before continuing. Or: an agent calls a tool, the tool returns an error, and the agent needs to decide whether to retry, try a different tool, or give up and ask a human. Neither of these is "data flows through steps once." Both are "the next step depends on what just happened, and might loop back to an earlier step."
+
+You can force this into a chain with enough conditional logic wrapped around it, and I have seen codebases that do exactly that. It works until the second or third loop gets added, at which point the control flow is scattered across callback functions that are hard to reason about as a whole, because a linear pipeline was never built to represent a cycle in the first place.
+
+## What LangGraph actually models
+
+LangGraph represents the process as an explicit graph: nodes are steps, edges are transitions, and a shared state object flows through all of it. Crucially, edges can be conditional, and the graph can cycle back to a node it already visited.
+
+```ts
+const graph = new StateGraph(AgentState)
+  .addNode('plan', planNode)
+  .addNode('execute', executeNode)
+  .addNode('review', reviewNode)
+  .addConditionalEdges('review', (state) => (state.needsRevision ? 'plan' : 'execute'))
+  .addEdge('execute', 'review')
+```
+
+The loop back to `plan` is not a workaround bolted onto a linear structure. It is the structure. State persists across the whole graph, so `review` can see what `plan` decided three iterations ago, which is exactly the information a chain-plus-callbacks version would have to smuggle through some side channel because a linear pipeline has no natural place to keep it.
+
+## The other reason people reach for LangGraph
+
+Beyond cycles, LangGraph earns its place for anything needing durable, inspectable state: a human-in-the-loop approval step where the graph pauses and waits, sometimes for hours, before a person clicks approve; multi-agent systems where several specialised nodes hand off to each other and you need to see exactly which node made which decision when something goes wrong; or long-running workflows that need to survive a process restart partway through.
+
+A chain's state lives in local variables for the duration of one invocation. A LangGraph state object is explicit and can be checkpointed, which is what makes pause-and-resume and mid-run inspection actually tractable instead of something you have to build yourself on top of the framework.
+
+## The decision I actually use
+
+I ask one question: does this process ever need to revisit a step it already completed, based on something that happened later? If the answer is no, a chain is simpler, faster to build, and easier for the next engineer to read. If the answer is yes, even once, a chain will get you there through increasingly tangled conditionals, and a graph will get you there because looping back to an earlier state is what the structure was built to express.
+
+Most of the multi-agent platforms I have built land on LangGraph specifically because "the planning agent needs to revise its plan after seeing what the execution agent found" is not an edge case in that kind of system. It is the normal path. Reaching for the structure that models cycles as a first-class concept, rather than working around a structure that does not, has saved more debugging time than any single framework feature either one ships with.

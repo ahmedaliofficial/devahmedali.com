@@ -1,0 +1,44 @@
+---
+title: 'Leader election: making sure only one node does the dangerous thing'
+description: 'Cron jobs, migrations and reprocessors are all trivial with one replica and dangerous with three. Leader election is the mechanism that lets you run multiple replicas without duplicating the work only one of them should do.'
+date: '2025-09-08'
+tags: ['Distributed Systems', 'Consensus', 'System Design']
+---
+
+A scheduled job that reprocesses failed events is trivial to write and dangerous to run more than once at the same time. With a single replica, this never comes up. The moment you run three replicas for availability, every one of them will try to fire that cron job at midnight, and now the same batch gets reprocessed three times.
+
+Leader election exists to answer one narrow question: out of N identical replicas, which single one is allowed to do the thing that must only happen once?
+
+## The mechanism, stripped down
+
+Every viable approach reduces to the same idea: replicas race to acquire a lock, or lease, in a shared coordination store. Whoever holds the lease is the leader for as long as the lease is valid, and has to keep renewing it to stay leader. If it stops renewing, because it crashed, because the network partitioned it away, the lease expires and another replica picks it up.
+
+A minimal version using Redis:
+
+```ts
+const LEASE_KEY = 'leader:reprocessor'
+const LEASE_TTL_SECONDS = 15
+
+async function tryBecomeLeader(nodeId: string): Promise<boolean> {
+  const acquired = await redis.set(LEASE_KEY, nodeId, 'EX', LEASE_TTL_SECONDS, 'NX')
+  return acquired === 'OK'
+}
+```
+
+`NX` means the key is only set if it does not already exist, so only one replica's call succeeds. The current leader renews the lease well before it expires, typically at a third to half of the TTL, so a slow tick does not accidentally hand leadership to someone else mid-job.
+
+Production systems reach for something more battle-tested than a bare Redis key: ZooKeeper, etcd, or Kubernetes' own lease objects, all of which handle the harder edge cases around network partitions and clock skew more carefully than a five-line snippet. The mechanism is the same idea either way. Only the guarantees under partition differ.
+
+## The part everyone gets wrong the first time
+
+The dangerous assumption is believing the lease guarantees exclusivity forever, once granted. It does not. It guarantees exclusivity until the lease expires, and expiry can happen while the "leader" is still very much alive and still executing the job, just disconnected from the coordination store or paused long enough by a garbage collection cycle that its lease silently lapsed.
+
+This produces the classic bug: replica A believes it is leader and is halfway through processing a batch. Its lease expires because of a network blip or a GC pause. Replica B acquires the lease and starts the same job. Replica A's network recovers, and it finishes its half of the work, unaware it lost leadership thirty seconds ago. Now the job ran twice, which is exactly the failure leader election was supposed to prevent.
+
+The fix is a fencing token: an integer that increments every time leadership changes hands, attached to every write the leader makes. Downstream systems reject any write carrying a token older than the newest one they have seen. This turns "only one leader at a time" into "only writes from the current leader are ever accepted," which is the guarantee you actually needed.
+
+## Where I use it, and where I don't
+
+I reach for leader election specifically for: singleton cron jobs, dead-letter queue reprocessors, and any background sweep that would double-charge, double-notify, or double-write if two copies ran concurrently.
+
+I do not reach for it just because a job "feels like it should run once." Most request-handling work should be built to run safely on every replica simultaneously through idempotency keys and deduplication, which is a more robust design than funnelling everything through a single elected node. Leader election adds a coordination dependency and a failure mode, the exact double-execution race described above, that idempotent, replica-safe design avoids by construction. I use it as the answer for the narrow category of work that genuinely cannot be made idempotent cheaply, not as the default answer for "should only happen once."

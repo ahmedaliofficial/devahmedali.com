@@ -1,0 +1,52 @@
+---
+title: 'The sidecar pattern in system design'
+description: 'Attaching a second container to do the job your main service should not have to know about: logging, mTLS, retries, observability. Here is when a sidecar earns its overhead and when it does not.'
+date: '2025-08-20'
+tags: ['System Design', 'Microservices', 'Kubernetes']
+---
+
+The pitch for a sidecar is simple: instead of every service reimplementing logging, retries, mTLS and metrics export, you attach a second container to the same pod that does it for you. Your service talks to `localhost`. The sidecar handles the network.
+
+I like the pattern more than most engineers I work with, and I use it less than most tutorials suggest. Both of those are worth explaining.
+
+## What it actually buys you
+
+Picture a fleet of services in five languages, written over four years by people who have since moved on. Retrying a failed call, timing it out sensibly, and emitting a trace span sound trivial until you check whether all five implementations do it the same way. Usually two of them retry on the wrong status codes, one has no timeout at all, and the Python service quietly logs stack traces containing customer data.
+
+A sidecar, typically a proxy like Envoy sitting beside the main container, intercepts traffic and applies the policy in one place.
+
+```yaml
+containers:
+  - name: app
+    image: my-service:latest
+  - name: sidecar-proxy
+    image: envoyproxy/envoy:v1.29
+    ports:
+      - containerPort: 9901
+```
+
+The application never sees the proxy. It calls `localhost:8080` like it always did, and the sidecar handles retries, circuit breaking, TLS termination and metrics on the way out. Update the retry policy once, and every service picks it up on its next deploy, no code change required.
+
+## Where the overhead shows up
+
+Every pod now runs two containers instead of one. That is not free.
+
+**Resource cost is real, not theoretical.** A proxy sidecar commonly needs its own CPU and memory reservation. At ten pods this is nothing. At two thousand pods across a cluster, you are paying for a second process everywhere, permanently, whether traffic is high or idle.
+
+**Latency gets an extra hop.** Traffic goes through the proxy on the way in and on the way out. For most services this adds low single-digit milliseconds. For a service where every millisecond of p99 is a budget line item, that hop is not free lunch.
+
+**Debugging gains a layer.** When a request fails, is it the application or the sidecar? I have spent real afternoons staring at Envoy access logs before realising the actual bug was in application code three hops upstream. The sidecar makes cross-cutting behaviour uniform, but it also makes the request path one layer deeper to reason about.
+
+## When I reach for it
+
+The pattern earns its keep once you have enough services that a policy change needs to happen consistently across all of them, and enough language diversity that a shared library cannot do that job.
+
+If you have four services in one language and one team owning all of them, a shared HTTP client library gets you 90% of the benefit with none of the extra containers. The sidecar starts winning once you cross into a dozen or more services, multiple languages, or multiple teams who would otherwise each reinvent retry logic slightly differently.
+
+The other place it earns its keep is security boundaries that should not depend on every team getting them right. mTLS between services is the clearest example: if it lives in a sidecar, a service written by someone who has never touched cryptography still gets it correctly, because the sidecar handles the handshake before application code ever sees the request.
+
+## The version most people actually deploy
+
+Full service mesh, with a control plane pushing configuration to every sidecar, is a serious operational commitment: you are now running and upgrading a second distributed system whose only job is to manage the first one. Most teams I have seen adopt Istio or Linkerd underestimate that cost, and a meaningful fraction of them roll it back within a year, not because the pattern was wrong, but because the control plane became one more thing that could break at 2am.
+
+A narrower, unglamorous version of the same idea often does most of the job: a single-purpose sidecar for log shipping, or for metrics export, with no mesh and no control plane. You get the isolation benefit without adopting an entire platform. That is usually where I start, and I have only reached for the full mesh when the number of services and the compliance requirements around them made the control plane cost worth paying.

@@ -32,8 +32,20 @@ const faqs = [
   },
 ]
 
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+}
+
 const Page = () => (
   <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+
     <section className="pt-32.5 pb-12 md:pt-40 md:pb-16 lg:pt-50">
       <div className="container">
         <p className="text-default-500 text-sm font-medium tracking-wide uppercase">Contact</p>

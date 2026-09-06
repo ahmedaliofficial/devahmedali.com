@@ -11,7 +11,9 @@ import Services from './components/Services'
 import TechStack from './components/TechStack'
 
 export const metadata: Metadata = {
-  title: DEFAULT_PAGE_TITLE,
+  // absolute bypasses the root `%s | Ahmed Ali` template, which would otherwise
+  // double the suffix since DEFAULT_PAGE_TITLE already ends with "| Ahmed Ali"
+  title: { absolute: DEFAULT_PAGE_TITLE },
   description: site.seo.description,
   alternates: { canonical: '/' },
 }

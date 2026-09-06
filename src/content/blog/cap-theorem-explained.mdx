@@ -1,0 +1,37 @@
+---
+title: 'CAP theorem, explained the way it actually shows up in production'
+description: 'CAP theorem is usually taught as an abstract triangle. In production it shows up as one very specific question: what should this service return when it cannot reach the other data centre right now?'
+date: '2025-09-03'
+tags: ['Distributed Systems', 'Databases', 'System Design']
+---
+
+CAP theorem gets taught as a triangle with three labels: Consistency, Availability, Partition tolerance, pick two. That framing is technically accurate and almost useless for making an actual decision, because it makes the trade-off sound symmetric and abstract. In a real system it is neither.
+
+## The part that's non-negotiable
+
+Partition tolerance means the system keeps functioning when network communication between nodes fails or degrades. In any distributed system running across more than one machine, let alone more than one data centre, partitions are not a hypothetical; they are a Tuesday. A switch misbehaves, a region loses connectivity, a deploy briefly isolates a node. You do not get to opt out of this by architecture choice. It happens regardless of what you pick.
+
+Which means the real CAP decision was never a choice of two out of three. It is a choice of one out of two, made specifically for the moment a partition is happening: consistency, or availability. Everything else in the theorem is context for that one decision.
+
+## What each choice looks like from inside the code
+
+**Choosing consistency (CP):** when a partition happens, the system refuses to answer rather than risk giving a wrong or conflicting answer. A leader-based system that cannot reach a quorum of replicas will reject writes, sometimes reads too, until it can reach enough nodes to be sure the answer is correct. The user sees an error or a timeout. What they do not see is stale or contradictory data.
+
+**Choosing availability (AP):** when a partition happens, the system keeps answering using whatever data is locally reachable, accepting that different nodes might now disagree with each other. The user gets an answer, but it might not match what a different user sees from a different node at the same moment. Reconciliation, often called eventual consistency, happens later once the partition heals.
+
+Neither of these is the "correct" choice in the abstract. They are correct or incorrect relative to what happens if the answer is wrong.
+
+## Where I've made this call
+
+On a banking aggregation platform, correctness was the whole product. A user's balance being briefly unavailable is an inconvenience. A user's balance being wrong, even for thirty seconds, is the kind of bug that ends up as a support escalation and a written incident report. That pushed hard toward CP for anything touching account balances and transaction state: PostgreSQL with synchronous replication, refuse the write rather than risk a phantom balance.
+
+Contrast that with an activity-tracking pipeline, where the product is dashboards showing what people worked on. If one region cannot reach another for eleven seconds, showing slightly stale activity counts is invisible to the person looking at the dashboard. Refusing to serve the dashboard at all because of a network blip would be a worse outcome than showing data that is a few seconds behind. That system leaned AP: MongoDB with eventual consistency across replicas, Redis caching accepted staleness windows measured in seconds, by design.
+
+## The practical version of the framework
+
+When I am deciding this for a new service, I ask one question about the specific data involved, not the system as a whole: **what does it cost the business if this specific piece of data is briefly wrong, versus briefly unavailable?**
+
+- If wrong is worse than unavailable: lean CP. Refuse to answer rather than answer incorrectly. Financial balances, inventory counts that gate a purchase, anything where two people acting on contradictory information causes real harm.
+- If unavailable is worse than wrong: lean AP. Serve what you have, reconcile later. Activity feeds, view counts, most dashboards, anything where staleness is invisible to the end user but downtime is not.
+
+Most real systems make this choice per data type rather than once for the whole architecture, which is why a single platform commonly runs both a strongly consistent ledger and an eventually consistent activity log side by side. CAP theorem is not a single decision you make at the whiteboard once. It is a question you answer separately for every piece of state that matters, based on what happens if that specific answer is wrong.

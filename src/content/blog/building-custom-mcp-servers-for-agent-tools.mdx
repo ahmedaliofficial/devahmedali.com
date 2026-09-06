@@ -1,0 +1,60 @@
+---
+title: 'Building custom MCP servers so your agents can use your own tools'
+description: 'Every agent framework eventually needs to call your internal APIs, not just the web. A custom MCP server is how you expose them safely, once, instead of writing bespoke tool-calling glue for every agent that needs access.'
+date: '2026-09-07'
+tags: ['AI', 'MCP', 'Agents', 'LangGraph']
+---
+
+Model Context Protocol solves a problem that used to get solved badly, over and over, by every team building agents: how does a model call a tool it did not come pre-trained to know about?
+
+Before MCP, the answer was bespoke: hand-write a tool-calling schema for each function, wire it into whichever agent framework you were using that month, and repeat the wiring the next time you swapped frameworks or added an agent. MCP standardises the interface, so the tool integration is written once, against the protocol, rather than once per framework.
+
+## What a custom MCP server actually is
+
+At its simplest, an MCP server is a process that exposes a set of tools, each with a name, a description, and a typed input schema, over a standard protocol that any MCP-compatible client can talk to. The agent's model reads the tool descriptions, decides which tool applies to the current task, and calls it with structured arguments the server can validate.
+
+```ts
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+
+const server = new McpServer({ name: 'internal-tools', version: '1.0.0' })
+
+server.tool(
+  'lookup_customer',
+  'Fetch a customer record by account ID',
+  { accountId: z.string() },
+  async ({ accountId }) => {
+    const customer = await db.customers.findOne({ accountId })
+    return { content: [{ type: 'text', text: JSON.stringify(customer) }] }
+  },
+)
+```
+
+Once this server is running, any MCP-compatible agent, regardless of which framework built it, LangGraph, an Agent SDK, or something else entirely, can discover `lookup_customer` and call it correctly, without a single line of framework-specific integration code on your side.
+
+## Why "just call the API directly" is not the same thing
+
+The obvious alternative is skipping the protocol and having the agent call your REST API directly. This works, briefly, and then starts costing you in ways that only show up once you have more than one agent.
+
+**Every framework needs its own adapter.** A tool call in LangGraph is wired differently than a tool call in a different Agent SDK. Integrate your customer-lookup API directly and you write that adapter once per framework, then maintain all of them as the API's shape evolves.
+
+**The model gets no structured description to reason from.** MCP tool descriptions tell the model what the tool does and what arguments it expects, in a format the model was specifically trained to consume. A raw API call means either hand-crafting that description yourself, per framework, or hoping the model infers the right shape from an OpenAPI spec that was written for human developers, not for a model deciding whether this tool is the right one for the current step.
+
+**Auth and validation get duplicated everywhere the tool is exposed.** With a dedicated MCP server sitting in front of your APIs, you enforce access control and input validation once, at the boundary. Every direct integration point is one more place that check has to be implemented correctly, and one more place it can be implemented slightly wrong.
+
+## What actually goes into a production MCP server
+
+A demo MCP server is a function with a schema. A production one needs the same rigour as any other service sitting between an untrusted caller and your internal systems, because that is exactly what it is.
+
+**Bearer-key or OAuth authentication on the server itself**, not just on the downstream APIs it wraps. The MCP server is a new entry point into your systems; it needs its own access control, not an assumption that whoever can reach it was already authorised elsewhere.
+
+**Strict schema validation on every tool's input**, because the values arriving here came from a model's interpretation of the current conversation, not from a form a human filled in carefully. Treat every argument as untrusted input, the same way you would treat a public API request body.
+
+**Scoped tools, not one tool that does everything.** `lookup_customer` is safer to reason about and safer to grant access to than a generic `run_database_query` tool that happens to be flexible enough to do the same job and a hundred others besides. Narrow tools are also easier for the model to select correctly, because the description maps to exactly one action instead of a wide space of possible ones.
+
+**Logging every call with its arguments**, because when an agent does something wrong in production, the MCP server's log is where you find out which tool it called, with what arguments, and why the model apparently thought that was the right move.
+
+## Where this fits in the bigger picture
+
+I treat a custom MCP server as the boundary layer between "agents that can reason" and "systems that can act." The reasoning happens in whichever framework, LangGraph most often in my own work, is orchestrating the agent. The acting happens through a small, well-scoped, properly authenticated set of tools exposed over MCP, built once and reusable by every agent that needs that capability afterward.
+
+That separation is what makes it realistic to add a second agent, or swap frameworks entirely, without redoing the tool integration work from zero. The tools stay put. Only the reasoning layer changes.

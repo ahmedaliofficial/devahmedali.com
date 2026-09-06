@@ -4,7 +4,7 @@ import { caseStudies } from '@/content/case-studies'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Work',
+  title: 'Case Studies: Distributed Systems, FinTech & AI',
   description: 'Case studies in distributed systems, FinTech, real-time AI and SaaS, each one walking the architecture from first constraint to production pipeline.',
   alternates: { canonical: '/work' },
 }

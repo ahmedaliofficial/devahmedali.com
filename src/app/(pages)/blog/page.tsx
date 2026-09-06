@@ -6,7 +6,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Blog',
+  title: 'Engineering Blog: Distributed Systems & AI',
   description: 'Notes on distributed systems, event-driven architecture and production AI, written from the incidents rather than the documentation.',
   alternates: { canonical: '/blog' },
 }

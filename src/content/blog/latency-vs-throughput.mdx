@@ -1,0 +1,41 @@
+---
+title: 'Latency vs throughput: you cannot optimise for both at once'
+description: 'Batching helps throughput and hurts latency. Caching helps latency and can hurt consistency. Most performance arguments are really an unstated disagreement about which of these two numbers matters more.'
+date: '2025-08-27'
+tags: ['Performance', 'System Design', 'Distributed Systems']
+---
+
+Two engineers arguing about whether a system is "fast" are frequently answering different questions without realising it. One means latency: how long a single request takes. The other means throughput: how many requests the system handles per second. These are related, but improving one routinely makes the other worse, and most performance disagreements I have sat through are really this confusion wearing a different costume.
+
+## The relationship is not free
+
+Little's Law states it precisely: the number of requests in flight equals arrival rate multiplied by the average time each request spends in the system. Push more requests in per second without processing them faster, and the number in flight climbs, which means later requests wait behind earlier ones.
+
+Batching is the clearest example of the trade-off in practice. Collect 100 events before writing them to the database instead of writing each one immediately, and your database does 100x fewer write operations. Throughput goes up substantially. But the first event in that batch now waits for 99 others before it is durably stored. Latency for that individual event just got worse, even though the system as a whole is doing more total work per second.
+
+I made exactly this trade explicit in a Kafka pipeline I built: batching writes up to 100 items or a five-second window, whichever came first, cut database writes by close to 100x. That is a genuine throughput win. It also means any single event can sit for up to five seconds before it is queryable. For an activity dashboard, invisible. For a payment confirmation, that delay would be a support ticket.
+
+## Caching is the same trade, pointed the other way
+
+Caching optimises latency, sometimes at the cost of consistency, which is a throughput-adjacent problem in disguise. A cached read is fast because it skips the expensive path entirely. But now two readers can see different answers depending on when their cache entry was populated, and every write has to decide when, or whether, to invalidate what is cached elsewhere.
+
+A five-second cache TTL trades some staleness for a large reduction in database load, meaning more requests can be served per second at the same infrastructure cost. That is throughput reasoning wearing a latency-improvement costume. The two goals are more entangled than the two words suggest.
+
+## Where this actually costs you
+
+The mistake I see most often is applying a throughput-oriented fix to a latency-sensitive path, or the reverse.
+
+**Adding a queue in front of something that needs an immediate answer.** Queues are a fantastic throughput tool: they smooth out bursty load and let a slow consumer catch up on its own schedule. They are a terrible fit for a request that needs a synchronous response in under 200 milliseconds, because now that response is waiting behind whatever else is ahead of it in the queue.
+
+**Adding a cache to a path where correctness cannot tolerate staleness.** A five-second-old inventory count is often fine. A five-second-old account balance shown right after a transfer is not, and will generate a support ticket the moment two devices show different numbers for the same account.
+
+**Batching writes on a path where the caller is blocked waiting for confirmation.** If the client needs to know a write succeeded before doing anything else, batching that write behind 99 others directly increases the latency that client experiences. This is precisely the trade the pipeline above made, and it was fine for a dashboard and would not have been fine for a checkout flow.
+
+## The question worth asking first
+
+Before touching either lever, I ask which number the business actually cares about for this specific path, because the two questions point in different directions:
+
+- **Optimising for throughput:** how much total load can this system absorb, and what does the 95th request in the queue look like?
+- **Optimising for latency:** how fast does this one request need to feel to the person waiting on it, even if the system overall does less total work per second?
+
+A system that is excellent at one and mediocre at the other is usually not a badly built system. It is a system whose engineers made a real trade-off in one direction on purpose. The failure mode is not choosing a side; it is not realising a choice was being made at all, and discovering the consequence in production instead of in the design review.

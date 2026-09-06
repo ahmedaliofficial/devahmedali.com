@@ -1,0 +1,42 @@
+---
+title: 'The strangler fig pattern: rewriting a system without a rewrite project'
+description: 'A big-bang rewrite is a bet that a new system will work before anyone finds out the old one stopped. The strangler fig pattern replaces a legacy system piece by piece, behind the same interface, so the bet never has to be made all at once.'
+date: '2025-09-12'
+tags: ['Architecture', 'Legacy Systems', 'Migration']
+---
+
+The strangler fig takes its name from a real plant that grows around a host tree, gradually replacing it, until eventually the original tree is gone and the fig stands where it used to be, having never required the forest to be cleared and replanted. Applied to software, it describes replacing a legacy system incrementally by routing traffic to new implementations one piece at a time, rather than rewriting the whole thing and cutting over on a single, high-stakes night.
+
+## Why the alternative fails so often
+
+A full rewrite asks an organisation to make one enormous bet: that the new system, built without the years of accumulated edge-case handling the old one quietly absorbed, will work correctly the moment it goes live. Rewrites routinely take twice as long as estimated, because the estimate was based on the features anyone remembers the old system having, not the ones nobody wrote down because they were fixed as bugs five years ago and never documented anywhere except in the behaviour of the code itself.
+
+The cutover night, the moment traffic actually moves to the new system, is where all of that accumulated risk lands on a single deploy. If something is subtly wrong, you find out with real users and real data on the line, all at once.
+
+## How the strangler fig avoids that bet
+
+Instead of replacing the whole system, you put a routing layer, often a reverse proxy or an API gateway, in front of both the legacy system and the new one. Initially, all traffic goes to the legacy system. As you rebuild one capability at a time, you flip the routing rule for that one capability so it now goes to the new implementation, while everything else continues unchanged, hitting the code that has run correctly for years.
+
+```
+requests
+   |
+   v
+[ router ]
+   |-- /api/users/*      -> new-user-service
+   |-- /api/billing/*    -> legacy-monolith   (not yet migrated)
+   |-- /api/*            -> legacy-monolith
+```
+
+Each slice you migrate is small enough to test properly, small enough to roll back in minutes by flipping the route back, and small enough that if it is wrong, only that one capability is affected rather than the whole product. Nobody schedules a maintenance window for the whole system, because the whole system never moves at once.
+
+## Where this gets hard in practice
+
+**Shared state is the real obstacle, not the routing.** The router itself is a simple problem. The hard part is when the piece you are migrating and the piece you have not touched yet both need to read and write the same database tables. Sometimes you dual-write to both the old and new data stores during the transition, accepting the operational cost of keeping them synchronised. Sometimes you draw the migration boundary around a bounded context specifically so this problem does not arise for that particular slice, deliberately picking capabilities with the least shared state first.
+
+**The pattern makes the fastest possible migration slower.** If nothing catches fire, an incremental migration takes longer calendar time than a rewrite that happens to go well, because a rewrite that goes well skips all the intermediate routing infrastructure and the careful boundary-drawing. The trade is that a rewrite going well is not the case you are supposed to be planning for. You are planning for the much more common case where something in the new system does not behave quite like the old one, and you would rather discover that with 5% of traffic on the new path than with all of it.
+
+**You have to actually finish.** Strangler fig migrations that never reach 100% leave you paying to run and understand two systems indefinitely, which is worse than either finishing the migration or not having started it. The router needs an owner and the plan needs an end date, or the "temporary" legacy system becomes a permanent second codebase nobody wants to touch.
+
+## The actual trade being made
+
+A big-bang rewrite optimises for calendar time on the optimistic path and accepts a large, correlated risk landing all at once on cutover night. The strangler fig optimises for the pessimistic path: it accepts more total elapsed time and more routing infrastructure in exchange for turning one enormous bet into many small, individually reversible ones. I reach for it whenever the legacy system is one that real revenue currently depends on, and reach for a cleaner rewrite only when the blast radius of getting it wrong is genuinely small enough to absorb.
