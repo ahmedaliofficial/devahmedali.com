@@ -103,9 +103,9 @@ const Navbar = () => {
               </a>
 
               <Link href="/contact" className="bg-default-900 group relative hidden overflow-hidden rounded-2xl px-6 py-4 text-sm font-medium text-white transition-all duration-300 hover:scale-95 lg:block">
-                <span className="relative block h-5 overflow-hidden">
+                <span className="relative block h-5 overflow-hidden whitespace-nowrap">
                   <span className="block transition-transform duration-300 group-hover:-translate-y-full">Let&apos;s talk</span>
-                  <span className="absolute inset-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0">Let&apos;s talk</span>
+                  <span className="absolute inset-x-0 top-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0">Let&apos;s talk</span>
                 </span>
               </Link>
 

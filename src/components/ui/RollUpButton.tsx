@@ -24,7 +24,7 @@ const RollUpButton = ({ href, label, variant = 'dark', icon, external, className
 
   const content = (
     <>
-      <span className="relative block h-5 overflow-hidden">
+      <span className="relative block h-5 overflow-hidden whitespace-nowrap">
         <span className="block transition-transform duration-300 group-hover:-translate-y-full">{label}</span>
         <span className="absolute inset-x-0 top-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0">{label}</span>
       </span>
