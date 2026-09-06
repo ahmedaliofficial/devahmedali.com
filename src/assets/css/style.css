@@ -1,10 +1,6 @@
 /*
-Template Name: Habitline - Mobile App & SaaS Landing Page Tailwind CSS 4 HTML Template
-Version: 1.0.0
-Author: Unifato
-Website: https://unifato.com/
-Email: unifato.themes@gmail.com
-File: Style CSS File
+Ahmed Ali — Solution Architect portfolio
+File: Style CSS entry
 */
 
 /* font */
@@ -18,17 +14,10 @@ File: Style CSS File
 @import "preline/variants.css";
 @source "preline/dist/*.js";
 
-/* Plugin CSS */
-@import "swiper/swiper-bundle.css";
-@import 'lightgallery/css/lightgallery-bundle.css';
-@import 'lightgallery/css/lg-video.css';
-/* @import "aos/dist/aos.css"; */
-
 /* Tailwind Plugin */
 @plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/forms";
 
 
 @import "./_config.css";
-@import "./_swiper.css";
 @import "./_general.css";

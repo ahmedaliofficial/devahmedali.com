@@ -1,93 +1,121 @@
-import Image from 'next/image'
+'use client'
 
-import contactImage from '@/assets/images/locations/contact-image.webp'
-import phoneImage from '@/assets/images/workspace/phone-image.png'
+import { site } from '@/content/site'
+import { Icon } from '@iconify/react'
+import { useState } from 'react'
+
+type FormState = 'idle' | 'sending' | 'sent' | 'error'
+
+const inputClasses = 'border-default-200 bg-default-100 text-default-900 placeholder:text-default-400 focus:border-default-400 w-full rounded-2xl border px-4 py-3 text-base transition-all focus:outline-none'
 
 const ContactForm = () => {
+  const [state, setState] = useState<FormState>('idle')
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setState('sending')
+    setError('')
+
+    const formData = new FormData(event.currentTarget)
+    const payload = Object.fromEntries(formData.entries())
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+
+      const data = await response.json().catch(() => ({}))
+
+      if (response.ok) {
+        setState('sent')
+        return
+      }
+
+      setState('error')
+      setError(data.error ?? 'Something went wrong sending your message.')
+    } catch {
+      setState('error')
+      setError('Could not reach the server.')
+    }
+  }
+
+  if (state === 'sent') {
+    return (
+      <div className="flex flex-col items-start">
+        <span className="bg-primary-2/10 text-primary-2 mb-5 inline-grid size-12 place-items-center rounded-full">
+          <Icon icon="lucide:check" className="size-6" />
+        </span>
+        <h2 className="font-heading text-default-900 text-2xl font-semibold">Message sent</h2>
+        <p className="text-default-500 mt-2.5 text-base">Thanks for reaching out — I&apos;ll get back to you within a day or so. If it&apos;s urgent, email me directly at {site.email}.</p>
+      </div>
+    )
+  }
+
   return (
-    <section className="pt-32.5 md:pt-36 lg:pt-50">
-      <div className="container">
-        <div className="mb-12 text-center lg:mb-20">
-          <span className="border-default-200 text-default-800 inline-block rounded-full border bg-white px-5 py-1 text-sm font-medium md:py-1.5">Contact Us</span>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {/* Honeypot — hidden from people, tempting to bots */}
+      <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="pointer-events-none absolute h-0 w-0 opacity-0" />
 
-          <h1 className="text-default-900 my-2.5 text-4xl font-medium tracking-tight md:text-5xl lg:text-[90px]">We're here to help</h1>
-
-          <p className="mx-auto md:w-lg">If you have questions, feedback, or need support, reach out, and we’ll get back to you as soon as we can.</p>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <label htmlFor="name" className="text-default-700 mb-1.5 block text-sm font-medium">
+            Name
+          </label>
+          <input id="name" name="name" type="text" required maxLength={100} placeholder="Your name" className={inputClasses} />
         </div>
 
-        <div className="overflow-hidden rounded-2xl bg-white shadow-xl md:flex">
-          <div className="relative order-2! flex min-h-90 items-center justify-center overflow-hidden md:order-1 md:min-h-125 md:w-6/8 lg:w-2/5" style={{ backgroundImage: `url(${contactImage.src})` }}>
-            <div className="absolute inset-0 bg-black/30"></div>
-            <Image src={phoneImage} alt="Dashboard Image" className="relative z-10 -mb-67 w-full max-w-65 drop-shadow-2xl lg:max-w-84" />
-          </div>
-
-          <div className="order-1! px-5 py-7.5 md:order-2 md:p-5 lg:w-3/5 lg:p-12.5">
-            <form id="contact-form" className="space-y-3.5 md:space-y-8">
-              <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2 lg:gap-8">
-                <div className="flex flex-col">
-                  <label htmlFor="name" className="text-default-600 mb-2.5 text-sm font-medium">
-                    Your name*
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    placeholder="Dennis Barrett"
-                    required
-                    className="bg-default-200/80 text-default-800 placeholder:text-default-600 w-full rounded-xl border-none px-5 py-4 transition-all focus:ring-2 focus:ring-slate-200 focus:outline-none"
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <label htmlFor="subject" className="text-default-600 mb-2.5 text-sm font-medium">
-                    Subject
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    placeholder="Topic of your request"
-                    className="bg-default-200/80 text-default-800 placeholder:text-default-600 w-full rounded-xl border-none px-5 py-4 transition-all focus:ring-2 focus:ring-slate-200 focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-col">
-                <label htmlFor="email" className="text-default-600 mb-2.5 text-sm font-medium">
-                  Email address*
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="dannis@example.com"
-                  required
-                  className="bg-default-200/80 text-default-800 placeholder:text-default-600 w-full rounded-xl border-none px-5 py-4 transition-all focus:ring-2 focus:ring-slate-200 focus:outline-none"
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label htmlFor="message" className="text-default-600 mb-2.5 text-sm font-medium">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={5}
-                  placeholder="Write your message"
-                  className="bg-default-200/80 text-default-800 placeholder:text-default-600 w-full resize-none rounded-xl border-none px-5 py-4 transition-all focus:ring-2 focus:ring-slate-200 focus:outline-none"
-                ></textarea>
-              </div>
-
-              <div className="pt-4">
-                <button type="submit" className="bg-default-900 rounded-full px-8 py-4 font-medium text-white shadow-xl transition-all hover:scale-95">
-                  Send message
-                </button>
-              </div>
-            </form>
-          </div>
+        <div>
+          <label htmlFor="email" className="text-default-700 mb-1.5 block text-sm font-medium">
+            Email
+          </label>
+          <input id="email" name="email" type="email" required maxLength={200} placeholder="you@company.com" className={inputClasses} />
         </div>
       </div>
-    </section>
+
+      <div>
+        <label htmlFor="subject" className="text-default-700 mb-1.5 block text-sm font-medium">
+          Subject
+        </label>
+        <input id="subject" name="subject" type="text" maxLength={200} placeholder="What's this about?" className={inputClasses} />
+      </div>
+
+      <div>
+        <label htmlFor="message" className="text-default-700 mb-1.5 block text-sm font-medium">
+          Message
+        </label>
+        <textarea id="message" name="message" required rows={6} maxLength={5000} placeholder="Tell me what you're building, and where it's getting hard." className={`${inputClasses} resize-y`} />
+      </div>
+
+      {state === 'error' && (
+        <div className="border-default-200 bg-default-100 rounded-2xl border p-4">
+          <p className="text-default-700 text-sm">{error}</p>
+          <p className="text-default-500 mt-1 text-sm">
+            You can always email me directly at{' '}
+            <a href={`mailto:${site.email}`} className="text-default-900 font-medium underline decoration-2 underline-offset-4">
+              {site.email}
+            </a>
+            .
+          </p>
+        </div>
+      )}
+
+      <button type="submit" disabled={state === 'sending'} className="bg-default-900 mt-2 inline-flex items-center justify-center gap-2 self-start rounded-full px-8 py-3.5 text-sm font-medium text-white transition-all hover:scale-95 disabled:cursor-not-allowed disabled:opacity-60">
+        {state === 'sending' ? (
+          <>
+            <Icon icon="lucide:loader-circle" className="size-4.5 animate-spin" />
+            Sending
+          </>
+        ) : (
+          <>
+            Send message
+            <Icon icon="lucide:arrow-right" className="size-4.5" />
+          </>
+        )}
+      </button>
+    </form>
   )
 }
 

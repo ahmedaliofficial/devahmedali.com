@@ -5,9 +5,6 @@ import { DEFAULT_PAGE_TITLE } from '@/config/constants'
 import { site } from '@/content/site'
 import type { Metadata } from 'next'
 import { Google_Sans_Flex, Stack_Sans_Headline } from 'next/font/google'
-import 'swiper/css'
-import 'swiper/css/effect-fade'
-import 'swiper/css/navigation'
 
 const googleSansFlex = Google_Sans_Flex({
   variable: '--font-body',

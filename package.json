@@ -12,15 +12,11 @@
   "dependencies": {
     "@iconify/react": "^6.0.2",
     "gray-matter": "^4.0.3",
-    "gumshoejs": "^5.1.2",
-    "lightgallery": "^2.9.0",
     "next": "^16.2.9",
     "next-mdx-remote": "^6.0.0",
     "preline": "4.0.1",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "smoothscroll-for-websites": "^1.5.1",
-    "swiper": "^12.2.0"
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",

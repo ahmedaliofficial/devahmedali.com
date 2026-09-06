@@ -1,75 +1,71 @@
-import { Metadata } from 'next'
+import { site } from '@/content/site'
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
+  description: `How ${site.name} handles the information you submit through this website.`,
+  alternates: { canonical: '/privacy-policy' },
 }
 
-const Page = () => {
-  return (
-    <>
-      <section className="pt-34 md:pt-42 md:pb-10 lg:pt-50">
-        <div className="container">
-          <div className="space-y-5 text-center">
-            <h3 className="text-4xl font-medium md:text-5xl lg:text-[90px]">Privacy Policy</h3>
-            <div className="text-sm md:text-lg">Last updated: 10 Jan 2026</div>
-          </div>
+const Page = () => (
+  <section className="pt-32.5 pb-16 md:pt-40 md:pb-24 lg:pt-50">
+    <div className="container">
+      <h1 className="font-heading text-default-900 text-4xl leading-tight font-medium tracking-tight md:text-5xl">Privacy Policy</h1>
+      <p className="text-default-500 mt-4 text-lg">Last updated: September 2026</p>
 
-          <div className="py-12 md:py-18 lg:py-25">
-            <div className="mx-auto max-w-4xl">
-              <div className="text-default-800 space-y-5 md:space-y-10">
-                <div>
-                  <h2 className="text-default-900 mb-2.5 text-xl font-medium md:text-2xl lg:text-4xl">Collecting Personal Information</h2>
-
-                  <p className="text-default-600 text-base leading-normal md:text-lg md:leading-relaxed">
-                    Habitline collects limited personal information to provide a smooth, personalized habit-tracking experience. This includes details you share when creating an account and data generated while using the app. We collect only what is necessary to improve
-                    functionality, insights, and overall usability.
-                  </p>
-                </div>
-
-                <ul className="text-default-600 marker:text-default-600 list-disc space-y-2.5 ps-6 lg:space-y-4">
-                  <li>Account details such as name and email address</li>
-
-                  <li>Habits, routines, streaks, and completion activity</li>
-
-                  <li>App usage data to improve performance and features</li>
-
-                  <li>Device and technical information for stability and security</li>
-                </ul>
-
-                <p className="text-default-600 text-base leading-normal md:text-lg md:leading-relaxed">We use this information solely to operate and enhance Habitline. Your data is never collected for unnecessary or unrelated purposes.</p>
-
-                <div>
-                  <h3 className="text-default-900 mb-2.5 text-xl font-semibold md:text-2xl lg:text-4xl">Sharing Personal Information</h3>
-
-                  <p className="text-default-600 text-base leading-relaxed md:text-lg">
-                    Data is shared strictly when necessary to operate the platform responsibly and securely—such as with trusted service providers who help with hosting, analytics, or customer support. These partners are required to follow strict confidentiality and security
-                    standards. We may also disclose information when required by law or to protect the safety, rights, and integrity of our users and the Habitline platform. Outside of these limited and essential situations, your personal data remains private and fully under your
-                    control.
-                  </p>
-                </div>
-
-                <p className="text-default-600 text-base leading-normal md:text-lg md:leading-relaxed">Habitline respects your privacy and does not sell or misuse your personal data. Information is shared only when required to operate the service responsibly and securely.</p>
-
-                <ol className="text-default-600 marker:text-default-600 list-decimal space-y-4 ps-6 marker:font-semibold">
-                  <li>With trusted service providers for hosting, analytics, and customer support</li>
-
-                  <li>To comply with legal requirements or lawful requests</li>
-
-                  <li>To protect the rights, safety, or security of users and the platform</li>
-
-                  <li>During business operations such as service improvements or maintenance</li>
-                </ol>
-
-                <p className="text-default-600 text-base leading-normal md:text-lg md:leading-relaxed">
-                  All shared data is handled securely and only for purposes aligned with Habitline’s core services. We continuously review our practices to ensure your information remains protected and confidential.
-                </p>
-              </div>
-            </div>
-          </div>
+      <div className="text-default-600 mt-10 flex max-w-3xl flex-col gap-8 text-base md:text-lg">
+        <div>
+          <h2 className="font-heading text-default-900 mb-3 text-2xl font-semibold">The short version</h2>
+          <p>This is a personal portfolio site. It has no accounts, no advertising and no tracking cookies. The only personal information it ever receives is what you choose to type into the contact form.</p>
         </div>
-      </section>
-    </>
-  )
-}
+
+        <div>
+          <h2 className="font-heading text-default-900 mb-3 text-2xl font-semibold">What the contact form collects</h2>
+          <p>When you send a message through the contact form, it collects:</p>
+          <ul className="mt-3 flex list-disc flex-col gap-2 ps-6">
+            <li>Your name</li>
+            <li>Your email address</li>
+            <li>The subject and body of your message</li>
+          </ul>
+          <p className="mt-3">These are used for one thing only: replying to you. They are delivered to my inbox by an email service provider and are not added to any mailing list, sold, or shared with third parties.</p>
+        </div>
+
+        <div>
+          <h2 className="font-heading text-default-900 mb-3 text-2xl font-semibold">How long it is kept</h2>
+          <p>Messages stay in my email account as part of normal correspondence. If you would like a message deleted, email me at {site.email} and I will remove it.</p>
+        </div>
+
+        <div>
+          <h2 className="font-heading text-default-900 mb-3 text-2xl font-semibold">Third-party services</h2>
+          <p>
+            The site is served through a hosting provider, which processes standard server request logs (such as IP address and browser type) for security and reliability. Contact form messages are delivered through an email service provider. Neither is used to build a profile of
+            you.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="font-heading text-default-900 mb-3 text-2xl font-semibold">Links to other sites</h2>
+          <p>Pages here link out to places like GitHub, LinkedIn and the products described in the case studies. Once you follow one of those links, that site&apos;s own privacy policy applies, not this one.</p>
+        </div>
+
+        <div>
+          <h2 className="font-heading text-default-900 mb-3 text-2xl font-semibold">Your rights</h2>
+          <p>You can ask what information I hold about you, ask for it to be corrected, or ask for it to be deleted. Email {site.email} and I will action it.</p>
+        </div>
+
+        <div>
+          <h2 className="font-heading text-default-900 mb-3 text-2xl font-semibold">Contact</h2>
+          <p>
+            Questions about this policy can go to{' '}
+            <a href={`mailto:${site.email}`} className="text-default-900 font-medium underline decoration-2 underline-offset-4">
+              {site.email}
+            </a>
+            .
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+)
 
 export default Page
