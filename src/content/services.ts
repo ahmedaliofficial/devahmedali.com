@@ -19,7 +19,7 @@ export const serviceAreas: ServiceArea[] = [
   },
   {
     number: '02',
-    title: 'Backend & solution architecture',
+    title: 'Backend & system architecture',
     description: 'The layer underneath — service boundaries, data flow and the trade-offs written down before the first commit.',
     services: ['System design & architecture reviews', 'Microservices & domain-driven design', 'Event-driven pipelines (Kafka, RabbitMQ)', 'REST & gRPC API engineering', 'Database strategy across SQL and NoSQL', 'Legacy modernisation & migration plans'],
     icon: 'lucide:drafting-compass',

@@ -10,7 +10,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Services',
-  description: 'Backend engineering, solution architecture, AI and agent systems, automation, web and ecommerce platforms, cloud and scaling, plus architecture and code audits — delivered end to end.',
+  description: 'Backend engineering, system architecture, AI and agent systems, automation, web and ecommerce platforms, cloud and scaling, plus architecture and code audits — delivered end to end.',
   alternates: { canonical: '/services' },
 }
 

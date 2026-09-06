@@ -1,6 +1,6 @@
 # Ahmed Ali — Portfolio
 
-Personal portfolio and case-study site for Ahmed Ali, Solution Architect (distributed systems & AI).
+Personal portfolio and case-study site for Ahmed Ali, Software Architect & Engineering Lead (distributed systems, AI platforms, full-stack delivery).
 
 Built with Next.js 16 (App Router), React 19, TypeScript and Tailwind CSS v4.
 

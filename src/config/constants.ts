@@ -1,1 +1,1 @@
-export const DEFAULT_PAGE_TITLE = 'Ahmed Ali — Solution Architect · Distributed Systems & AI'
+export const DEFAULT_PAGE_TITLE = 'Ahmed Ali — Software Architect & Engineering Lead'

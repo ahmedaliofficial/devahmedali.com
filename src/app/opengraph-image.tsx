@@ -45,7 +45,8 @@ const Image = () =>
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ color: '#ffffff', fontSize: '76px', fontWeight: 600, lineHeight: 1.1 }}>{site.tagline}</div>
-          <div style={{ color: '#a1a1aa', fontSize: '30px', marginTop: '24px' }}>{site.roleFull}</div>
+          <div style={{ color: '#ffffff', fontSize: '30px', marginTop: '24px' }}>{site.roleFull}</div>
+          <div style={{ color: '#a1a1aa', fontSize: '24px', marginTop: '10px' }}>{site.specialisms}</div>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>

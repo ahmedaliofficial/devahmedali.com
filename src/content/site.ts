@@ -1,8 +1,11 @@
 export const site = {
   name: 'Ahmed Ali',
   initials: 'AA',
-  role: 'Solution Architect',
-  roleFull: 'Solution Architect · Distributed Systems & AI',
+  role: 'Software Architect',
+  /** Full title used in metadata, OG image and the About page */
+  roleFull: 'Software Architect & Engineering Lead',
+  /** Supporting line that carries the breadth the title alone cannot */
+  specialisms: 'Distributed systems · AI platforms · Full-stack delivery',
   tagline: 'I design systems that scale.',
   intro: 'I architect event-driven backends, cloud infrastructure and production AI systems — from first diagram to live traffic.',
   location: 'Karachi, Pakistan',
@@ -16,9 +19,12 @@ export const site = {
   },
   seo: {
     description:
-      'Ahmed Ali is a solution architect specialising in distributed systems, event-driven microservices and production AI. Case studies in FinTech, workplace safety and SaaS — from architecture to deployment.',
+      'Ahmed Ali is a software architect and engineering lead specialising in distributed systems, event-driven microservices and production AI. Case studies in FinTech, workplace safety and SaaS — from architecture to deployment.',
     keywords: [
-      'solution architect',
+      'software architect',
+      'engineering lead',
+      'technical lead',
+      'full stack engineer',
       'distributed systems',
       'system design',
       'event driven architecture',

@@ -22,7 +22,7 @@ export const serviceCatalog: ServiceOffering[] = [
   },
   {
     slug: 'solution-architecture',
-    title: 'Solution architecture & system design',
+    title: 'System architecture & design',
     summary: 'The diagram before the code — service boundaries, data flow and the trade-offs written down while they are still cheap to change.',
     deliverables: ['High- and low-level architecture design', 'Event-driven and microservice decomposition', 'Domain-driven service boundaries', 'Scalability, caching and data strategy', 'Migration and modernisation roadmaps', 'Architecture docs your team can act on'],
     stack: ['Apache Kafka', 'RabbitMQ', 'gRPC', 'DDD', 'Event-driven', 'API gateways'],
