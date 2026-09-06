@@ -44,6 +44,48 @@ export const agentx: CaseStudy = {
       icon: 'lucide:users',
     },
   ],
+  architecture: {
+    heading: 'High-level architecture',
+    intro: 'Specialised agents sit behind one orchestration layer, so every decision belongs to a stage you can inspect rather than a single opaque generation.',
+    layers: [
+      {
+        title: 'Input layer',
+        caption: 'How a specification arrives',
+        nodes: [
+          { name: 'Natural language prompt', tech: 'Product intent', icon: 'lucide:message-square-code' },
+          { name: 'Figma design import', tech: 'Figma API', icon: 'lucide:figma' },
+        ],
+      },
+      {
+        title: 'Agent orchestration',
+        caption: 'Narrow agents, one shared plan',
+        nodes: [
+          { name: 'Planning agent', tech: 'Entities & screens', icon: 'lucide:workflow' },
+          { name: 'Schema agent', tech: 'Database design', icon: 'lucide:database' },
+          { name: 'Backend codegen agent', tech: 'Services & APIs', icon: 'lucide:server' },
+          { name: 'UI codegen agent', tech: 'Components', icon: 'lucide:layout-dashboard' },
+        ],
+      },
+      {
+        title: 'Tool & platform layer',
+        caption: 'Where agents act on real systems',
+        nodes: [
+          { name: 'MCP tool orchestration', tech: 'Model Context Protocol', icon: 'lucide:plug' },
+          { name: 'Orchestration API', tech: 'Python · FastAPI', icon: 'lucide:cpu' },
+          { name: 'Vector store', tech: 'Context retrieval', icon: 'lucide:search' },
+        ],
+      },
+      {
+        title: 'Output layer',
+        caption: 'A running app, not a code dump',
+        nodes: [
+          { name: 'Supabase provisioning', tech: 'Auth · DB · storage', icon: 'lucide:database' },
+          { name: 'Generated application', tech: 'Full-stack', icon: 'lucide:code' },
+          { name: 'Live preview', tech: 'Reviewable build', icon: 'lucide:rocket' },
+        ],
+      },
+    ],
+  },
   pipelineMini: [
     { step: 1, title: 'Interpret', description: 'Prompt or Figma', icon: 'lucide:message-square-code' },
     { step: 2, title: 'Plan', description: 'Schema & scope', icon: 'lucide:workflow' },

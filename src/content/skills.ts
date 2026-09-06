@@ -66,10 +66,18 @@ export const techLogos: { name: string; icon: string }[] = [
   { name: 'Tauri', icon: 'simple-icons:tauri' },
 ]
 
-/** Headline numbers used on the home trust bar */
+/** Headline numbers shown directly under the hero */
 export const headlineStats = [
-  { value: '6+', label: 'Years engineering', description: 'FinTech, AI and SaaS platforms' },
+  { value: '500+', label: 'Projects delivered', description: 'Web, ecommerce, CMS, ERP and AI platforms' },
+  { value: '6+', label: 'Years engineering', description: 'FinTech, AI and SaaS at production scale' },
   { value: '100K+', label: 'Events per day', description: 'Kafka pipelines running in production' },
   { value: '20+', label: 'Engineers led', description: 'Across AI, ecommerce and CMS product lines' },
-  { value: '1', label: 'SaaS founded', description: 'TrackHRS — live on the market' },
+]
+
+/** Measured outcomes — shown on the dark approach section */
+export const impactStats = [
+  { value: '60%+', label: 'Lower read latency', description: 'Redis cache-first strategy on a FinTech platform' },
+  { value: '25%', label: 'Cloud cost reduction', description: 'GCP rightsizing and observability work' },
+  { value: '~70%', label: 'Less deploy effort', description: 'Kubernetes and Docker replacing manual releases' },
+  { value: '50%+', label: 'Fewer integration issues', description: 'Clear service boundaries and ownership' },
 ]

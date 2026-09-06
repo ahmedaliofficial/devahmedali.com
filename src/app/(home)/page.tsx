@@ -8,7 +8,6 @@ import Hero from './components/Hero'
 import PipelineTeaser from './components/PipelineTeaser'
 import Services from './components/Services'
 import TechStack from './components/TechStack'
-import TrustBar from './components/TrustBar'
 
 export const metadata: Metadata = {
   title: DEFAULT_PAGE_TITLE,
@@ -34,7 +33,6 @@ const Page = () => {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Hero />
-      <TrustBar />
       <Services />
       <FeaturedWork />
       <PipelineTeaser />

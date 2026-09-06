@@ -28,6 +28,19 @@ export type TechDecision = {
   rationale: string
 }
 
+export type ArchitectureNode = {
+  name: string
+  tech?: string
+  icon?: string
+}
+
+/** One horizontal band of the high-level architecture diagram */
+export type ArchitectureLayer = {
+  title: string
+  caption?: string
+  nodes: ArchitectureNode[]
+}
+
 export type Achievement = {
   title: string
   description: string
@@ -69,6 +82,12 @@ export type CaseStudy = {
     paragraphs: string[]
   }
   problems: CaseStudyProblem[]
+  /** High-level architecture, rendered as stacked layers */
+  architecture?: {
+    heading: string
+    intro?: string
+    layers: ArchitectureLayer[]
+  }
   /** Full service map — only larger platforms need one */
   serviceComponents?: ServiceComponent[]
   /** 4-step summary used on cards and the home teaser */

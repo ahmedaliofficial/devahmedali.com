@@ -11,11 +11,11 @@ const BlogTeaser = () => {
   if (posts.length === 0) return null
 
   return (
-    <section id="writing" className="scroll-mt-32 py-16 md:py-24">
+    <section id="writing" className="scroll-mt-32 py-14 md:py-20">
       <div className="container">
         <SectionHeading eyebrow="Writing" title="Notes on building systems" description="Mostly the things I wish someone had told me before the incident, not after." />
 
-        <div className="mt-12 grid grid-cols-1 gap-4 md:mt-16 md:grid-cols-2">
+        <div className="mt-10 grid grid-cols-1 gap-4 md:mt-12 md:grid-cols-2">
           {posts.map((post) => (
             <Link key={post.slug} href={`/blog/${post.slug}`} className="border-default-200 group flex flex-col rounded-3xl border bg-white p-6 transition-shadow duration-300 hover:shadow-lg md:p-8">
               <div className="text-default-500 flex items-center gap-3 text-sm">

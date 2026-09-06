@@ -1,4 +1,5 @@
 import ContactCta from '@/components/ContactCta'
+import ArchitectureDiagram from '@/components/portfolio/ArchitectureDiagram'
 import Pipeline from '@/components/portfolio/Pipeline'
 import ServiceMap from '@/components/portfolio/ServiceMap'
 import StatsBand from '@/components/portfolio/StatsBand'
@@ -131,6 +132,16 @@ const Page = async ({ params }: PageProps) => {
           </div>
         </div>
       </section>
+
+      {/* Architecture diagram */}
+      {study.architecture && (
+        <section className="py-12 md:py-16">
+          <div className="container">
+            <SectionHeading align="left" eyebrow="System design" title={study.architecture.heading} description={study.architecture.intro} />
+            <ArchitectureDiagram layers={study.architecture.layers} className="mt-10" />
+          </div>
+        </section>
+      )}
 
       {/* Service map */}
       {study.serviceComponents && study.serviceComponents.length > 0 && (

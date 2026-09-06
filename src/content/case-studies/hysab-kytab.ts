@@ -44,6 +44,52 @@ export const hysabKytab: CaseStudy = {
       icon: 'lucide:shield-check',
     },
   ],
+  architecture: {
+    heading: 'High-level architecture',
+    intro: 'A polyglot backend hidden behind one coherent service layer, so the banking app never has to know which engine an answer came from.',
+    layers: [
+      {
+        title: 'Client layer',
+        caption: 'B2B bank integrations and B2C apps',
+        nodes: [
+          { name: 'Digital bank apps', tech: 'Temenos · Interswitch', icon: 'lucide:building-2' },
+          { name: 'Consumer app', tech: 'Personal finance', icon: 'lucide:smartphone' },
+          { name: 'Admin & ops console', tech: 'Web', icon: 'lucide:layout-dashboard' },
+        ],
+      },
+      {
+        title: 'Service layer',
+        caption: 'gRPC between services, REST at the edge',
+        nodes: [
+          { name: 'Aggregation services', tech: 'Golang', icon: 'lucide:building-2' },
+          { name: 'Transaction services', tech: 'Golang', icon: 'lucide:arrow-left-right' },
+          { name: 'Domain & product APIs', tech: 'NestJS', icon: 'lucide:server' },
+          { name: 'Enterprise services', tech: 'Spring Boot', icon: 'lucide:boxes' },
+          { name: 'AI advisory & insights', tech: 'LangChain · RAG', icon: 'lucide:brain' },
+        ],
+      },
+      {
+        title: 'Event & cache layer',
+        caption: '100K+ financial events per day',
+        nodes: [
+          { name: 'Kafka cluster', tech: '3 brokers · audit & alerting', icon: 'lucide:git-branch' },
+          { name: 'RabbitMQ', tech: 'Routed processing', icon: 'lucide:split' },
+          { name: 'Redis', tech: 'Cache-first reads', icon: 'lucide:zap' },
+        ],
+      },
+      {
+        title: 'Data layer',
+        caption: 'Five engines, one service contract',
+        nodes: [
+          { name: 'PostgreSQL', tech: 'Core relational', icon: 'lucide:database' },
+          { name: 'MongoDB', tech: 'Flexible documents', icon: 'lucide:database' },
+          { name: 'Oracle', tech: 'Bank systems', icon: 'lucide:database' },
+          { name: 'SQL Server', tech: 'Enterprise integration', icon: 'lucide:database' },
+          { name: 'MySQL', tech: 'Legacy services', icon: 'lucide:database' },
+        ],
+      },
+    ],
+  },
   pipelineMini: [
     { step: 1, title: 'Aggregate', description: 'Multi-bank feeds', icon: 'lucide:building-2' },
     { step: 2, title: 'Stream', description: 'Kafka events', icon: 'lucide:git-branch' },

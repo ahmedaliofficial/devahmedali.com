@@ -1,33 +1,21 @@
 import TechMarquee from '@/components/portfolio/TechMarquee'
-import Chip from '@/components/ui/Chip'
 import SectionHeading from '@/components/ui/SectionHeading'
 import { skillGroups } from '@/content/skills'
-import { Icon } from '@iconify/react'
 
 const TechStack = () => (
-  <section id="stack" className="scroll-mt-32 py-16 md:py-24">
+  <section id="stack" className="scroll-mt-32 py-14 md:py-20">
     <div className="container">
-      <SectionHeading eyebrow="Toolkit" title="The stack I reach for" description="Chosen per problem rather than per fashion — but these are the tools I've taken to production often enough to know their failure modes." />
+      <SectionHeading eyebrow="Toolkit" title="The stack I reach for" description="Chosen per problem rather than per fashion — these are the tools I've taken to production often enough to know their failure modes." />
     </div>
 
-    <TechMarquee className="mt-12 md:mt-16" />
+    <TechMarquee className="mt-10 md:mt-12" />
 
     <div className="container">
-      <div className="mt-12 grid grid-cols-1 gap-4 md:mt-16 md:grid-cols-2 lg:grid-cols-3">
+      <div className="border-default-200 mt-10 grid grid-cols-1 gap-x-10 gap-y-8 border-t pt-8 sm:grid-cols-2 lg:grid-cols-4">
         {skillGroups.map((group) => (
-          <div key={group.title} className="border-default-200 rounded-2xl border bg-white p-6">
-            <div className="flex items-center gap-2.5">
-              <span className="bg-default-100 text-default-700 grid size-9 place-items-center rounded-full">
-                <Icon icon={group.icon} className="size-4.5" />
-              </span>
-              <h3 className="font-heading text-default-900 text-base font-semibold">{group.title}</h3>
-            </div>
-
-            <div className="mt-4 flex flex-wrap gap-1.5">
-              {group.items.map((item) => (
-                <Chip key={item}>{item}</Chip>
-              ))}
-            </div>
+          <div key={group.title}>
+            <h3 className="text-default-900 text-sm font-semibold tracking-wide uppercase">{group.title}</h3>
+            <p className="text-default-500 mt-2.5 text-sm leading-relaxed">{group.items.join(' · ')}</p>
           </div>
         ))}
       </div>

@@ -44,6 +44,45 @@ export const omnivision: CaseStudy = {
       icon: 'lucide:bell-ring',
     },
   ],
+  architecture: {
+    heading: 'High-level architecture',
+    intro: 'The event bus in the middle is the whole design: it lets compute-heavy inference and second-critical alerting scale without touching each other.',
+    layers: [
+      {
+        title: 'Capture layer',
+        caption: 'Enterprise site coverage',
+        nodes: [
+          { name: 'Camera streams', tech: 'Continuous feeds', icon: 'lucide:video' },
+          { name: 'Frame sampling', tech: 'Ingest workers', icon: 'lucide:scan-line' },
+        ],
+      },
+      {
+        title: 'Inference layer',
+        caption: 'Vision models served as a real service',
+        nodes: [
+          { name: 'Detection API', tech: 'Python · FastAPI', icon: 'lucide:scan-eye' },
+          { name: 'Smoke & anomaly models', tech: 'Computer vision', icon: 'lucide:brain' },
+        ],
+      },
+      {
+        title: 'Event & routing layer',
+        caption: 'Where one incident becomes many notifications',
+        nodes: [
+          { name: 'Kafka ingestion', tech: 'Detection events', icon: 'lucide:git-branch' },
+          { name: 'RabbitMQ fan-out', tech: 'Per-channel isolation', icon: 'lucide:split' },
+        ],
+      },
+      {
+        title: 'Delivery & analytics',
+        caption: 'Seconds from incident to a human',
+        nodes: [
+          { name: 'WhatsApp alerts', tech: 'Messaging API', icon: 'lucide:message-circle' },
+          { name: 'Email alerts', tech: 'Notification service', icon: 'lucide:mail' },
+          { name: 'Operational dashboards', tech: 'Reporting', icon: 'lucide:chart-line' },
+        ],
+      },
+    ],
+  },
   pipelineMini: [
     { step: 1, title: 'Observe', description: 'Camera streams', icon: 'lucide:video' },
     { step: 2, title: 'Detect', description: 'FastAPI inference', icon: 'lucide:scan-eye' },

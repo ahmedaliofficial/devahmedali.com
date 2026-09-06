@@ -1,53 +1,44 @@
-export type Service = {
+export type ServiceArea = {
+  number: string
   title: string
   description: string
-  outcomes: string[]
+  services: string[]
   icon: string
   /** Accent token from assets/css/_config.css */
   accent: string
 }
 
-export const services: Service[] = [
+export const serviceAreas: ServiceArea[] = [
   {
-    title: 'Solution architecture & system design',
-    description: 'The diagram before the code. I map your domain into services, boundaries and data flows that a team can actually build and own.',
-    outcomes: ['Architecture reviews', 'Domain-driven service boundaries', 'Migration and modernisation plans'],
-    icon: 'lucide:drafting-compass',
+    number: '01',
+    title: 'Product & platform engineering',
+    description: 'The things your customers actually touch — built to hold up once real traffic arrives.',
+    services: ['Web applications & dashboards', 'Marketing sites & landing pages', 'Ecommerce platforms', 'CMS & content platforms', 'ERP systems & integrations', 'Mobile & cross-platform desktop apps', 'MVPs taken from zero to launch'],
+    icon: 'lucide:layout-dashboard',
     accent: 'primary',
   },
   {
-    title: 'Backend & API engineering',
-    description: 'Production backends in NestJS, Golang, Spring Boot and FastAPI — typed, tested and documented, with REST and gRPC contracts that hold up.',
-    outcomes: ['Microservices and monoliths', 'REST and gRPC APIs', 'Database design and optimisation'],
-    icon: 'lucide:server',
+    number: '02',
+    title: 'Backend & solution architecture',
+    description: 'The layer underneath — service boundaries, data flow and the trade-offs written down before the first commit.',
+    services: ['System design & architecture reviews', 'Microservices & domain-driven design', 'Event-driven pipelines (Kafka, RabbitMQ)', 'REST & gRPC API engineering', 'Database strategy across SQL and NoSQL', 'Legacy modernisation & migration plans'],
+    icon: 'lucide:drafting-compass',
     accent: 'primary-8',
   },
   {
-    title: 'Event-driven & distributed systems',
-    description: 'Kafka and RabbitMQ pipelines that absorb spikes, survive failure and stay idempotent when several replicas process the same event.',
-    outcomes: ['Kafka and RabbitMQ pipelines', 'Idempotency and deduplication', 'Retry, circuit breakers and DLQs'],
-    icon: 'lucide:git-branch',
-    accent: 'primary-1',
-  },
-  {
-    title: 'Infrastructure & scaling',
-    description: 'Kubernetes, Docker and CI/CD that make deployment boring — plus the caching and observability work that makes systems cheaper and faster.',
-    outcomes: ['Kubernetes and Docker', 'CI/CD with Jenkins and GitHub Actions', 'Cost optimisation and observability'],
-    icon: 'lucide:cloud',
-    accent: 'primary-2',
-  },
-  {
-    title: 'AI systems that reach production',
-    description: 'RAG pipelines, multi-agent systems and MCP tool orchestration built as real services — with evaluation, isolation and failure paths, not a demo notebook.',
-    outcomes: ['RAG and vector search', 'Multi-agent orchestration', 'MCP and tool integration'],
+    number: '03',
+    title: 'AI systems & automation',
+    description: 'AI that ships as a service with failure paths and evaluation — not a demo that degrades quietly for six months.',
+    services: ['Chatbots & conversational agents', 'Multi-agent & agentic workflows', 'RAG pipelines & vector search', 'Analytics & intelligence engines', 'Generative APIs & MCP tool integration', 'Workflow & business process automation'],
     icon: 'lucide:brain-circuit',
     accent: 'primary-6',
   },
   {
-    title: 'MVPs & cross-platform products',
-    description: 'Zero to launched, without architecture you have to throw away at the first sign of traction. Web, desktop and everything behind them.',
-    outcomes: ['Next.js and React web apps', 'Tauri and Rust desktop agents', 'Launch-ready infrastructure'],
-    icon: 'lucide:rocket',
-    accent: 'primary-4',
+    number: '04',
+    title: 'Cloud, scaling & audits',
+    description: 'Making deployment boring, systems cheaper, and telling you honestly which part is actually the problem.',
+    services: ['Kubernetes, Docker & CI/CD', 'Performance tuning & caching strategy', 'Cloud cost optimisation', 'Observability & production readiness', 'Architecture & code audits', 'Security & reliability reviews'],
+    icon: 'lucide:cloud-cog',
+    accent: 'primary-1',
   },
 ]

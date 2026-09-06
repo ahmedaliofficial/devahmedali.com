@@ -43,6 +43,55 @@ export const trackhrs: CaseStudy = {
       icon: 'lucide:eye',
     },
   ],
+  architecture: {
+    heading: 'High-level architecture',
+    intro: 'Four layers, each scaling on its own terms. Clients never talk to storage directly, and nothing time-sensitive shares a path with anything slow.',
+    layers: [
+      {
+        title: 'Client layer',
+        caption: 'What people actually use',
+        nodes: [
+          { name: 'Desktop agent', tech: 'Tauri 2 · Rust', icon: 'lucide:monitor' },
+          { name: 'Admin portal', tech: 'Next.js', icon: 'lucide:layout-dashboard' },
+          { name: 'Marketing site', tech: 'Next.js', icon: 'lucide:globe' },
+        ],
+      },
+      {
+        title: 'API & service layer',
+        caption: 'Domain services behind REST and gRPC boundaries',
+        nodes: [
+          { name: 'User service', tech: 'NestJS', icon: 'lucide:users' },
+          { name: 'Activity service', tech: 'NestJS', icon: 'lucide:activity' },
+          { name: 'Activity provider', tech: 'NestJS', icon: 'lucide:chart-bar' },
+          { name: 'Projects manager', tech: 'NestJS', icon: 'lucide:folder-kanban' },
+          { name: 'Plans & billing', tech: 'NestJS', icon: 'lucide:credit-card' },
+          { name: 'Notifications', tech: 'NestJS', icon: 'lucide:bell' },
+          { name: 'Storage producer', tech: 'NestJS', icon: 'lucide:hard-drive' },
+          { name: 'Classifier API', tech: 'Python · FastAPI', icon: 'lucide:brain' },
+          { name: 'Auto-update server', tech: 'Express', icon: 'lucide:download' },
+        ],
+      },
+      {
+        title: 'Event & queue layer',
+        caption: 'Where slow work is decoupled from fast work',
+        nodes: [
+          { name: 'Kafka cluster', tech: 'Ingestion & domain events', icon: 'lucide:git-branch' },
+          { name: 'Redis cluster', tech: 'Cache · dedup · locks', icon: 'lucide:zap' },
+          { name: 'BullMQ workers', tech: 'Background jobs', icon: 'lucide:list-checks' },
+          { name: 'RabbitMQ bus', tech: 'Targeted fan-out', icon: 'lucide:split' },
+        ],
+      },
+      {
+        title: 'Data & object storage',
+        caption: 'Durable state',
+        nodes: [
+          { name: 'MongoDB replica set', tech: 'Domain persistence', icon: 'lucide:database' },
+          { name: 'S3-compatible storage', tech: 'Screenshots & artefacts', icon: 'lucide:hard-drive' },
+          { name: 'Local SQLite', tech: 'Desktop offline buffer', icon: 'lucide:save' },
+        ],
+      },
+    ],
+  },
   serviceComponents: [
     { name: 'tracking/', role: 'Tauri desktop agent for activity capture and local runtime', tech: ['Tauri 2', 'Rust', 'React'], icon: 'lucide:monitor' },
     { name: 'activity/', role: 'Activity ingestion and classification orchestration', tech: ['NestJS', 'Kafka'], icon: 'lucide:activity' },
