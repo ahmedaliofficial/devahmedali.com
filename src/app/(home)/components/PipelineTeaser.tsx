@@ -1,3 +1,7 @@
+import Reveal from '@/components/motion/Reveal'
+import { StaggerGroup, StaggerItem } from '@/components/motion/Stagger'
+import NumberTicker from '@/components/ui/aceternity/NumberTicker'
+import Spotlight from '@/components/ui/aceternity/Spotlight'
 import RollUpButton from '@/components/ui/RollUpButton'
 import SectionHeading from '@/components/ui/SectionHeading'
 import { impactStats } from '@/content/skills'
@@ -10,7 +14,8 @@ const principles = [
 
 const PipelineTeaser = () => (
   <section className="bg-default-900 relative overflow-hidden py-14 md:py-20">
-    <span aria-hidden="true" className="bg-primary/20 absolute top-0 left-1/3 size-112 rounded-full blur-[120px]" />
+    <span aria-hidden="true" className="bg-primary/20 animate-aurora absolute top-0 left-1/3 size-112 rounded-full blur-[120px]" />
+    <Spotlight duration={12} xOffset={70} />
 
     <div className="relative container">
       <SectionHeading
@@ -20,31 +25,33 @@ const PipelineTeaser = () => (
         description="Architecture is mostly about choosing what happens when something goes wrong. Three rules shape almost everything I build."
       />
 
-      <div className="mt-10 grid grid-cols-1 gap-8 md:mt-12 md:grid-cols-3 md:gap-10">
+      <StaggerGroup className="mt-10 grid grid-cols-1 gap-8 md:mt-12 md:grid-cols-3 md:gap-10">
         {principles.map((principle) => (
-          <div key={principle.title}>
+          <StaggerItem key={principle.title}>
             <h3 className="font-heading text-lg font-semibold text-white">{principle.title}</h3>
             <p className="mt-2 text-base text-white/60">{principle.description}</p>
-          </div>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerGroup>
 
       <div className="mt-10 border-t border-white/10 pt-8">
         <p className="text-sm font-medium tracking-wide text-white/50 uppercase">What that has produced</p>
-        <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
+        <StaggerGroup className="mt-6 grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
           {impactStats.map((stat) => (
-            <div key={stat.label}>
-              <p className="font-heading text-3xl leading-none font-semibold text-white md:text-4xl">{stat.value}</p>
+            <StaggerItem key={stat.label}>
+              <p className="font-heading text-3xl leading-none font-semibold text-white md:text-4xl">
+                <NumberTicker value={stat.value} />
+              </p>
               <p className="mt-2 text-sm font-medium text-white">{stat.label}</p>
               <p className="mt-0.5 text-sm text-white/50">{stat.description}</p>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerGroup>
       </div>
 
-      <div className="mt-10 flex justify-center">
+      <Reveal className="mt-10 flex justify-center">
         <RollUpButton href="/work/trackhrs" label="See the full architecture" variant="light" icon="lucide:arrow-right" />
-      </div>
+      </Reveal>
     </div>
   </section>
 )

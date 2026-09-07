@@ -268,3 +268,64 @@ textarea {
 .flip-horizontal {
     transform: scaleX(-1);
 }
+
+
+/* Aceternity meteors: a streak falls diagonally across a dark section and fades out.
+   The rotation lives in the keyframes, so don't also apply a rotate utility. */
+@keyframes meteor {
+    0% {
+        transform: rotate(215deg) translateX(0);
+        opacity: 1;
+    }
+
+    70% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: rotate(215deg) translateX(-700px);
+        opacity: 0;
+    }
+}
+
+.animate-meteor {
+    animation: meteor linear infinite;
+}
+
+/* Slow drift for the aurora washes behind dark sections */
+@keyframes aurora-drift {
+
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate3d(4%, -6%, 0) scale(1.12);
+    }
+}
+
+.animate-aurora {
+    animation: aurora-drift 18s ease-in-out infinite;
+    will-change: transform;
+}
+
+/* One switch for every decorative loop on the site */
+@media (prefers-reduced-motion: reduce) {
+
+    .animate-meteor,
+    .animate-aurora,
+    .animate-marquee,
+    .animate-marquee-left,
+    .animate-marquee-right,
+    .animate-scroll-left,
+    .animate-scroll-right,
+    .infinite-scroll,
+    .infinite-scroll-inverse {
+        animation: none !important;
+    }
+
+    .animate-meteor {
+        opacity: 0;
+    }
+}
