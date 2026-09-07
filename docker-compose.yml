@@ -1,0 +1,14 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      # Change 3061 to whatever host port you want; the app always listens on
+      # 3000 inside the container.
+      - '3061:3000'
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
