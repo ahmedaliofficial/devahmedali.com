@@ -25,7 +25,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
 
 # Next.js standalone output only ships the files actually needed to run the server.
-COPY --from=builder /app/public ./public
+# No public/ copy: this app has no public assets, everything is imported from src/assets.
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
