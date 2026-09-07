@@ -18,18 +18,18 @@ const FeaturedWork = () => {
         <div className="mt-10 flex flex-col gap-4 md:mt-12">
           {flagship && <CaseStudyCard study={flagship} size="large" />}
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {rest.map((study) => (
               <CaseStudyCard key={study.slug} study={study} />
             ))}
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center gap-5">
-          <p className="text-default-500 max-w-2xl text-center text-base">
+        <div className="border-default-200 mt-4 flex flex-col items-start gap-6 rounded-3xl border border-dashed bg-white p-6 md:flex-row md:items-center md:justify-between md:p-8">
+          <p className="text-default-500 max-w-2xl text-base">
             These four go deep. Behind them sit <span className="text-default-900 font-medium">500+ delivered projects</span>, covering ecommerce and CMS platforms, ERP integrations, AI chatbots and agents, automation and internal tools, across client work and products of my own.
           </p>
-          <RollUpButton href="/work" label="See all case studies" variant="outline" icon="lucide:arrow-right" />
+          <RollUpButton href="/work" label="See all case studies" variant="outline" icon="lucide:arrow-right" className="shrink-0" />
         </div>
       </div>
     </section>

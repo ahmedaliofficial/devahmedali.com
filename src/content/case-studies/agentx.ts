@@ -119,4 +119,5 @@ export const agentx: CaseStudy = {
   featured: true,
   order: 4,
   accent: 'primary-6',
+  icon: 'lucide:bot',
 }

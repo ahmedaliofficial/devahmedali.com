@@ -121,4 +121,5 @@ export const omnivision: CaseStudy = {
   featured: true,
   order: 3,
   accent: 'primary-1',
+  icon: 'lucide:scan-eye',
 }

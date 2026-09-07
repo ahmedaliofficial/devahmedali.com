@@ -166,4 +166,5 @@ export const trackhrs: CaseStudy = {
   featured: true,
   order: 1,
   accent: 'primary',
+  icon: 'lucide:timer',
 }

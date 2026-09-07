@@ -137,4 +137,5 @@ export const hysabKytab: CaseStudy = {
   featured: true,
   order: 2,
   accent: 'primary-8',
+  icon: 'lucide:landmark',
 }

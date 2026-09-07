@@ -106,4 +106,6 @@ export type CaseStudy = {
   featured: boolean
   order: number
   accent: CaseStudyAccent
+  /** Iconify name used as the card's visual anchor, same idiom as the services cards */
+  icon?: string
 }
