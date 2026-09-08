@@ -1,0 +1,71 @@
+---
+title: 'NestJS development: microservices, Kafka and gRPC in TypeScript'
+seoTitle: 'NestJS Developer in Karachi, Pakistan'
+description: 'NestJS and Node.js developer in Karachi, Pakistan, remote for US, UK and EU teams. Eight production NestJS microservices on Kafka, BullMQ, gRPC and MongoDB, built and run end to end.'
+role: 'NestJS Developer'
+kind: technology
+eyebrow: 'Expertise · NestJS'
+icon: 'simple-icons:nestjs'
+order: 9
+published: '2026-09-08'
+updated: '2026-09-08'
+keywords: ['NestJS developer', 'NestJS developer Pakistan', 'Node.js developer Pakistan', 'Node.js developer Karachi', 'NestJS microservices', 'TypeScript backend developer', 'NestJS Kafka', 'BullMQ']
+stats:
+  - { value: '8', label: 'NestJS microservices', description: 'Independently deployable domain services on TrackHRS' }
+  - { value: '100×', label: 'Fewer immediate writes', description: 'Batching on the NestJS ingest path' }
+  - { value: '100K+', label: 'Events per day', description: 'NestJS domain APIs on a shared Kafka backbone' }
+caseStudies: ['trackhrs', 'hysab-kytab']
+skillGroups: ['Backend & APIs', 'Messaging & streaming', 'Databases']
+blogTags: ['Microservices', 'Kafka', 'Distributed Systems']
+relatedPosts: ['designing-event-pipelines-that-survive-100k-events-a-day', 'sidecar-pattern-in-system-design']
+faq:
+  - question: 'Why NestJS rather than plain Express?'
+    answer: >-
+      Structure that survives a growing team. Modules, dependency injection, typed configuration and first-class support for microservice transports mean eight services can share conventions without sharing code. For a single small API, Express is fine; the TrackHRS update server is Express for exactly that reason.
+  - question: 'NestJS with Kafka or with RabbitMQ?'
+    answer: >-
+      Both, for different jobs. Kafka for the durable, replayable event backbone with consumer groups for horizontal scaling; RabbitMQ for targeted fan-out where routing matters more than retention; BullMQ on Redis for background jobs and delayed work. All three run in production on TrackHRS.
+  - question: 'Which databases do you pair with NestJS?'
+    answer: >-
+      MongoDB replica sets where payloads evolve, PostgreSQL where relations and transactions matter, Redis for cache, deduplication and locks. Which engine owns which data is a design decision I make deliberately rather than by default.
+  - question: 'Do you work remotely with teams in the US and UK?'
+    answer: >-
+      Yes, from Karachi, Pakistan (UTC+5), covering the UK working day and US East Coast mornings live. Backend work is mostly code, tests and written design, which travels across time zones well.
+cta:
+  heading: 'Have a Node.js backend to build, scale or untangle?'
+  description: "Tell me what it does, how much traffic it sees and where it hurts. I'll tell you how I'd structure it."
+---
+
+I am a NestJS and Node.js developer based in Karachi, Pakistan, and NestJS is the framework I have shipped the most production services in for teams in the US, UK and Europe. This page is about why I reach for it, how eight NestJS microservices run together on a real platform, and the patterns for Kafka, BullMQ and gRPC that make TypeScript backends hold up under load.
+
+## Why NestJS for microservices
+
+Node.js is fast to build in and easy to hire for. What it lacks out of the box is structure that survives a growing team, and that is what NestJS provides: modules with explicit boundaries, dependency injection, typed configuration, guards and interceptors for cross-cutting concerns, and first-class microservice transports. Eight services can share the same conventions without sharing code, and a new engineer can read any one of them and know where things live.
+
+I do not use it for everything. The [TrackHRS](/work/trackhrs) auto-update server is plain Express because it does one small thing. But for a domain service that will be extended for years, NestJS earns its structure quickly.
+
+## Eight services on one platform
+
+TrackHRS, the time tracking and activity intelligence platform I founded, runs eight NestJS microservices behind REST and gRPC boundaries: a user service for auth, organisations, leave and payroll; an activity service for ingestion and classification orchestration; an activity provider for read and statistics APIs; a projects manager aggregating task durations; plans and billing; notifications; and a storage producer for the screenshot and artefact upload pipeline to S3-compatible storage and Cloudflare R2.
+
+Each is independently deployable in Docker on Kubernetes, with Jenkins running CI. They share a Kafka cluster, a Redis cluster and a MongoDB replica set, and nothing time-sensitive shares a path with anything slow.
+
+## Kafka consumers and BullMQ workers in NestJS
+
+The ingest path is where the NestJS patterns matter most. Desktop activity events arrive on a Kafka topic, deliberately decoupled from everything downstream so a slow consumer can never slow down capture. A NestJS consumer processes the stream with partition-aware scaling, so adding replicas grows throughput with the consumer group. A Redis key check makes processing multi-replica-safe: the same event is never counted twice. A batch service collects up to 100 items or a five-second window before a MongoDB bulk upsert, giving up to 100 times fewer immediate database writes on the hot path.
+
+Classification then runs as a BullMQ job against an isolated Python FastAPI service, keeping heavy work off the latency-sensitive path. When the classifier fails, the job falls through a circuit breaker, exponential retry and a dead-letter collection that a distributed cron reprocesses, guarded by Redis locks so it runs exactly once across replicas. A cache invalidation event keeps dashboards fresh without relying on TTL expiry. I have written about [designing event pipelines that survive 100K events a day](/blog/designing-event-pipelines-that-survive-100k-events-a-day) on the blog.
+
+## gRPC between services, REST at the edge
+
+On the FinTech platform [Hysab Kytab](/work/hysab-kytab), NestJS carries the domain and product APIs alongside Golang core services and Spring Boot enterprise integrations. The three talk to each other over gRPC, coordinated through Kafka and RabbitMQ, with REST only at the edge. NestJS's transport abstraction makes that polyglot mesh practical: the same service can expose a gRPC contract internally and a REST controller externally without duplicating the domain logic. More than 100,000 financial events a day flow through the shared Kafka backbone.
+
+## Security, health and the unglamorous parts
+
+Across the Node services: JWT authentication with role-aware APIs, bcrypt password hashing with OTP and password reset flows on Redis TTLs, API key authentication for the classifier calls, rate limiting and secure headers, and structured health endpoints for readiness and liveness so Kubernetes can tell a stuck pod from a busy one. Retry, circuit breaker and dead-letter queues contain the blast radius when a dependency misbehaves. These are the parts of a NestJS codebase that keep you out of the incident channel.
+
+## Databases I pair with NestJS
+
+MongoDB replica sets fit evolving activity payloads and organisation structures and pair naturally with batched upserts. PostgreSQL where relations and transactions matter. Redis for cache acceleration, deduplication, queue backing and distributed locks, one system doing four jobs. Schema design, indexing and query optimisation are part of the service work, not a separate task.
+
+When a Node.js problem is really a design problem, the [backend engineer](/expertise/backend-engineer) and [software architect](/expertise/software-architect) pages describe how I approach the layers above. For working remotely from Karachi with US and UK teams, see the [expertise hub](/expertise).

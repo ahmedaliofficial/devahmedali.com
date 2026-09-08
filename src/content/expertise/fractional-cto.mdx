@@ -1,0 +1,77 @@
+---
+title: 'Fractional CTO: senior technical leadership without the full-time hire'
+seoTitle: 'Fractional CTO & Architecture Consultant, Pakistan'
+description: 'Fractional CTO and architecture consultant in Karachi, Pakistan, remote for US and UK startups. Architecture direction, audits, vendor and cloud decisions, and the engineering bar.'
+role: 'Fractional CTO'
+kind: role
+eyebrow: 'Expertise · Technical leadership'
+icon: 'lucide:briefcase'
+order: 7
+published: '2026-09-08'
+updated: '2026-09-08'
+keywords: ['fractional CTO Pakistan', 'fractional CTO for startups', 'architecture consultant', 'software architecture consultant remote', 'part-time CTO', 'CTO as a service', 'technical advisor startup', 'architecture audit']
+stats:
+  - { value: '25%', label: 'Cloud cost reduction', description: 'GCP rightsizing and observability on a FinTech platform' }
+  - { value: '60%+', label: 'Lower read latency', description: 'From one architectural decision: cache-first reads' }
+  - { value: '6+', label: 'Years engineering', description: 'FinTech, AI and SaaS at production scale' }
+caseStudies: ['trackhrs', 'hysab-kytab']
+skillGroups: ['System design', 'Cloud & DevOps', 'AI & agent engineering']
+blogTags: ['Architecture', 'Legacy Systems', 'Migration', 'System Design']
+relatedPosts: ['the-strangler-fig-pattern', 'cap-theorem-explained']
+faq:
+  - question: 'What does a fractional CTO actually do each week?'
+    answer: >-
+      Own the technical decisions that are expensive to reverse: architecture direction, build-versus-buy, cloud and vendor choices, the hiring bar, and the technical risks on the roadmap. In practice that is a fixed weekly block of design review, a written decision log, and being the person your engineers and your investors can ask hard technical questions.
+  - question: 'How is this different from hiring a consultant?'
+    answer: >-
+      A consultant delivers a report and leaves. A fractional CTO is accountable for outcomes over time: the architecture still has to work six months later, and I am still there when it is tested. The audit is often the first step, but the role is the ongoing ownership.
+  - question: 'Do you work with startups in the US and UK from Pakistan?'
+    answer: >-
+      Yes. I am based in Karachi (UTC+5), which covers the entire UK working day and US East Coast mornings live. Fractional work is inherently asynchronous and written, so the time difference is rarely the constraint people expect it to be.
+  - question: 'When should a company stop needing a fractional CTO?'
+    answer: >-
+      When it can afford and attract a full-time one, or when the engineering lead you have grown into the role. Part of the job is making myself unnecessary: writing down the reasoning so the decisions outlive my involvement.
+cta:
+  heading: 'Need CTO-level decisions without a CTO-level hire?'
+  description: "Tell me what you are building, what stage you are at and which technical decisions are keeping you up at night. I'll tell you which ones actually matter."
+---
+
+I work as a fractional CTO and architecture consultant from Karachi, Pakistan, for startups and small product companies in the US, UK and Europe that need senior technical leadership but not, yet, a full-time executive. This page explains what that role is, what I take ownership of, and why a founder who has shipped a product himself approaches it differently from a consultant who has not.
+
+## When a company needs a CTO's decisions but not a CTO's salary
+
+Every early product company faces a handful of technical decisions that are very expensive to get wrong: how the system is split into services, which cloud and which vendors it depends on, whether to build or buy the next capability, what standard a new hire has to meet, and which shortcuts on the roadmap are acceptable debt and which are landmines. None of those decisions needs forty hours a week. All of them need someone senior enough to be accountable for the answer.
+
+That is the gap a fractional CTO fills. Companies engage me in this role when the founders are not technical, when the technical founder has become the bottleneck for every decision, or when an engineering team is shipping features quickly onto a foundation nobody has stopped to examine.
+
+## What I take ownership of
+
+Architecture direction. The service boundaries, data flow and failure paths, written down with the trade-offs stated out loud so they survive the people who made them. The [software architect](/expertise/software-architect) page covers this in depth.
+
+Cloud, infrastructure and vendor decisions. What runs where, what it costs and what it should cost. On the FinTech platform [Hysab Kytab](/work/hysab-kytab), rightsizing and observability work on GCP cut cloud spend by 25 percent with no loss of reliability. Those decisions compound: a cloud bill is a monthly reminder of an architecture choice.
+
+The engineering bar. What a design document must contain, what a pull request must prove, how a service is owned. Getting ownership right on my current team cut cross-team integration issues by more than half. The [engineering lead](/expertise/engineering-lead) page covers the people side.
+
+Technical risk on the roadmap. Which planned features the current architecture cannot support, which dependencies are fragile, and what the honest cost of the next stage is. A founder deserves to hear that before the investor asks.
+
+Hiring. Interviewing senior candidates, defining what the first few engineering hires should look like, and making sure the team being built can own the system after I step back.
+
+## Architecture audit first, then a plan
+
+Most fractional engagements start with an audit, because you cannot direct a system you have not read. I go through the code, the infrastructure, the incident history and the way work flows from idea to production, then write up prioritised findings with effort estimates: what is actually causing the pain, what is merely ugly, and what each fix costs. The output is a document your team can act on, not a slide deck.
+
+Where a migration is needed, I favour incremental patterns over rewrites. The strangler fig approach, which I have written about on the blog, lets a team replace a system piece by piece while the old one keeps serving traffic. Rewrites are where budgets and morale go to die, and a fractional CTO who recommends one should be able to show you why nothing less will do.
+
+## A founder's perspective
+
+I founded [TrackHRS](/work/trackhrs), a time tracking and activity intelligence platform with a Rust desktop agent, two web applications and eight microservices, and I still run it. That means I have made every one of the decisions above with my own money and my own weekends at stake: pricing, billing, support, deploying on a Sunday, deciding which feature waits and which one ships. When I advise a founder on scope, I am not repeating a framework. I am describing a mistake I have either made or narrowly avoided.
+
+It also means I respect what a startup cannot afford. The architecture I recommend for a five-person company is not the one I designed for a platform serving digital banks. It is the smallest system that will survive the next stage, with the seams in the right places so it can grow.
+
+## AI without the debt
+
+A specific version of this role has emerged in the last two years: companies shipping AI features fast and needing someone to make sure they do not inherit AI debt. I use agentic tooling to move quickly, and then I apply the architecture review that keeps the result maintainable: evaluation sets, tracing, guardrails and cost controls before the feature reaches customers. The [AI engineer](/expertise/ai-engineer) page describes the systems side of that work, and it is increasingly part of what a fractional CTO is asked to own.
+
+## How the engagement runs
+
+A fixed weekly block for design review and decisions, usually inside the overlap window between Karachi and your time zone, which covers the entire UK day and US East Coast mornings. A written decision log so every choice has its reasoning attached. Availability for the questions that cannot wait. And a clear understanding from the start that part of my job is to make myself unnecessary: growing your engineering lead into the role, or helping you hire the full-time CTO when the company is ready for one. The [services page](/services) describes the engagement models, and the [expertise hub](/expertise) has the practical details of working with me remotely.

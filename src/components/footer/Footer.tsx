@@ -15,6 +15,7 @@ const linkClasses = 'text-default-600 hover:text-default-900 text-base transitio
 const exploreLinks: FooterLink[] = [
   { label: 'Home', href: '/' },
   { label: 'Services', href: '/services' },
+  { label: 'Expertise', href: '/expertise' },
   { label: 'Work', href: '/work' },
   { label: 'About', href: '/about' },
   { label: 'Blog', href: '/blog' },
@@ -28,20 +29,25 @@ const elsewhereLinks: FooterLink[] = [
   { label: 'Privacy Policy', href: '/privacy-policy' },
 ]
 
-const Footer = () => {
+type FooterProps = {
+  /** Role article links, resolved server-side and passed through AppProvidersWrapper */
+  expertiseLinks?: FooterLink[]
+}
+
+const Footer = ({ expertiseLinks = [] }: FooterProps) => {
   const year = new Date().getFullYear()
 
   return (
     <footer className="bg-body-bg pt-20 pb-5 lg:pb-7.5">
       <div className="container">
-        <div className="grid grid-cols-1 justify-between gap-7.5 md:grid-cols-4 md:gap-12.5 lg:gap-24">
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 justify-between gap-7.5 md:grid-cols-2 md:gap-12.5 lg:grid-cols-5 lg:gap-16">
+          <div className="md:col-span-2">
             <div className="mb-8 inline-block">
               <Logo />
             </div>
 
             <div className="lg:max-w-md">
-              <h3 className="mb-2.5 text-xl font-medium md:text-2xl">Have a system to build?</h3>
+              <h2 className="mb-2.5 text-xl font-medium md:text-2xl">Have a system to build?</h2>
               <p className="text-default-500 mb-5 text-lg">{site.availability}. Tell me what you&apos;re building and I&apos;ll tell you how I&apos;d architect it.</p>
 
               <a href={`mailto:${site.email}`} className="bg-default-900 group inline-flex items-center gap-2 rounded-full px-6 py-3.5 font-medium text-white transition-all hover:scale-95">
@@ -52,7 +58,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-default-900 mb-5 text-base font-medium lg:mb-7.5">Explore</h3>
+            <h2 className="text-default-900 mb-5 text-base font-medium lg:mb-7.5">Explore</h2>
             <div className="flex flex-col justify-end gap-2">
               {exploreLinks.map((item, index) => (
                 <Link key={index} href={item.href} className={linkClasses}>
@@ -62,8 +68,21 @@ const Footer = () => {
             </div>
           </div>
 
+          {expertiseLinks.length > 0 && (
+            <div>
+              <h2 className="text-default-900 mb-5 text-base font-medium lg:mb-7.5">Expertise</h2>
+              <div className="flex flex-col gap-2">
+                {expertiseLinks.map((item) => (
+                  <Link key={item.href} href={item.href} className={linkClasses}>
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div>
-            <h3 className="text-default-900 mb-5 text-base font-medium lg:mb-7.5">Case studies</h3>
+            <h2 className="text-default-900 mb-5 text-base font-medium lg:mb-7.5">Case studies</h2>
             <div className="flex flex-col gap-2">
               {caseStudies.map((study) => (
                 <Link key={study.slug} href={`/work/${study.slug}`} className={linkClasses}>
@@ -90,7 +109,7 @@ const Footer = () => {
                   <Link key={index} href={item.href} className="text-default-600 hover:text-default-900 text-sm transition-colors">
                     {item.label}
                   </Link>
-                ),
+                )
               )}
 
               <div className="flex items-center gap-2.5">

@@ -1,0 +1,71 @@
+---
+title: 'Next.js development: App Router, ecommerce and SEO-first sites'
+seoTitle: 'Next.js Developer in Karachi, Pakistan'
+description: 'Next.js developer in Karachi, Pakistan, remote for US, UK and EU teams. App Router, React Server Components, ecommerce storefronts, portals and marketing sites built to rank and to scale.'
+role: 'Next.js Developer'
+kind: technology
+eyebrow: 'Expertise · Next.js'
+icon: 'simple-icons:nextdotjs'
+order: 8
+published: '2026-09-08'
+updated: '2026-09-08'
+keywords: ['Next.js developer Pakistan', 'hire Next.js developer', 'remote Next.js developer', 'Next.js developer Karachi', 'React developer Karachi', 'Next.js ecommerce developer', 'App Router', 'React Server Components']
+stats:
+  - { value: '500+', label: 'Projects delivered', description: 'Web, ecommerce, CMS and ERP platforms' }
+  - { value: '2', label: 'Next.js apps on TrackHRS', description: 'Admin portal and public marketing site' }
+  - { value: '16', label: 'Next.js version', description: 'This site: App Router, RSC, metadata API and MDX' }
+caseStudies: ['trackhrs', 'agentx']
+skillGroups: ['Frontend & desktop', 'Backend & APIs']
+blogTags: ['Performance', 'Architecture']
+relatedPosts: ['latency-vs-throughput']
+faq:
+  - question: 'Do you build with the App Router or the Pages Router?'
+    answer: >-
+      App Router, with React Server Components by default and client components only where interaction needs them. This site is built that way on Next.js 16. For an existing Pages Router codebase I migrate incrementally rather than rewriting.
+  - question: 'Can you build a Next.js ecommerce storefront?'
+    answer: >-
+      Yes. Storefronts, checkout and payment integration, order and inventory flows and the admin behind them are a large share of the several hundred client projects I have delivered, on Next.js and on the stacks clients already ran.
+  - question: 'Do you handle the backend too, or only the Next.js layer?'
+    answer: >-
+      Both. Most performance problems a user sees in a Next.js app were caused by a slow query or a synchronous call three layers down, so I own the API and data layer as well when the project needs it.
+  - question: 'Do you work with remote teams in the US and UK?'
+    answer: >-
+      Yes, from Karachi, Pakistan (UTC+5). I cover the UK working day and US East Coast mornings live and work asynchronously the rest of the time.
+cta:
+  heading: 'Have a Next.js project that needs to ship, or one that needs rescuing?'
+  description: "Tell me what it is, what it should do and where it is slow or stuck. I'll tell you how I'd approach it."
+---
+
+I am a Next.js developer based in Karachi, Pakistan, building web applications, storefronts, portals and marketing sites for teams in the US, UK and Europe. Next.js is my default for anything that faces a customer or a search engine, because server rendering, the metadata API and a sane data-fetching model are built in rather than bolted on. This page is about how I use it and what I have shipped with it.
+
+## App Router first
+
+I build on the App Router with React Server Components by default. Pages render on the server, data is fetched where it is used, and client components are reserved for the parts that genuinely need interaction. That gives fast first loads, small client bundles and HTML that search engines and social previews can read without executing JavaScript.
+
+This site is a working example: Next.js 16 with React 19, the metadata API for titles, canonicals and Open Graph images generated per route, a sitemap and robots file from the file conventions, MDX content rendered on the server, and structured data on every page. Building a portfolio that way is a small thing, but it is the same set of decisions I make on client projects, applied to myself.
+
+## Ecommerce and content platforms
+
+A large share of the more than five hundred client projects I have delivered are ecommerce, CMS and ERP platforms: high-traffic storefronts, checkout and payment integration, order, inventory and fulfilment flows, headless CMS builds and the admin portals behind them. Next.js suits that work because the storefront can be server-rendered for speed and indexing while the cart, search and account areas stay interactive.
+
+The part clients underestimate is what happens on a sale day. Caching strategy, image handling, incremental regeneration for catalogue pages and a backend that does not fall over under a traffic spike matter more than any front-end animation. I own those layers too; the [full stack engineer](/expertise/full-stack-engineer) page covers the whole path.
+
+## Portals and admin applications
+
+On [TrackHRS](/work/trackhrs), the platform I founded, both the authenticated admin portal and the public marketing site are Next.js. The portal is an operations tool used every day by HR and management, sitting on eight NestJS microservices and a Kafka pipeline; the marketing site is a lead-capture surface that has to load instantly and rank. Same framework, very different constraints, and that range is why I keep choosing it.
+
+On [AgentX](/work/agentx), the multi-agent platform that generates full-stack applications from natural language, the generated output includes Next.js and React front ends, and I built the Figma-to-code integration that turns design files into component trees. Writing code that generates good Next.js is a useful test of whether you understand what good Next.js is.
+
+## Performance and SEO by default
+
+A Next.js site is fast and indexable by default only if you keep it that way. I pay attention to the things that quietly regress: client components creeping into layouts, data fetching that blocks the whole page, images without sizes, metadata that is missing or duplicated across routes. On the SEO side, per-route titles and descriptions, canonical URLs, Open Graph images, structured data and a sitemap are part of the definition of done, not a later phase.
+
+When a page is slow, the cause is usually below the framework. A Redis cache-first read strategy cut latency by more than 60 percent on a FinTech platform I architected, and no amount of front-end tuning would have achieved that. I have written about the difference between [latency and throughput](/blog/latency-vs-throughput) on the blog.
+
+## When Next.js is the wrong tool
+
+It is not always the answer. A purely internal tool with a handful of users does not need server rendering. A native desktop application does not need React at all; TrackHRS uses Rust with Tauri 2 for its agent. A backend-heavy system needs NestJS or Golang services behind whatever front end sits on top. Part of being a good Next.js developer is knowing when not to reach for it, and the [software architect](/expertise/software-architect) page describes how I make that call.
+
+## The stack around it
+
+React and TypeScript, Tailwind CSS, Redux Toolkit where client state gets complex, MDX for content, and NestJS, Golang or Python services behind the API layer. Deployment on Docker and Kubernetes or a managed platform depending on the client, with CI on GitHub Actions or Jenkins. For how I work remotely from Karachi with teams in the US and UK, see the [expertise hub](/expertise).

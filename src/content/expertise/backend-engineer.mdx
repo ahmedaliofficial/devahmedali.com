@@ -1,0 +1,83 @@
+---
+title: 'Backend engineering for event-driven, high-throughput systems'
+seoTitle: 'Backend Engineer in Karachi, Pakistan'
+description: 'Backend engineer and developer in Karachi, Pakistan, remote for US, UK and EU teams. NestJS, Golang and FastAPI services, Kafka pipelines at 100K+ events a day, seven database engines.'
+role: 'Backend Engineer'
+kind: role
+eyebrow: 'Expertise · Backend'
+icon: 'lucide:server'
+order: 3
+published: '2026-09-08'
+updated: '2026-09-08'
+keywords: ['backend engineer Pakistan', 'backend developer Karachi', 'remote backend engineer', 'Node.js backend developer Pakistan', 'NestJS backend', 'Golang backend', 'Kafka developer', 'microservices developer']
+stats:
+  - { value: '100K+', label: 'Events per day', description: 'Through a three-broker Kafka cluster in production' }
+  - { value: '100×', label: 'Fewer immediate writes', description: 'Batching on the TrackHRS ingest path' }
+  - { value: '60%+', label: 'Lower read latency', description: 'Redis cache-first strategy on a FinTech platform' }
+caseStudies: ['hysab-kytab', 'omnivision', 'trackhrs']
+skillGroups: ['Backend & APIs', 'Messaging & streaming', 'Databases']
+blogTags: ['Kafka', 'Databases', 'Distributed Systems', 'Microservices', 'Performance']
+relatedPosts: ['designing-event-pipelines-that-survive-100k-events-a-day', 'latency-vs-throughput']
+faq:
+  - question: 'Node.js or Go for a new backend?'
+    answer: >-
+      It depends on the path. I reach for NestJS when the domain is rich and the team is TypeScript-first, and for Golang when a service sits on a latency-critical path or moves a lot of bytes. On the FinTech platform both coexist: Go on the aggregation and transaction core, NestJS on the domain and product APIs, gRPC between them.
+  - question: 'Can you take over a backend someone else built?'
+    answer: >-
+      Yes, and it is often the most useful thing I do. The first step is reading the code, the infrastructure and the incident history, then writing down what is actually causing the pain before touching anything. Migrations happen incrementally, with the old and new paths running side by side.
+  - question: 'Do you design the database as well as the services?'
+    answer: >-
+      Yes. Schema design, indexing and query optimisation are part of the job, and I have run PostgreSQL, MongoDB, MySQL, Oracle, SQL Server, SQLite and Redis in production. Which engine owns which data is an architectural decision I would rather make deliberately than inherit.
+  - question: 'What hours do you keep for US and UK teams?'
+    answer: >-
+      I am in Karachi, Pakistan (UTC+5), so I cover the full UK working day and the US East Coast morning live, and work asynchronously the rest of the time. Backend work suits that well: most of it is code, tests and written design rather than meetings.
+cta:
+  heading: 'Have a backend that is slowing down, or one that does not exist yet?'
+  description: "Tell me what it needs to do and what it has to survive. I'll tell you how I'd build it and where the hard parts are."
+---
+
+I am a backend engineer based in Karachi, Pakistan, and backend systems are the core of most of my work for teams in the US, UK and Europe: typed, tested services with API contracts that hold up as the team and the traffic grow. Whether the job title says engineer or developer, the work is the same, and this page is about how I do it, drawn from three production systems with very different constraints.
+
+## Backends are mostly about failure modes
+
+The happy path of a backend is rarely the hard part. The hard part is what happens when the network drops mid-request, when two replicas pick up the same message, when a downstream model call takes eight seconds instead of eighty milliseconds, or when a database that was fine at ten thousand rows is not fine at a hundred million. Good backend engineering is deciding, in advance and in writing, what each of those does.
+
+That mindset shows up in how I structure every service I build: what is on the request path and what is not, what is idempotent and what is not, and what the retry, timeout and dead-letter behaviour is for every step that can fail.
+
+## Streams and queues: Kafka, RabbitMQ and BullMQ
+
+Three of my systems run on event backbones, and each uses the tooling differently because the constraints differ.
+
+On [Hysab Kytab](/work/hysab-kytab), a personal finance platform delivered to digital banks, more than 100,000 financial events a day flow through a three-broker Kafka cluster feeding monitoring, audit trails and real-time alerting. Kafka is the durable, replayable backbone; RabbitMQ handles targeted fan-out where routing matters more than retention. Aggregation from multiple banks is slow and unpredictable; customer apps are neither. The event layer keeps those two realities apart.
+
+On [OmniVision](/work/omnivision), a real-time AI workplace safety platform, the whole value of the system is measured in seconds. Video inference is computationally heavy and bursty, alerting has to be immediate, and coupling them directly would mean either a slow alert or a stalled pipeline. I built the Python and FastAPI backend with Kafka ingestion and RabbitMQ fan-out so detection, WhatsApp alerts and email alerts each scale on their own terms and one slow channel never delays another.
+
+On [TrackHRS](/work/trackhrs), Kafka consumer groups give partition-aware horizontal scaling on the ingest path, and BullMQ carries classification and delayed jobs so latency-sensitive writes never share a path with heavier work.
+
+## Idempotency, deduplication and batching
+
+The TrackHRS ingest pipeline is the clearest example of backend engineering as a set of specific mechanisms. Desktop activity events arrive over Kafka. A NestJS consumer processes the stream with partition-aware scaling. A Redis key check in constant time makes processing multi-replica-safe, so the same event is never counted twice. A batch service collects up to 100 items or a five-second window before writing to MongoDB, which gives up to 100 times fewer immediate database writes on the hot path. Bulk upserts land in a replica set with indexed reporting queries.
+
+Downstream, classification runs as a BullMQ job against a bearer-key FastAPI service, so the machine learning lifecycle iterates independently of the TypeScript services. When it fails, the failure falls through a circuit breaker, exponential retry and a dead-letter collection that a distributed cron reprocesses, with Redis locks guaranteeing the cron runs exactly once across replicas. A cache invalidation event means the next dashboard read is fresh without depending on a short TTL to expire.
+
+## Polyglot by job, not by fashion
+
+I have shipped production backends in NestJS and Node.js, Golang, Spring Boot, Python with FastAPI, and PHP with Laravel, and I choose per service rather than per project.
+
+Golang carries the performance-critical core on Hysab Kytab: aggregation and transaction services on the critical financial path, with end-to-end encryption implemented in Go for payloads crossing service boundaries. NestJS carries domain and product APIs where a rich module system and TypeScript typing pay off. Spring Boot handles enterprise integrations that already lived in the Java world. FastAPI isolates Python model code from the strongly typed core. All of them speak gRPC to each other and REST at the edge, with enforced security standards on both. The [Golang developer](/expertise/golang-developer) and [NestJS developer](/expertise/nestjs-developer) pages go deeper on the two I use most.
+
+## Seven database engines in production
+
+Hysab Kytab needed PostgreSQL, MongoDB, MySQL, Oracle and SQL Server, because the bank integrations dictated them. The engineering was to put all five behind one cohesive service layer, each used where it was genuinely the right tool, so the banking app never had to know which engine an answer came from. The result was 99.9 percent data integrity across the landscape.
+
+Elsewhere, MongoDB replica sets fit evolving activity payloads and organisation structures on TrackHRS, SQLite buffers events on the desktop when the laptop is offline, and Redis does cache acceleration, deduplication, queue backing and distributed locks. Schema design, indexing and query optimisation are part of every one of those choices, not a separate task handed to someone else.
+
+## Security and operability basics
+
+The unglamorous parts of a backend are the ones that keep you out of the incident channel. Across the Node services on TrackHRS: JWT authentication with role-aware APIs, bcrypt password hashing with OTP and reset flows on Redis TTLs, API key authentication for classifier calls, rate limiting and secure headers, and structured health endpoints for readiness and liveness. On Hysab Kytab: enforced REST and gRPC security standards, audit trails built on the Kafka event log, and real-time monitoring and alerting on financial event streams.
+
+## Performance and cost
+
+A Redis cache-first read strategy cut average read latency by more than 60 percent on the FinTech platform, because aggregated financial views are read far more often than they change. Observability and rightsizing work on GCP brought cloud costs down by 25 percent with no loss of reliability. Moving releases onto Kubernetes and Docker cut deployment effort by roughly 70 percent. Backend engineering includes the bill and the release process, not just the code.
+
+When a backend problem is really an architecture problem, the [software architect](/expertise/software-architect) page describes how I approach the design level, and the [expertise hub](/expertise) has the practical details of working with me remotely from Karachi.

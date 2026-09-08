@@ -1,3 +1,5 @@
+import { site } from './site'
+
 export type SkillGroup = {
   title: string
   icon: string
@@ -69,7 +71,7 @@ export const techLogos: { name: string; icon: string }[] = [
 /** Headline numbers shown directly under the hero */
 export const headlineStats = [
   { value: '500+', label: 'Projects delivered', description: 'Web, ecommerce, CMS, ERP and AI platforms' },
-  { value: '6+', label: 'Years engineering', description: 'FinTech, AI and SaaS at production scale' },
+  { value: site.experience.label, label: 'Years engineering', description: 'FinTech, AI and SaaS at production scale' },
   { value: '100K+', label: 'Events per day', description: 'Kafka pipelines running in production' },
   { value: '20+', label: 'Engineers led', description: 'Across AI, ecommerce and CMS product lines' },
 ]

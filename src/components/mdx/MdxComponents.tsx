@@ -4,7 +4,7 @@ import type { ComponentProps } from 'react'
 /** Element overrides handed to <MDXRemote components={...} />. Typed against the
  *  intrinsic elements they replace so we don't need @types/mdx. */
 type MdxComponentMap = {
-  [K in 'h2' | 'h3' | 'p' | 'a' | 'ul' | 'ol' | 'li' | 'strong' | 'blockquote' | 'pre' | 'code' | 'hr' | 'table' | 'thead' | 'tbody' | 'tr' | 'th' | 'td']: (props: ComponentProps<K>) => React.ReactElement
+  [K in 'h2' | 'h3' | 'h4' | 'p' | 'a' | 'ul' | 'ol' | 'li' | 'strong' | 'blockquote' | 'pre' | 'code' | 'hr' | 'table' | 'thead' | 'tbody' | 'tr' | 'th' | 'td']: (props: ComponentProps<K>) => React.ReactElement
 }
 
 export const mdxComponents: MdxComponentMap = {
@@ -17,6 +17,11 @@ export const mdxComponents: MdxComponentMap = {
     <h3 className="font-heading text-default-900 mt-8 mb-3 text-xl font-semibold md:text-2xl" {...props}>
       {children}
     </h3>
+  ),
+  h4: ({ children, ...props }) => (
+    <h4 className="font-heading text-default-900 mt-6 mb-2 text-lg font-semibold md:text-xl" {...props}>
+      {children}
+    </h4>
   ),
   p: ({ children, ...props }) => (
     <p className="text-default-600 my-5 text-base leading-relaxed md:text-lg" {...props}>

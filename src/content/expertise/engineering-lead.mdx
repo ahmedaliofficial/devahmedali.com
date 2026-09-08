@@ -1,0 +1,77 @@
+---
+title: 'Leading engineering teams: boundaries, standards and shipping'
+seoTitle: 'Engineering Lead & Technical Lead, Karachi'
+description: 'Engineering lead and technical lead in Karachi, Pakistan, remote for US, UK and EU product teams. 20+ engineers led across AI, ecommerce and CMS, with 50% fewer integration issues.'
+role: 'Engineering Lead'
+kind: role
+eyebrow: 'Expertise · Leadership'
+icon: 'lucide:users'
+order: 6
+published: '2026-09-08'
+updated: '2026-09-08'
+keywords: ['engineering lead Pakistan', 'technical lead Karachi', 'tech lead remote', 'tech lead for startups', 'remote engineering team lead', 'engineering manager Pakistan', 'service ownership']
+stats:
+  - { value: '20+', label: 'Engineers led', description: 'Across AI, ecommerce and CMS product lines' }
+  - { value: '50%+', label: 'Fewer integration issues', description: 'From clear service boundaries and ownership' }
+  - { value: '~70%', label: 'Less deployment effort', description: 'Kubernetes and Docker replacing manual releases' }
+caseStudies: ['agentx', 'trackhrs']
+skillGroups: ['System design', 'Cloud & DevOps']
+blogTags: ['Architecture', 'Microservices', 'Legacy Systems', 'Migration']
+relatedPosts: ['the-strangler-fig-pattern', 'sidecar-pattern-in-system-design']
+faq:
+  - question: 'Engineering lead or engineering manager?'
+    answer: >-
+      Lead. I own technical direction, standards, service boundaries and mentoring, and I still write code. I am not the person who runs performance reviews and headcount planning, though I work closely with whoever does.
+  - question: 'Can you lead a team remotely from Pakistan?'
+    answer: >-
+      Yes, and most of my leadership has been of distributed teams. From Karachi (UTC+5) I cover the whole UK working day and US East Coast mornings live. The rest runs on written design documents, recorded walkthroughs and asynchronous review, which tends to produce better documentation than a co-located team ever writes.
+  - question: 'Do you embed with an existing team or bring your own?'
+    answer: >-
+      Embed. The ongoing partner model on the services page is exactly this: joining your team as an architect or engineering lead, setting standards, mentoring and owning technical direction long term.
+  - question: 'What does the first month look like?'
+    answer: >-
+      Listening and reading: the code, the incident history, how work currently flows from idea to production. Then a written view of what is actually slowing the team down, which is usually ownership and boundaries rather than talent, and a short list of changes with the reasoning behind each.
+cta:
+  heading: 'Need a technical lead your engineers will actually follow?'
+  description: "Tell me about the team, the system and where shipping gets stuck. I'll tell you what I would change first and why."
+---
+
+I am an engineering lead based in Karachi, Pakistan, and I have led more than twenty engineers across AI, ecommerce and CMS product lines, most of them in distributed teams working with companies in the US, UK and Europe. This page is about how I lead: what I believe slows engineering teams down, what I change first, and the two systems where I did it. It is written for founders and engineering leaders deciding whether a technical lead is what their team needs.
+
+## Boundaries are an organisational tool
+
+Service boundaries decide who can ship without asking permission. That is the single most important thing I have learned about leading engineers. When two teams share a database table or a poorly defined API, every change is a negotiation, every incident has two owners and therefore none, and velocity dies slowly enough that nobody notices the cause.
+
+On my current team, getting boundaries and ownership right cut cross-team integration issues by more than half. The mechanism was not clever. Each service has one owning team, one contract, and one place where its failure behaviour is written down. Changes to a contract are versioned and announced. The architecture and the org chart agree with each other. The [software architect](/expertise/software-architect) page covers the design side of the same decision.
+
+## Standards that outlive their author
+
+The second thing I change is what has to exist before code starts. A design document with the trade-offs stated out loud, because the reason we picked Kafka over a queue should not evaporate when the person who chose it leaves. A definition of what a pull request has to prove: tests, a note on the failure path, an update to the runbook if behaviour changed. Clear code over clever code, because clever code is a liability the moment its author moves on.
+
+None of that is bureaucracy if it is kept short. A one-page design document that the team actually reads is worth more than a twenty-page one that nobody does. I optimise for the engineer who inherits the system a year from now, which is often me.
+
+## Leading twenty-plus engineers across product lines
+
+On [AgentX](/work/agentx), a multi-agent platform generating full-stack applications from natural language, I led architecture and integrations across a team spanning the AgentX platform and client product lines. The constraint I set for everyone, from agent design to code generation templates, was maintainability: generated output a human team has to inherit is only valuable if it looks like code they would have written. A constraint like that only holds if the lead repeats it, reviews for it and models it in their own code.
+
+The leadership work there was less about telling engineers what to build and more about making the decisions that let them build independently: which agent owns which stage, how integrations expose themselves through the Model Context Protocol, and what "done" means for a generated application.
+
+## Making deployment boring
+
+Nothing demoralises a team like releases that take an evening and sometimes break. Moving manual releases onto Docker and Kubernetes, with Jenkins and GitHub Actions running CI, cut deployment effort by roughly 70 percent on the systems I lead. Structured health checks, rate limiting and secure headers across services, and observability that tells you which component is unhappy before a customer does, are all part of the same goal: shipping stops being an event.
+
+A team that can deploy on a Tuesday afternoon without a war room behaves differently. It ships smaller changes, learns faster and argues less.
+
+## Mentoring on system design and production readiness
+
+Most engineers learn system design from incidents. I would rather they learned it from design reviews. I spend a meaningful part of every week reviewing designs and pull requests with the specific goal of teaching the failure-path habit: where does this retry, what happens when it is called twice, what does the dashboard show when this queue backs up. Engineers who have been asked those questions fifty times start asking them of themselves, and that is the point at which a team stops needing its lead for every decision.
+
+## A founder's view of leadership
+
+Founding [TrackHRS](/work/trackhrs) taught me the parts of engineering leadership that a purely technical lead never sees: pricing, support, deploying on a Sunday, and the difference between a system that works and a product people pay for. It also gave me a healthy respect for scope. The platform has twelve components and eight microservices, and every one of them exists because a real user needed it, not because the architecture would look better with it.
+
+That perspective shapes how I lead other people's teams. Engineering exists to ship something someone wants. When a technical decision and a product decision conflict, I want the team to understand why the product usually wins, and to build in a way that keeps the option to revisit it later.
+
+## Leading remotely across time zones
+
+Leading from Karachi for teams in the US and UK works because leadership, done well, is mostly written. Design documents, decision records, review comments and runbooks travel across time zones better than meetings do. I keep a fixed daily overlap window for the conversations that genuinely need to be live, and treat everything else as asynchronous by default. The [expertise hub](/expertise) has the practical details, and the [fractional CTO](/expertise/fractional-cto) page describes the version of this role for companies that need the decisions without a full-time hire.

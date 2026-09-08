@@ -1,0 +1,79 @@
+---
+title: 'AI engineering: agents, RAG and MCP servers that survive production'
+seoTitle: 'AI Engineer in Karachi, Pakistan: LLMs, Agents, RAG'
+description: 'AI engineer in Karachi, Pakistan, remote for US, UK and EU teams. LangChain and LangGraph agents, RAG pipelines, custom MCP servers and real-time vision systems in production.'
+role: 'AI Engineer'
+kind: role
+eyebrow: 'Expertise · AI systems'
+icon: 'lucide:brain-circuit'
+order: 5
+published: '2026-09-08'
+updated: '2026-09-08'
+keywords: ['AI engineer Pakistan', 'LLM engineer Karachi', 'LangChain developer', 'LangGraph developer', 'RAG developer Pakistan', 'AI agent developer', 'MCP server developer', 'generative AI engineer Pakistan', 'multi-agent systems']
+stats:
+  - { value: 'Seconds', label: 'Incident to alert', description: 'Real-time vision pipeline on OmniVision' }
+  - { value: 'Phase 1', label: 'Shipped', description: 'AgentX generating full-stack applications' }
+  - { value: '100K+', label: 'Events per day', description: 'Feeding FinTech RAG and advisory features' }
+caseStudies: ['agentx', 'hysab-kytab', 'omnivision']
+skillGroups: ['AI & agent engineering', 'Backend & APIs', 'Messaging & streaming']
+blogTags: ['AI', 'RAG', 'MCP', 'Agents', 'LangGraph', 'LangChain']
+relatedPosts: ['rag-is-a-systems-problem', 'building-custom-mcp-servers-for-agent-tools', 'langchain-vs-langgraph-choosing-the-right-abstraction']
+faq:
+  - question: 'Do you fine-tune models?'
+    answer: >-
+      My work is on the systems side of AI: retrieval, agents, tool integration, evaluation and the pipelines around a model, not training the model itself. In practice that is where most production AI problems live. If a project genuinely needs fine-tuning, I will say so and scope it honestly.
+  - question: 'LangChain or LangGraph?'
+    answer: >-
+      LangChain for straightforward chains and integrations; LangGraph when the workflow has state, branches, retries or more than one agent. I have written up the decision in detail on the blog, and AgentX is built on the graph side of that line.
+  - question: 'Can you build a custom MCP server for our tools?'
+    answer: >-
+      Yes. Exposing your own systems to an agent through the Model Context Protocol is one of the most useful things I do, because it turns a chatbot into something that can act. The AgentX integration layer is MCP tool orchestration, and there is a walkthrough on the blog.
+  - question: 'Do you work remotely with AI teams in the US and UK?'
+    answer: >-
+      Yes, from Karachi, Pakistan (UTC+5), covering the full UK working day and US East Coast mornings live. AI work is heavily asynchronous by nature: evaluation runs, traces and design documents travel across time zones well.
+cta:
+  heading: 'Have an AI feature that needs to survive real users?'
+  description: "A demo that works is the easy part. Tell me what the system has to do when it is wrong, slow or asked something it has never seen, and I'll tell you how I'd build it."
+---
+
+I am an AI engineer based in Karachi, Pakistan, working remotely with teams in the US, UK and Europe on systems that put language models, retrieval and computer vision into production. The word "production" is the whole point. A demo that answers questions is a weekend project. A system that answers them correctly, cites its sources, says so when it does not know, costs a predictable amount and can be traced when it goes wrong is engineering, and it is the kind of AI work this page is about.
+
+## AI is a systems problem
+
+Most AI failures in production are not model failures. They are retrieval that returned the wrong chunks, an agent that looped on a tool error, a prompt that silently changed behaviour after an upgrade, or a pipeline with no evaluation set so nobody noticed quality degrading for six months. I approach AI the way I approach any distributed system: define the failure modes first, give each one a specific mechanism, and instrument everything.
+
+That means RAG pipelines with citations and freshness guarantees rather than a vector search bolted onto a chat window. It means agents whose every decision belongs to a stage you can inspect. It means LangSmith tracing, regression sets and guardrails from the first version, not the fourth. I have written more on why [RAG is a systems problem](/blog/rag-is-a-systems-problem) on the blog.
+
+## Multi-agent systems: AgentX
+
+[AgentX](/work/agentx) is a multi-agent platform that generates production-ready full-stack applications from natural language prompts. It is built on LangChain and FastAPI, with specialised agents handling planning, schema design, UI generation and tool orchestration rather than one model attempting everything at once. Phase 1 is complete and generating applications.
+
+The interesting problem was not generation. It was the gap between an abstract requirement and a concrete database schema and component tree. A prompt like "let users book appointments" implies entities, relationships, states and screens that nobody stated, and getting them wrong compounds through every file the system writes. I led architecture and integrations and built the integration layer: Figma-to-code, Supabase provisioning, and the Model Context Protocol tool orchestration that lets agents act on real systems. The constraint I set for the whole platform was maintainability. Generated code that a human team has to inherit is only valuable if it looks like code they would have written.
+
+## Retrieval and advisory in a regulated domain
+
+On [Hysab Kytab](/work/hysab-kytab), a personal finance platform delivered to digital banks including Temenos and Interswitch, AI sits on top of an event backbone carrying more than 100,000 financial events a day. LangChain RAG pipelines turn raw transactions into expense intelligence, and a Shariah-compliant multi-agent advisory chatbot turns that intelligence into guidance a bank is willing to put its name on.
+
+Regulated domains are where the systems mindset matters most. The retrieval has to be grounded in the customer's actual data, the advice has to stay inside a defined boundary, and every answer has to be traceable. Those are engineering constraints, and they shaped the pipeline more than the choice of model did.
+
+## Real-time computer vision: OmniVision
+
+[OmniVision](/work/omnivision) watches enterprise sites for smoke, safety anomalies and operational events, and tells someone immediately. Unlike an analytics product, its usefulness collapses if an alert arrives late; a detection that lands five minutes after a fire started is not a feature.
+
+That single constraint drove the architecture. Video inference is computationally heavy and bursty; alerting has to be immediate and reliable. I built the Python and FastAPI backend with Kafka ingestion pipelines and RabbitMQ fan-out so detection, WhatsApp alerts and email alerts each scale on their own terms and one slow channel never delays another. Continuous inference runs around the clock, and the time from incident to a phone in someone's hand is measured in seconds.
+
+## Custom MCP servers and tool calling
+
+An agent that can only talk is a chatbot. An agent that can act on your systems is a product, and the Model Context Protocol is how I give it that ability safely: a server that exposes your own tools with typed inputs, clear permissions and predictable errors. The AgentX integration layer is built this way, and I have written a practical guide to [building custom MCP servers for agent tools](/blog/building-custom-mcp-servers-for-agent-tools).
+
+The engineering discipline is the same as any API: idempotent operations where possible, explicit failure responses the agent can reason about, and tracing so you can see exactly which tool call went wrong and why.
+
+## Evaluation, tracing and cost control
+
+The part of AI engineering that separates a prototype from a product is everything around the model. LangSmith tracing so every agent step and retrieval is inspectable. Regression sets so a prompt or model change is measured, not felt. Guardrails and fallbacks so the system has a sensible answer when it does not know. Cost controls so a runaway agent loop is a logged event rather than an invoice. These are the deliverables I scope into every AI engagement, because without them the demo degrades quietly and nobody knows until a customer says so.
+
+## Choosing the abstraction
+
+LangChain for straightforward chains and integrations. LangGraph when the workflow has state, branches, retries or more than one agent. Agent SDKs when the platform's own tooling is the right fit. Vector databases chosen for the retrieval pattern, not the marketing. The reasoning is on the blog in [LangChain vs LangGraph](/blog/langchain-vs-langgraph-choosing-the-right-abstraction), and it is the same reasoning I apply to any technology choice: pick the tool for the failure modes you actually have.
+
+AI work sits on top of backend work, and the [backend engineer](/expertise/backend-engineer) page covers the pipelines underneath. For the design level, see the [software architect](/expertise/software-architect) page, and for how I work remotely from Karachi with US and UK teams, the [expertise hub](/expertise).

@@ -1,0 +1,67 @@
+---
+title: 'Golang for fintech-grade backends'
+seoTitle: 'Golang Developer in Karachi, Pakistan'
+description: 'Golang developer in Karachi, Pakistan, remote for US, UK and EU teams. Go core services on the critical financial path of a digital banking platform: gRPC, encryption, 100K+ events a day.'
+role: 'Golang Developer'
+kind: technology
+eyebrow: 'Expertise · Go'
+icon: 'simple-icons:go'
+order: 10
+published: '2026-09-08'
+updated: '2026-09-08'
+keywords: ['Golang developer Pakistan', 'Go developer remote', 'Golang developer Karachi', 'Golang microservices developer', 'gRPC developer', 'Go backend engineer fintech', 'Go Kafka']
+stats:
+  - { value: '100K+', label: 'Financial events per day', description: 'Across a three-broker Kafka cluster' }
+  - { value: '99.9%', label: 'Data integrity', description: 'Across five database engines serving banks' }
+  - { value: '60%+', label: 'Lower read latency', description: 'Redis cache-first reads in front of Go services' }
+caseStudies: ['hysab-kytab']
+skillGroups: ['Backend & APIs', 'Messaging & streaming', 'Databases']
+blogTags: ['Distributed Systems', 'Consensus', 'Databases', 'Performance']
+relatedPosts: ['leader-election-in-distributed-systems', 'cap-theorem-explained']
+faq:
+  - question: 'When do you choose Go over Node.js?'
+    answer: >-
+      When a service sits on a latency-critical path, moves a lot of bytes, or needs predictable memory and concurrency behaviour under load. On the FinTech platform, Go carries the aggregation and transaction core while NestJS carries the domain APIs; both are right for their job.
+  - question: 'Have you used Go in a regulated environment?'
+    answer: >-
+      Yes. The Go services on Hysab Kytab serve digital banks including Temenos and Interswitch, with end-to-end encryption for financial payloads, enforced gRPC security standards and audit trails on the Kafka event log.
+  - question: 'Go with gRPC or REST?'
+    answer: >-
+      gRPC between services, REST at the edge. Go's gRPC tooling is excellent, and typed contracts between Go, NestJS and Spring Boot services are what made a polyglot backend manageable.
+  - question: 'Do you work remotely with US and UK teams?'
+    answer: >-
+      Yes, from Karachi, Pakistan (UTC+5), covering the UK working day and US East Coast mornings live and working asynchronously otherwise.
+cta:
+  heading: 'Have a service that needs to be fast, predictable and boring?'
+  description: "Tell me what it does and what it has to survive. I'll tell you whether Go is the right tool and how I'd build it."
+---
+
+I am a Golang developer based in Karachi, Pakistan, and Go is the language I reach for when a service sits on a path where latency, throughput and predictability are not negotiable. For teams in the US, UK and Europe that usually means the core of a financial or data-heavy system. This page is about the Go work on a platform serving digital banks, and about how I decide when Go is the right tool and when it is not.
+
+## Go on the critical financial path
+
+[Hysab Kytab](/work/hysab-kytab) is a B2B and B2C personal finance platform delivered to digital banks, including Temenos and Interswitch, where a rounding error is a customer complaint and downtime is a headline. It gives banking customers a single view of their money aggregated across multiple banks, which means consolidating data from sources that each have their own database, format and idea of when data is correct.
+
+I architected the backend as a distributed microservices ecosystem in Golang and NestJS, and used Go for the performance-critical core: the aggregation services that pull account and transaction data from multiple banking sources, and the transaction services on the critical path. Go gave those services high-performance communication and predictable latency where it mattered most, and the choice is written down in the design with its reasoning, so the next engineer can extend it instead of relitigating it.
+
+## Encryption and gRPC in Go
+
+Financial payloads cross service boundaries constantly on a platform like this, so end-to-end encryption is implemented in Go for data in transit between services. Enforced REST and gRPC security standards apply across the mesh. Go's gRPC tooling is one of the reasons it fits this role: typed contracts between the Go core, the NestJS domain and product APIs, and the Spring Boot enterprise integrations kept a polyglot backend manageable, with Kafka and RabbitMQ coordinating between them.
+
+More than 100,000 financial events a day flow through a three-broker Kafka cluster feeding monitoring, audit trails and real-time alerting. The Go services produce onto and consume from that backbone, with consumer groups per domain for partition-aware scaling.
+
+## Five databases, one service contract
+
+The bank integrations dictated the data layer: PostgreSQL, MongoDB, MySQL, Oracle and SQL Server all had to end up behind one coherent service layer without losing precision or slowing the application down. The Go and NestJS services absorb that complexity so product teams never see which engine an answer came from. The outcome was 99.9 percent data integrity across the five-engine landscape, and a Redis cache-first read strategy in front of the services cut average read latency by more than 60 percent, because aggregated financial views are read far more often than they change.
+
+## Go beside NestJS and Spring Boot
+
+I do not believe in single-language backends for their own sake. On Hysab Kytab, Go carries the hot path, NestJS carries the rich domain and product APIs where TypeScript's module system and typing pay off, and Spring Boot handles enterprise integrations that already lived in the Java world. Each service uses the language whose strengths match its constraints, and gRPC contracts keep them honest with each other.
+
+The judgement of when to use Go is the useful part. A service that moves a lot of bytes, needs predictable memory behaviour under load, or sits where every millisecond is visible to a customer is a Go service. A service whose complexity is in the domain model rather than the throughput is usually better in NestJS. The [NestJS developer](/expertise/nestjs-developer) page covers the other half of that decision, and the [backend engineer](/expertise/backend-engineer) page covers the whole backend layer.
+
+## Throughput, predictability and cost
+
+Performance in Go is partly the language and mostly the design. Keeping slow, unpredictable bank aggregation off the request path entirely, using event-driven processing so customer apps never wait on an upstream bank, and caching the reads that dominate traffic did more for the platform than any micro-optimisation. Observability and rightsizing on GCP then brought cloud costs down by 25 percent with no loss of reliability. Fast services are cheaper services.
+
+For the distributed systems thinking behind these choices, the blog has posts on [leader election](/blog/leader-election-in-distributed-systems) and the [CAP theorem](/blog/cap-theorem-explained). For the design level, see the [software architect](/expertise/software-architect) page, and for how I work remotely from Karachi with US and UK teams, the [expertise hub](/expertise).

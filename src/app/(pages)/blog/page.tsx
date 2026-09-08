@@ -2,6 +2,7 @@ import ContactCta from '@/components/ContactCta'
 import Chip from '@/components/ui/Chip'
 import { site } from '@/content/site'
 import { formatPostDate, getAllPosts } from '@/lib/blog'
+import { jsonLd, personRef } from '@/lib/schema'
 import { Icon } from '@iconify/react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -15,12 +16,12 @@ export const metadata: Metadata = {
 const Page = () => {
   const posts = getAllPosts()
 
-  const jsonLd = {
+  const blogJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Blog',
     name: 'Notes on building systems',
     url: `${site.url}/blog`,
-    author: { '@type': 'Person', name: site.name, url: site.url },
+    author: personRef(),
     blogPost: posts.map((post) => ({
       '@type': 'BlogPosting',
       headline: post.title,
@@ -31,7 +32,7 @@ const Page = () => {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(blogJsonLd) }} />
 
       <section className="pt-32.5 pb-12 md:pt-40 md:pb-16 lg:pt-50">
         <div className="container">

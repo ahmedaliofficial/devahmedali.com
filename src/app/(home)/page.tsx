@@ -18,22 +18,9 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
 }
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: site.name,
-  jobTitle: site.roleFull,
-  description: site.seo.description,
-  url: site.url,
-  email: `mailto:${site.email}`,
-  sameAs: [site.socials.github, site.socials.linkedin],
-  knowsAbout: ['Distributed Systems', 'System Design', 'Event-Driven Architecture', 'Microservices', 'Apache Kafka', 'Kubernetes', 'AI Engineering', 'RAG Pipelines'],
-}
-
 const Page = () => {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Hero />
       <Services />
       <ReferenceFlows />

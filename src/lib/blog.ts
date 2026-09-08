@@ -9,6 +9,8 @@ export type PostMeta = {
   seoTitle?: string
   description: string
   date: string
+  /** ISO date of the last substantive edit; drives dateModified and og:modified_time. Defaults to `date`. */
+  updated: string
   tags: string[]
   readingTime: number
 }
@@ -19,7 +21,8 @@ export type Post = PostMeta & {
 
 const POSTS_DIR = path.join(process.cwd(), 'src', 'content', 'blog')
 
-const readingTime = (content: string): number => {
+/** Minutes at 200 words per minute, never less than one. Shared with the expertise loader. */
+export const readingTime = (content: string): number => {
   const words = content.trim().split(/\s+/).length
   return Math.max(1, Math.round(words / 200))
 }
@@ -31,12 +34,15 @@ const parseFile = (filename: string): Post | null => {
 
   if (data.draft) return null
 
+  const date = data.date ? new Date(data.date).toISOString() : new Date().toISOString()
+
   return {
     slug,
     title: String(data.title ?? slug),
     seoTitle: data.seoTitle ? String(data.seoTitle) : undefined,
     description: String(data.description ?? ''),
-    date: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
+    date,
+    updated: data.updated ? new Date(data.updated).toISOString() : date,
     tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
     readingTime: readingTime(content),
     content,

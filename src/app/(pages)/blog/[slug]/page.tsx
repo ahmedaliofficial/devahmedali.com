@@ -1,8 +1,9 @@
 import ContactCta from '@/components/ContactCta'
 import { mdxComponents } from '@/components/mdx/MdxComponents'
 import Chip from '@/components/ui/Chip'
-import { site } from '@/content/site'
+import { site, WEBSITE_ID } from '@/content/site'
 import { formatPostDate, getAllPosts, getPost } from '@/lib/blog'
+import { jsonLd, personRef } from '@/lib/schema'
 import { Icon } from '@iconify/react'
 import type { Metadata } from 'next'
 import { MDXRemote } from 'next-mdx-remote/rsc'
@@ -20,7 +21,7 @@ export const generateMetadata = async ({ params }: PageProps): Promise<Metadata>
   const { slug } = await params
   const post = getPost(slug)
 
-  if (!post) return { title: 'Post not found' }
+  if (!post) return { title: 'Post not found', robots: { index: false, follow: false } }
 
   const seoTitle = post.seoTitle ?? post.title
 
@@ -35,6 +36,7 @@ export const generateMetadata = async ({ params }: PageProps): Promise<Metadata>
       description: post.description,
       url: `/blog/${post.slug}`,
       publishedTime: post.date,
+      modifiedTime: post.updated,
       authors: [site.name],
       tags: post.tags,
     },
@@ -52,17 +54,20 @@ const Page = async ({ params }: PageProps) => {
 
   if (!post) notFound()
 
-  const jsonLd = {
+  const postJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: post.title,
     description: post.description,
+    // Root OG image on purpose: per-route opengraph-image files are served at hash-suffixed
+    // paths (e.g. /opengraph-image-uytwyn) that cannot be referenced from here. Only the root one is stable.
     image: `${site.url}/opengraph-image`,
     datePublished: post.date,
-    dateModified: post.date,
+    dateModified: post.updated,
     keywords: post.tags.join(', '),
-    author: { '@type': 'Person', name: site.name, url: site.url },
-    publisher: { '@type': 'Person', name: site.name, url: site.url },
+    author: personRef(),
+    publisher: personRef(),
+    isPartOf: { '@id': WEBSITE_ID },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `${site.url}/blog/${post.slug}` },
   }
 
@@ -78,8 +83,8 @@ const Page = async ({ params }: PageProps) => {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(postJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbJsonLd) }} />
 
       <article className="pt-32.5 pb-16 md:pt-40 md:pb-24 lg:pt-50">
         <div className="container">

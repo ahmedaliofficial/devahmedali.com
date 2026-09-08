@@ -1,0 +1,83 @@
+---
+title: 'Software architect: designing systems that survive production'
+seoTitle: 'Software Architect in Karachi, Pakistan'
+description: 'Software architect in Karachi, Pakistan, remote for US, UK and EU teams. Event-driven microservices, Kafka at 100K+ events a day, five databases behind one API.'
+role: 'Software Architect'
+kind: role
+eyebrow: 'Expertise · Architecture'
+icon: 'lucide:drafting-compass'
+order: 1
+published: '2026-09-08'
+updated: '2026-09-08'
+keywords: ['software architect Karachi', 'software architect Pakistan', 'remote software architect', 'microservices architect', 'event-driven architecture consultant', 'system design consultant', 'architecture audit']
+stats:
+  - { value: '100K+', label: 'Events per day', description: 'Kafka pipelines running in production' }
+  - { value: '5', label: 'Databases unified', description: 'PostgreSQL, MongoDB, MySQL, Oracle and SQL Server behind one contract' }
+  - { value: '50%+', label: 'Fewer integration issues', description: 'From explicit service boundaries and ownership' }
+caseStudies: ['hysab-kytab', 'trackhrs']
+skillGroups: ['System design', 'Messaging & streaming', 'Cloud & DevOps']
+blogTags: ['Architecture', 'Distributed Systems', 'System Design']
+relatedPosts: ['designing-event-pipelines-that-survive-100k-events-a-day', 'the-strangler-fig-pattern']
+faq:
+  - question: 'Do you work as a remote software architect for companies in the US and UK?'
+    answer: >-
+      Yes. I am based in Karachi, Pakistan (UTC+5), which covers the whole UK working day and the US East Coast morning. Most of my architecture work has been for distributed teams, so design documents, recorded walkthroughs and a fixed overlap window are how I work by default, not an adjustment.
+  - question: 'What does an architecture engagement actually produce?'
+    answer: >-
+      A written design your team can act on: service boundaries, data flow, the failure path for each critical step, and the trade-offs behind every major choice. For an existing system it is a prioritised list of findings with effort estimates rather than a rewrite proposal.
+  - question: 'Which industries have you designed systems for?'
+    answer: >-
+      FinTech platforms delivered to digital banks, a founder-built SaaS with a native desktop agent, real-time AI safety monitoring, a multi-agent code generation platform, and several hundred ecommerce, CMS and ERP deliveries.
+  - question: 'Do you still write code as an architect?'
+    answer: >-
+      Yes. I believe an architect who cannot build the hardest part of the design should not be drawing it. On TrackHRS I wrote the Rust desktop agent and the NestJS services myself; on the FinTech platform I built the Golang core services on the critical path.
+cta:
+  heading: 'Have a system that is outgrowing its architecture?'
+  description: "Tell me what it does, where it hurts and what you are afraid of breaking. I'll tell you which part is actually the problem and how I'd approach it."
+---
+
+I am a software architect based in Karachi, Pakistan, and most of my work is for teams in the United States, the United Kingdom and Europe who need someone to own the design of a system rather than a single service inside it. This page is about what that work actually involves: the decisions an architect makes, the two systems where I made them under real constraints, and how I run an engagement when a team brings me a design problem.
+
+If you are looking for a summary of the whole career, the [about page](/about) has it. This is the long version of one role.
+
+## What a software architect actually decides
+
+Most of the code in a system is not architectural. An architect's job is the small number of decisions that are expensive to reverse once traffic arrives: where the service boundaries sit, how data moves between them, which operations happen on the request path and which happen asynchronously, and what happens when each of those steps fails.
+
+I have written down the four principles I keep returning to. Architecture is a series of trade-offs, stated out loud. Design the failure path first. Boundaries are an organisational tool, not just a technical one. And build for the engineer who inherits the system, because a year from now that engineer is often me. Each of those sounds obvious in a slide deck; each of them gets skipped under deadline pressure unless someone owns it.
+
+## Trade-offs, stated out loud
+
+There is no best design, only the one whose costs you chose deliberately. When I pick Apache Kafka over a simple queue, or Golang over NestJS for a specific service, the reason goes into the design document next to the decision. Six months later, when the team is deciding whether to extend or replace that choice, the reasoning is still there instead of having evaporated with whoever made it.
+
+On the [Hysab Kytab](/work/hysab-kytab) FinTech platform that meant a written case for Kafka as the durable, replayable backbone and RabbitMQ for targeted fan-out where routing mattered more than retention. On [TrackHRS](/work/trackhrs) it meant explaining why a Redis cluster was carrying cache, deduplication, queue backing and distributed locks all at once, and what we would do if that ever became a bottleneck. Those documents outlived the sprints they were written in, which is the point.
+
+## Five databases behind one contract
+
+Hysab Kytab is a personal finance platform delivered to digital banks, including Temenos and Interswitch, which means it inherits their reliability expectations rather than a startup's. The hard problem was consolidation. Every upstream source had its own database, its own format and its own idea of when data is correct: PostgreSQL, MongoDB, MySQL, Oracle and SQL Server all had to end up behind one coherent service layer without losing precision or slowing the app down.
+
+The architecture I designed keeps the slow, unpredictable half of the system entirely off the request path. Connectors aggregate account and transaction data from multiple banking sources. Encrypted payloads flow through a three-broker Kafka cluster handling over 100,000 financial events a day, feeding monitoring, audit trails and real-time alerting. NestJS, Golang and Spring Boot services talk over gRPC internally and REST at the edge. A Redis cache-first read strategy cut average read latency by more than 60 percent, and infrastructure work on GCP brought cloud costs down by a quarter without touching reliability.
+
+None of that is exotic. What made it work was deciding early which engine owned which data, and refusing to let product teams see the complexity underneath.
+
+## Designing the failure path first
+
+TrackHRS is a distributed time tracking and activity intelligence platform I founded and architected end to end: a Rust desktop agent, two Next.js web applications and eight NestJS microservices. The interesting engineering is the path between a keystroke on someone's laptop and a number a manager is willing to trust. That path has to stay accurate when the network drops, stay fast when traffic spikes, and never double-count an event because two replicas processed it at once.
+
+So each failure mode got a specific mechanism rather than a hope. Events buffer locally in SQLite when the agent is offline. Kafka decouples ingestion from everything downstream so a slow consumer can never slow down capture. A Redis deduplication key makes processing safe across replicas. A batch service collects up to 100 items or a five-second window before writing, giving up to 100 times fewer immediate database writes on the hot path. Classification runs as a BullMQ background job against an isolated FastAPI service, and when that fails it falls through a circuit breaker, exponential retry and a dead-letter collection that a distributed cron reprocesses exactly once.
+
+The happy path is not what wakes you at three in the morning. Retries, circuit breakers and dead-letter queues belong in the first diagram, not the second incident review.
+
+## How an architecture engagement runs
+
+The shape depends on whether the system exists yet.
+
+For a new platform, I start with the domain and the failure modes, not the framework. The output is a high-level architecture with explicit service boundaries, a data-flow diagram that marks what is synchronous and what is not, the technology decisions with their rationale, and a scalability and security section that says how each layer grows and what protects it. From there I usually stay on to build the hardest component or lead the team that does.
+
+For an existing system, the engagement is an audit. I read the code, the infrastructure and the incident history, then produce prioritised findings with effort estimates: what is actually causing the pain, what is merely ugly, and what it would cost to fix each one. Where a migration is needed I prefer incremental patterns such as the strangler fig over a rewrite, because rewrites are where budgets go to die. The [services page](/services) describes the engagement models in more detail.
+
+Alongside the architecture itself I tend to end up leading the engineering, because boundaries only hold if the people building on either side of them agree on who owns what. On my current team, getting that right cut cross-team integration issues by more than half. The [engineering lead](/expertise/engineering-lead) page covers that side of the role, and the [backend engineer](/expertise/backend-engineer) page goes deeper on the services themselves.
+
+## Working with distributed teams from Karachi
+
+Working remotely for teams in the US, UK and Europe is the norm for me rather than the exception, and the architecture role suits it well. Design is a written discipline: diagrams, decision records and review comments travel across time zones better than meetings do. I keep a fixed daily overlap window for synchronous discussion and treat everything else as asynchronous by default, which tends to produce better documentation than a co-located team ever bothers to write. The [expertise hub](/expertise) has the specifics on hours and how the overlap works in practice.

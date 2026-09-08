@@ -1,0 +1,75 @@
+---
+title: 'Full-stack engineering: from a Rust desktop agent to a Next.js portal'
+seoTitle: 'Full Stack Engineer in Karachi, Pakistan'
+description: 'Full stack engineer and developer in Karachi, Pakistan, remote for US, UK and EU teams. Next.js and React front ends on NestJS, Go and Python back ends, shipped end to end.'
+role: 'Full Stack Engineer'
+kind: role
+eyebrow: 'Expertise · Full stack'
+icon: 'lucide:layers'
+order: 4
+published: '2026-09-08'
+updated: '2026-09-08'
+keywords: ['full stack engineer Pakistan', 'full stack developer Karachi', 'remote full stack developer', 'Next.js full stack developer', 'React Node.js developer', 'TypeScript full stack developer', 'ecommerce developer Pakistan']
+stats:
+  - { value: '500+', label: 'Projects delivered', description: 'Web, ecommerce, CMS, ERP and AI platforms' }
+  - { value: '12', label: 'Product components', description: 'Desktop agent, two web apps and the services behind them on TrackHRS' }
+  - { value: '8', label: 'NestJS microservices', description: 'Independently deployable domain services' }
+caseStudies: ['trackhrs', 'agentx']
+skillGroups: ['Frontend & desktop', 'Backend & APIs', 'Cloud & DevOps']
+blogTags: ['Architecture', 'Performance', 'System Design']
+relatedPosts: ['latency-vs-throughput', 'sidecar-pattern-in-system-design']
+faq:
+  - question: 'Full stack engineer or full stack developer, which are you?'
+    answer: >-
+      Both words describe the same work: owning a feature from the database schema to the pixel. I use "engineer" because the interesting problems are usually about how the two halves meet under load, but if your job posting says developer we are talking about the same thing.
+  - question: 'Which front-end stack do you use?'
+    answer: >-
+      Next.js and React with TypeScript, Tailwind CSS and Redux Toolkit where client state gets complex. This site runs on Next.js 16 with React Server Components. For desktop I use Tauri 2 with Rust and a React shell.
+  - question: 'Can you build an MVP end to end and hand it over?'
+    answer: >-
+      Yes. That is how TrackHRS started and how several client MVPs went from nothing to production. Handover means documentation, a deployment pipeline your team can run and code that reads like your team wrote it.
+  - question: 'Do you work with remote teams in the US and UK?'
+    answer: >-
+      Yes, from Karachi, Pakistan (UTC+5). I cover the full UK working day and US East Coast mornings live and work asynchronously the rest of the time, with written specs and recorded walkthroughs so nothing waits on a meeting.
+cta:
+  heading: 'Have a product to ship end to end?'
+  description: "From the first screen to the deployment pipeline behind it. Tell me what it needs to do and I'll tell you how I'd build it."
+---
+
+I am a full-stack engineer based in Karachi, Pakistan, working remotely with teams in the US, UK and Europe. Full stack, for me, means owning the whole path a piece of data takes: from the input on a user's screen, through the API and the queue, into the database, and back out as a number someone trusts. This page is about that path on the systems where I have owned all of it, and about the several hundred smaller deliveries that taught me what "done" means in ecommerce, CMS and ERP work.
+
+## Full stack means owning the whole path
+
+The clearest example is [TrackHRS](/work/trackhrs), the time tracking and activity intelligence platform I founded. Its twelve product components span every layer: a native desktop agent in Rust on Tauri 2 that captures activity and buffers it in SQLite when the laptop is offline, an authenticated admin portal and a public marketing site in Next.js, eight NestJS microservices behind REST and gRPC boundaries, a Python classifier, an Express auto-update server, and the Kafka, Redis and MongoDB layer underneath.
+
+The hard part was never the dashboard. It was the path between a keystroke and a manager's report: staying accurate when the network drops, fast when traffic spikes, and never double-counting because two replicas processed the same event. A full-stack engineer who only owns the front end cannot fix that. One who only owns the back end cannot tell whether the fix actually made the dashboard trustworthy.
+
+## Front end: Next.js, React and the desktop
+
+My front-end work is React and Next.js with TypeScript, Tailwind CSS for styling and Redux Toolkit where client state gets genuinely complicated. This site is built on Next.js 16 with React Server Components, the metadata API and MDX content, which is also how I build marketing sites and portals for clients: server-rendered by default, fast, accessible and easy to index.
+
+On TrackHRS the admin portal and the marketing site are both Next.js. On [AgentX](/work/agentx), the multi-agent platform that generates full-stack applications from natural language, I built the Figma-to-code integration that turns design files into component trees, which is a front-end problem with an unusual amount of back end behind it.
+
+Desktop is part of the stack too. Tauri 2 with Rust gives native-level performance and system-level access that browser-only approaches cannot reach, with a React shell for the interface. The [Next.js developer](/expertise/nextjs-developer) page covers the web side in more depth.
+
+## The back end decides whether the front end is fast
+
+Most performance problems a user sees on the screen were caused three layers down. On the FinTech platform [Hysab Kytab](/work/hysab-kytab), aggregated financial views are read far more often than they change, so a Redis cache-first strategy cut average read latency by more than 60 percent and the customer app felt fast without a line of front-end optimisation. On TrackHRS, batching writes into 100-item or five-second windows gives up to 100 times fewer immediate database writes on the hot path, and a cache invalidation event keeps dashboards fresh without a short TTL.
+
+Full-stack engineering is knowing which layer a symptom belongs to. A slow page is sometimes a rendering problem, but it is more often a query, a missing index, a synchronous call that should have been a queue, or a cache that is invalidating too eagerly. The [backend engineer](/expertise/backend-engineer) page goes into those mechanisms in detail.
+
+## Ecommerce, CMS and ERP delivery at volume
+
+Before and alongside the platform work, I have delivered more than five hundred client projects across ecommerce, content management and ERP integration: high-traffic storefronts, checkout and payment integration, order, inventory and fulfilment flows, headless CMS builds, admin systems, and the third-party integrations that hold a business together. The stacks have ranged from Next.js and NestJS to Laravel and plain REST integrations, depending on what the client already ran.
+
+That volume teaches things a single large system does not. It teaches how a storefront behaves on a sale day, what an ERP sync does when the accounting system is down, and how many ways a payment webhook can arrive twice. It is also why I default to boring, well-understood patterns for the parts of a product that are not the differentiator.
+
+## Shipping a SaaS end to end
+
+Founding TrackHRS meant owning the parts of a product that architecture diagrams leave out. Subscription and billing as a domain service. An admin portal that operations staff actually use. A marketing site with lead capture. An update server so the desktop agent can ship fixes without asking users to reinstall. Docker and Kubernetes so a release is a pipeline run rather than an evening, which cut deployment effort by roughly 70 percent. Jenkins and GitHub Actions for CI.
+
+Full stack, at its widest, includes the deployment pipeline and the billing page. If you are building an MVP, that is the version of full stack you want, because the demo is the easy part and production is where the product lives.
+
+## The stack in one place
+
+Front end: React, Next.js, TypeScript, Tailwind CSS, Redux Toolkit. Desktop: Rust with Tauri 2, SQLite for offline buffering. Back end: NestJS and Node.js, Golang, Python with FastAPI, Spring Boot, PHP with Laravel. Data: PostgreSQL, MongoDB, MySQL, Redis. Infrastructure: Docker, Kubernetes, GCP, AWS, Nginx, Jenkins, GitHub Actions. The [about page](/about) has the full toolkit, and the [expertise hub](/expertise) has how I work remotely from Karachi with teams in the US and UK.

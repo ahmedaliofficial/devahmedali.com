@@ -51,6 +51,41 @@ Your content here.
 
 Set `draft: true` in the frontmatter to keep a post out of the site. Reading time is calculated automatically. Styling for headings, lists, code blocks and links comes from `src/components/mdx/MdxComponents.tsx`.
 
+### Adding an expertise article
+
+The `/expertise` section is one article per role (software architect, backend engineer, and so on), written for role + location searches. Drop a `.mdx` file into `src/content/expertise/`; the filename becomes the URL slug and the hub, sitemap, footer column and Person `hasOccupation` schema all pick it up automatically.
+
+```mdx
+---
+title: 'Backend engineering for event-driven, high-throughput systems'   # H1
+seoTitle: 'Backend Engineer in Karachi, Pakistan'                          # <title>, keep under ~48 chars
+description: 'Under 155 characters. Used for meta, OG and the hero lead.'
+role: 'Backend Engineer'      # card title, Occupation name, prev/next label
+kind: role                    # role | technology
+eyebrow: 'Expertise · Backend'
+icon: 'lucide:server'
+order: 3
+published: '2026-09-08'
+updated: '2026-09-08'         # bump by hand when the content changes; drives sitemap + dateModified
+keywords: ['backend engineer Pakistan', 'remote backend engineer']
+stats:                        # exactly three, rendered as a StatsBand
+  - { value: '100K+', label: 'Events per day', description: 'Kafka in production' }
+caseStudies: ['hysab-kytab']  # slugs from src/content/case-studies; a typo fails the build
+skillGroups: ['Backend & APIs']  # titles from src/content/skills.ts; a typo fails the build
+blogTags: ['Kafka']           # related posts are ranked by tag overlap
+relatedPosts: []              # optional explicit post slugs, shown first
+faq:
+  - question: '...'
+    answer: >-
+      Multi-sentence answers use a folded scalar like this one.
+cta: { heading: '...', description: '...' }
+---
+
+Body in MDX. Start headings at `##`; the page owns the `<h1>`.
+```
+
+Copy rules for these articles: no em dashes, British spelling, every number traceable to a case study or `skills.ts`, and the role plus "Karachi, Pakistan" named once in the opening paragraph rather than repeated. Do not add per-city variants of a page; that is a doorway page.
+
 ## Contact form
 
 Submissions POST to `src/app/api/contact/route.ts`, which sends mail through [Resend](https://resend.com).
@@ -94,6 +129,12 @@ Fonts: **Stack Sans Headline** for headings, **Google Sans Flex** for body.
 ## SEO
 
 `sitemap.xml` and `robots.txt` generate from the case-study registry and blog files automatically, so new content appears without touching them. Social preview images render via `next/og`. Set the production domain in `src/content/site.ts` (`url`).
+
+Structured data: the root layout emits one JSON-LD graph (`WebSite` + `Person`, built in `src/lib/schema.ts`) and every page references those nodes by `@id` instead of repeating them. The `Person` node carries `address` (Karachi, Pakistan) and one `Occupation` per role article.
+
+Location rule: `site.location` exists for structured data and the `/expertise` pages only. The hero, About, footer, contact panel and root OG image deliberately stay "remote, worldwide"; do not render the location there.
+
+Search Console: set `GOOGLE_SITE_VERIFICATION` at build time (see `.env.example`; in Docker it is a build arg) and the verification meta tag is emitted. Left empty, no tag is rendered.
 
 ## Known issue
 

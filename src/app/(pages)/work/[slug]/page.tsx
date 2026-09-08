@@ -6,7 +6,8 @@ import StatsBand from '@/components/portfolio/StatsBand'
 import Chip from '@/components/ui/Chip'
 import SectionHeading from '@/components/ui/SectionHeading'
 import { caseStudies, getAdjacentCaseStudies, getCaseStudy } from '@/content/case-studies'
-import { site } from '@/content/site'
+import { site, WEBSITE_ID } from '@/content/site'
+import { jsonLd, personRef } from '@/lib/schema'
 import { Icon } from '@iconify/react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -22,7 +23,7 @@ export const generateMetadata = async ({ params }: PageProps): Promise<Metadata>
   const { slug } = await params
   const study = getCaseStudy(slug)
 
-  if (!study) return { title: 'Case study not found' }
+  if (!study) return { title: 'Case study not found', robots: { index: false, follow: false } }
 
   return {
     title: study.meta.title,
@@ -67,16 +68,19 @@ const Page = async ({ params }: PageProps) => {
     name: study.hero.title,
     headline: study.meta.title,
     description: study.meta.description,
+    // Root OG image on purpose: per-route opengraph-image files are served at hash-suffixed
+    // paths (e.g. /opengraph-image-uytwyn) that cannot be referenced from here. Only the root one is stable.
     image: `${site.url}/opengraph-image`,
     url: `${site.url}/work/${study.slug}`,
-    creator: { '@type': 'Person', name: site.name, url: site.url },
+    creator: personRef(),
+    isPartOf: { '@id': WEBSITE_ID },
     keywords: study.stack.join(', '),
   }
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(creativeWorkJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(creativeWorkJsonLd) }} />
 
       {/* Hero */}
       <section className="pt-32.5 pb-12 md:pt-40 md:pb-16 lg:pt-50">
@@ -199,7 +203,7 @@ const Page = async ({ params }: PageProps) => {
           <div className="container">
             <SectionHeading align="left" eyebrow="Decisions" title="Why these tools, and not others" />
 
-            <div className="border-default-200 mt-10 flex flex-col divide-y divide-default-200 overflow-hidden rounded-2xl border bg-white">
+            <div className="border-default-200 divide-default-200 mt-10 flex flex-col divide-y overflow-hidden rounded-2xl border bg-white">
               {study.techDecisions.map((decision) => (
                 <div key={decision.area} className="grid grid-cols-1 gap-3 p-6 md:grid-cols-12 md:gap-6 md:p-8">
                   <p className="text-default-500 text-sm font-medium tracking-wide uppercase md:col-span-3">{decision.area}</p>

@@ -14,6 +14,9 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# Baked into the HTML at build time (metadata.verification), so it has to be a build arg.
+ARG GOOGLE_SITE_VERIFICATION
+ENV GOOGLE_SITE_VERIFICATION=$GOOGLE_SITE_VERIFICATION
 RUN pnpm build
 
 # --- Minimal runtime image ---

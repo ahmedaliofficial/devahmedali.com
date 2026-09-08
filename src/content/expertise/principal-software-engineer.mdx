@@ -1,0 +1,77 @@
+---
+title: 'Principal-level engineering: owning the system, not just the code'
+seoTitle: 'Principal Software Engineer, Karachi, Pakistan'
+description: 'Principal-level software engineer in Karachi, Pakistan, remote for US and UK teams. End-to-end ownership of FinTech, SaaS and AI platforms, from first diagram to live traffic.'
+role: 'Principal Software Engineer'
+kind: role
+eyebrow: 'Expertise · Ownership'
+icon: 'lucide:compass'
+order: 2
+published: '2026-09-08'
+updated: '2026-09-08'
+keywords: ['principal software engineer Pakistan', 'principal engineer remote', 'staff engineer Pakistan', 'senior software engineer Karachi', 'technical ownership', 'cross-team architecture']
+stats:
+  - { value: '12', label: 'Product components', description: 'Desktop agent, web apps and services owned end to end on TrackHRS' }
+  - { value: '20+', label: 'Engineers led', description: 'Across AI, ecommerce and CMS product lines' }
+  - { value: '~70%', label: 'Less deploy effort', description: 'Kubernetes and Docker replacing manual releases' }
+caseStudies: ['trackhrs', 'agentx']
+skillGroups: ['System design', 'Backend & APIs', 'Cloud & DevOps']
+blogTags: ['Architecture', 'Distributed Systems', 'Legacy Systems', 'Migration']
+relatedPosts: ['the-strangler-fig-pattern', 'leader-election-in-distributed-systems']
+faq:
+  - question: 'Have you held the title "Principal Software Engineer"?'
+    answer: >-
+      Not as a formal title. The roles I have held are Founder and Lead Architect on TrackHRS, Architecture and Integrations Lead on AgentX, and the backend architecture lead on a FinTech platform for digital banks. This page describes the scope of that work, which is what a principal-level role is in practice, and I would rather you judge it on the systems than on the label.
+  - question: 'How many years of experience do you have?'
+    answer: >-
+      Six years, across FinTech, AI and SaaS at production scale, plus several hundred ecommerce, CMS and ERP deliveries. Principal-level scope came early because I founded and shipped a full platform myself and then led the engineering on others.
+  - question: 'Can you join an existing team in a principal or staff role remotely?'
+    answer: >-
+      Yes. I am based in Karachi, Pakistan, working remotely with teams in the US, UK and Europe. The ongoing partner model on the services page is exactly this: embedded with a team, owning technical direction and standards, with a fixed daily overlap window.
+  - question: 'What is the difference between this and the software architect role?'
+    answer: >-
+      Overlap is large. The architect role is about the design of a system; principal-level engineering is about owning that system end to end, including building the hardest parts, setting the bar for the engineers around it and running it once it is live.
+cta:
+  heading: 'Need someone to own the hard part end to end?'
+  description: "If a system needs one person accountable for it from design through production, tell me what it is. I'll tell you honestly whether I am that person."
+---
+
+Principal is a word that means different things in different companies, so let me be precise about how I am using it. I am a software engineer based in Karachi, Pakistan, working remotely with teams in the US, UK and Europe, and the scope of my work for the past several years has been principal-level: owning whole systems from the first diagram to live traffic, making the decisions that cross team lines, and setting the technical bar for the engineers building alongside me.
+
+I have not held "Principal Software Engineer" as a formal title, and I say so plainly in the questions at the bottom of this page. What I have done is the work the title describes, and this page is about that work.
+
+## Scope, not tenure
+
+A principal-level engineer is not a senior engineer with more years. The difference is what they are accountable for. A senior engineer owns a service or a feature and does it well. A principal-level engineer owns the outcome of a system: whether it ships, whether it stays up, whether the team around it can keep building on it, and whether the decisions made today still make sense in two years.
+
+Six years in, I arrived at that scope earlier than most because I founded a product and had nobody to hand the hard parts to. [TrackHRS](/work/trackhrs) is a distributed time tracking and activity intelligence platform with twelve product components: a Rust desktop agent built on Tauri 2, an admin portal and marketing site in Next.js, eight NestJS microservices, a Python classification service, an Express auto-update server and the Kafka, Redis and MongoDB infrastructure underneath them. I designed all of it, built most of it, and I am the one who deploys it on a Sunday when something needs to go out.
+
+## Owning a system from first diagram to live traffic
+
+End-to-end ownership means the architecture and the operations are the same person's problem, which changes how you design. On TrackHRS the ingest pipeline is built around the failure modes I knew I would be paged for: duplicate events from multiple replicas, write amplification under load, a slow model call blocking capture, and stale dashboards. Each got a specific mechanism. Redis deduplication makes processing multi-replica-safe. Batching up to 100 items or a five-second window gives up to 100 times fewer immediate writes. Classification is a BullMQ job against an isolated FastAPI service so a slow model never touches the hot path. Failures fall through a circuit breaker, exponential retry and a dead-letter collection that a distributed cron, guarded by Redis locks, reprocesses exactly once.
+
+That is what ownership looks like in the design: every mechanism exists because I did not want to be the person debugging its absence at three in the morning.
+
+## Decisions that cross team lines
+
+The decisions a principal-level engineer makes are the ones no single team can make alone. On the FinTech platform [Hysab Kytab](/work/hysab-kytab), delivered to digital banks including Temenos and Interswitch, that meant deciding that Golang would carry the performance-critical core services while NestJS carried the domain and product APIs and Spring Boot handled enterprise integrations, and that all three would talk over gRPC internally with Kafka and RabbitMQ coordinating between them. It meant choosing Kafka for the durable, replayable event backbone and RabbitMQ for targeted fan-out, and writing down why, so the next engineer could extend the choice instead of relitigating it.
+
+It also meant owning the data strategy across PostgreSQL, MongoDB, MySQL, Oracle and SQL Server, five engines the bank integrations dictated, and absorbing that complexity inside the service layer so product teams never had to. The outcome was 99.9 percent data integrity across the landscape and a Redis cache-first strategy that cut read latency by more than 60 percent.
+
+## Setting the bar for the engineers around you
+
+Principal-level work is as much about the team as the system. I have led more than twenty engineers across AI, ecommerce and CMS product lines, and the leverage there is in standards: how service boundaries are drawn, what a design document must contain before code starts, what a pull request has to prove. Getting boundaries and ownership right on my current team cut cross-team integration issues by more than half.
+
+On [AgentX](/work/agentx), a multi-agent platform that generates full-stack applications from natural language, I led architecture and integrations. The constraint I set for the whole system was maintainability: generated output that a human team has to inherit is only valuable if it looks like code they would have written. That is a principal-level decision because it shapes every agent's output, not one component. The [engineering lead](/expertise/engineering-lead) page covers the people side in more depth.
+
+## Operating what you ship
+
+Ownership does not stop at deployment. Moving manual releases onto Kubernetes and Docker cut deployment effort by roughly 70 percent. Structured health checks for readiness and liveness, rate limiting and secure headers across the Node services, and observability work on GCP that brought cloud costs down 25 percent are all part of the same job: if you own the system, you own its bill and its pager.
+
+## Still hands-on
+
+I do not believe in a principal-level engineer who has stopped writing code. On TrackHRS I wrote the Rust agent and the NestJS services. On Hysab Kytab I built the Golang core services and the end-to-end encryption for financial payloads. On AgentX I built the Figma-to-code, Supabase provisioning and MCP tool orchestration layer. The breadth is deliberate: a decision about a service boundary is only credible from someone who has built both sides of one. The [backend engineer](/expertise/backend-engineer) and [full stack engineer](/expertise/full-stack-engineer) pages go into that hands-on depth.
+
+## Working remotely at this level
+
+Principal-level work travels well across time zones because most of it is written: design documents, decision records, review comments, runbooks. From Karachi I overlap the whole UK working day and the US East Coast morning, and I treat that overlap as the time for decisions and the rest of the day as the time for building. Details of how that works are on the [expertise hub](/expertise).

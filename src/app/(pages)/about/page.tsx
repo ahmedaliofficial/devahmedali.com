@@ -2,12 +2,14 @@ import ContactCta from '@/components/ContactCta'
 import StatsBand from '@/components/portfolio/StatsBand'
 import Chip from '@/components/ui/Chip'
 import SectionHeading from '@/components/ui/SectionHeading'
-import { site } from '@/content/site'
+import { PERSON_ID, site, WEBSITE_ID } from '@/content/site'
 import { headlineStats, skillGroups } from '@/content/skills'
+import { jsonLd } from '@/lib/schema'
 import { Icon } from '@iconify/react'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
-const ABOUT_DESCRIPTION = 'Ahmed Ali is a software architect and engineering lead with six years across FinTech, AI and SaaS. How I work and what I believe about architecture.'
+const ABOUT_DESCRIPTION = `Ahmed Ali is a software architect and engineering lead with ${site.experience.words} across FinTech, AI and SaaS. How I work and what I believe about architecture.`
 
 export const metadata: Metadata = {
   title: 'About',
@@ -26,17 +28,16 @@ export const metadata: Metadata = {
   },
 }
 
-const jsonLd = {
+// The full Person node (alumniOf, address, occupations) is emitted once in the root layout;
+// this page just declares itself the profile page for it.
+const profileJsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: site.name,
-  jobTitle: site.roleFull,
+  '@type': 'ProfilePage',
+  '@id': `${site.url}/about`,
+  name: `About ${site.name}`,
   description: ABOUT_DESCRIPTION,
-  url: `${site.url}/about`,
-  email: `mailto:${site.email}`,
-  sameAs: [site.socials.github, site.socials.linkedin],
-  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Virtual University of Pakistan' },
-  knowsAbout: ['Distributed Systems', 'System Design', 'Event-Driven Architecture', 'Microservices', 'Apache Kafka', 'Kubernetes', 'AI Engineering', 'RAG Pipelines'],
+  mainEntity: { '@id': PERSON_ID },
+  isPartOf: { '@id': WEBSITE_ID },
 }
 
 const principles = [
@@ -99,7 +100,7 @@ const certifications = ['Microservices Foundations (Kong)', 'Docker Foundations 
 
 const Page = () => (
   <>
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(profileJsonLd) }} />
 
     <section className="pt-32.5 pb-12 md:pt-40 md:pb-16 lg:pt-50">
       <div className="container">
@@ -110,12 +111,17 @@ const Page = () => (
           <div className="lg:col-span-7">
             <div className="text-default-500 flex flex-col gap-4 text-lg md:text-xl">
               <p>
-                I&apos;m {site.name}, a software architect and engineering lead. Six years in, my work has moved from writing FinTech backends to designing the systems around them and leading the teams that build them.
+                I&apos;m {site.name}, a software architect and engineering lead. After {site.experience.words} in the industry, my work has moved from writing FinTech backends to designing the systems around them and leading the teams that build them.
               </p>
-              <p>
-                Most of what I do sits at the point where a product starts outgrowing its original architecture. That is rarely a coding problem. It is usually a boundaries problem, a data-flow problem, or a set of trade-offs nobody wrote down when the first version shipped.
-              </p>
+              <p>Most of what I do sits at the point where a product starts outgrowing its original architecture. That is rarely a coding problem. It is usually a boundaries problem, a data-flow problem, or a set of trade-offs nobody wrote down when the first version shipped.</p>
               <p>I also founded TrackHRS, which taught me the parts of software that architecture diagrams leave out: pricing, support, deployment on a Sunday, and the difference between a system that works and a product people pay for.</p>
+              <p>
+                If you want the detail, I&apos;ve written up{' '}
+                <Link href="/expertise" className="text-default-900 font-medium underline decoration-2 underline-offset-4 transition-opacity hover:opacity-70">
+                  how that plays out role by role
+                </Link>
+                : architecture, backend, full-stack, AI and leading teams.
+              </p>
             </div>
           </div>
 
@@ -167,7 +173,7 @@ const Page = () => (
 
     <section className="py-12 md:py-20">
       <div className="container">
-        <SectionHeading align="left" eyebrow="Domains" title="Where I&apos;ve done it" description="The kinds of systems I've spent the most time inside, and what each one taught me about designing for its particular failure mode." />
+        <SectionHeading align="left" eyebrow="Domains" title="Where I've done it" description="The kinds of systems I've spent the most time inside, and what each one taught me about designing for its particular failure mode." />
 
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
           {domains.map((domain) => (
