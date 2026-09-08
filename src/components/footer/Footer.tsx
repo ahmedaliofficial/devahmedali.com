@@ -15,7 +15,6 @@ const linkClasses = 'text-default-600 hover:text-default-900 text-base transitio
 const exploreLinks: FooterLink[] = [
   { label: 'Home', href: '/' },
   { label: 'Services', href: '/services' },
-  { label: 'Expertise', href: '/expertise' },
   { label: 'Work', href: '/work' },
   { label: 'About', href: '/about' },
   { label: 'Blog', href: '/blog' },
@@ -29,19 +28,14 @@ const elsewhereLinks: FooterLink[] = [
   { label: 'Privacy Policy', href: '/privacy-policy' },
 ]
 
-type FooterProps = {
-  /** Role article links, resolved server-side and passed through AppProvidersWrapper */
-  expertiseLinks?: FooterLink[]
-}
-
-const Footer = ({ expertiseLinks = [] }: FooterProps) => {
+const Footer = () => {
   const year = new Date().getFullYear()
 
   return (
     <footer className="bg-body-bg pt-20 pb-5 lg:pb-7.5">
       <div className="container">
-        <div className="grid grid-cols-1 justify-between gap-7.5 md:grid-cols-2 md:gap-12.5 lg:grid-cols-5 lg:gap-16">
-          <div className="md:col-span-2">
+        <div className="grid grid-cols-1 justify-between gap-7.5 md:grid-cols-4 md:gap-12.5 lg:gap-24">
+          <div className="lg:col-span-2">
             <div className="mb-8 inline-block">
               <Logo />
             </div>
@@ -67,19 +61,6 @@ const Footer = ({ expertiseLinks = [] }: FooterProps) => {
               ))}
             </div>
           </div>
-
-          {expertiseLinks.length > 0 && (
-            <div>
-              <h2 className="text-default-900 mb-5 text-base font-medium lg:mb-7.5">Expertise</h2>
-              <div className="flex flex-col gap-2">
-                {expertiseLinks.map((item) => (
-                  <Link key={item.href} href={item.href} className={linkClasses}>
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
 
           <div>
             <h2 className="text-default-900 mb-5 text-base font-medium lg:mb-7.5">Case studies</h2>
@@ -109,7 +90,7 @@ const Footer = ({ expertiseLinks = [] }: FooterProps) => {
                   <Link key={index} href={item.href} className="text-default-600 hover:text-default-900 text-sm transition-colors">
                     {item.label}
                   </Link>
-                )
+                ),
               )}
 
               <div className="flex items-center gap-2.5">

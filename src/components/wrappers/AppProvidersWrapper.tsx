@@ -1,6 +1,5 @@
 'use client'
 
-import type { FooterLink } from '@/components/footer/Footer'
 import ScrollProgress from '@/components/motion/ScrollProgress'
 import { preline } from '@/utils/preline'
 import { MotionConfig } from 'motion/react'
@@ -8,13 +7,7 @@ import React, { useEffect } from 'react'
 import Footer from '../footer/Footer'
 import Navbar from '../navbar/Navbar'
 
-type AppProvidersWrapperProps = {
-  children: React.ReactNode
-  /** Resolved in the server layout (the loader reads the filesystem) and handed down to the client footer */
-  expertiseLinks?: FooterLink[]
-}
-
-const AppProvidersWrapper = ({ children, expertiseLinks }: AppProvidersWrapperProps) => {
+const AppProvidersWrapper = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     preline.init()
   }, [])
@@ -26,7 +19,7 @@ const AppProvidersWrapper = ({ children, expertiseLinks }: AppProvidersWrapperPr
       <ScrollProgress />
       <Navbar />
       {children}
-      <Footer expertiseLinks={expertiseLinks} />
+      <Footer />
     </MotionConfig>
   )
 }

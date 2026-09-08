@@ -3,7 +3,6 @@ import favicon from '@/assets/images/favicon.ico'
 import AppProvidersWrapper from '@/components/wrappers/AppProvidersWrapper'
 import { DEFAULT_PAGE_TITLE } from '@/config/constants'
 import { site } from '@/content/site'
-import { expertisePath, getAllExpertise } from '@/lib/expertise'
 import { jsonLd, siteGraphJsonLd } from '@/lib/schema'
 import type { Metadata, Viewport } from 'next'
 import { Google_Sans_Flex, Stack_Sans_Headline } from 'next/font/google'
@@ -59,17 +58,12 @@ type RootLayoutProps = {
 }
 
 const RootLayout = ({ children }: RootLayoutProps) => {
-  // Role pages listed in the footer on every page: cheap site-wide internal links to the SEO articles.
-  const expertiseLinks = getAllExpertise()
-    .filter((entry) => entry.kind === 'role')
-    .map((entry) => ({ label: entry.role, href: expertisePath(entry.slug) }))
-
   return (
     <html lang="en">
       <body className={`bg-body-bg ${googleSansFlex.variable} ${stackSansHeadline.variable}`} suppressHydrationWarning>
         {/* WebSite + Person graph, emitted once. Page schemas reference these nodes by @id. */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(siteGraphJsonLd()) }} />
-        <AppProvidersWrapper expertiseLinks={expertiseLinks}>{children}</AppProvidersWrapper>
+        <AppProvidersWrapper>{children}</AppProvidersWrapper>
       </body>
     </html>
   )

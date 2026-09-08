@@ -53,7 +53,7 @@ Set `draft: true` in the frontmatter to keep a post out of the site. Reading tim
 
 ### Adding an expertise article
 
-The `/expertise` section is one article per role (software architect, backend engineer, and so on), written for role + location searches. Drop a `.mdx` file into `src/content/expertise/`; the filename becomes the URL slug and the hub, sitemap, footer column and Person `hasOccupation` schema all pick it up automatically.
+The `/expertise` section is one article per role (software architect, backend engineer, and so on), written for role + location searches. Drop a `.mdx` file into `src/content/expertise/`; the filename becomes the URL slug and the hub, sitemap and Person `hasOccupation` schema all pick it up automatically. These pages are deliberately not in the navbar or footer: they exist for search traffic and are reached from the sitemap, the About page and each other.
 
 ```mdx
 ---
