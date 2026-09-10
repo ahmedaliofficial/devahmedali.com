@@ -1,6 +1,7 @@
 import '@/assets/css/style.css'
 import favicon from '@/assets/images/favicon.ico'
 import AppProvidersWrapper from '@/components/wrappers/AppProvidersWrapper'
+import { adsense } from '@/config/adsense'
 import { DEFAULT_PAGE_TITLE } from '@/config/constants'
 import { site } from '@/content/site'
 import { jsonLd, siteGraphJsonLd } from '@/lib/schema'
@@ -60,6 +61,16 @@ type RootLayoutProps = {
 const RootLayout = ({ children }: RootLayoutProps) => {
   return (
     <html lang="en">
+      <head>
+        {/* AdSense wants its loader as a literal <script async src> between <head> and </head> on
+            every page; that tag is what the site-verification crawler looks for. next/script cannot
+            provide it here: in the App Router `beforeInteractive` only emits a <link rel="preload">
+            plus a self.__next_s queue entry, and the real tag is created client-side. React hoists
+            async scripts into <head> and renders them once, so a plain element is the right tool.
+            The same loader also serves Google's certified consent message for EEA/UK/Swiss visitors
+            once it is published in AdSense → Privacy & messaging. */}
+        {adsense.enabled && <script async src={adsense.scriptSrc} crossOrigin="anonymous" />}
+      </head>
       <body className={`bg-body-bg ${googleSansFlex.variable} ${stackSansHeadline.variable}`} suppressHydrationWarning>
         {/* WebSite + Person graph, emitted once. Page schemas reference these nodes by @id. */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(siteGraphJsonLd()) }} />

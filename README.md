@@ -106,8 +106,9 @@ The form includes a honeypot field and server-side validation (required fields, 
 src/
 ├─ app/
 │  ├─ (home)/          # homepage + its sections
-│  ├─ (pages)/         # work, blog, about, contact, privacy-policy
+│  ├─ (pages)/         # work, blog, about, contact, privacy-policy, terms
 │  ├─ api/contact/     # contact form endpoint
+│  ├─ ads.txt/         # AdSense ads.txt, served only when NEXT_PUBLIC_ADSENSE_CLIENT is set
 │  ├─ sitemap.ts, robots.ts, opengraph-image.tsx
 │  └─ layout.tsx       # fonts, global metadata
 ├─ components/
@@ -139,3 +140,28 @@ Search Console: set `GOOGLE_SITE_VERIFICATION` at build time (see `.env.example`
 ## Known issue
 
 `pnpm lint` currently fails with a plugin error (`eslint-plugin-react` 7.37.5 is not compatible with ESLint 10). This came with the original template and is unrelated to the site code. Both `npx tsc --noEmit` and `pnpm build` type-check cleanly. Upgrading `eslint-config-next` / `eslint-plugin-react` will resolve it.
+
+## Google AdSense
+
+The site is AdSense-ready but ships with ads **off**. Everything hangs off one variable:
+
+```
+NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-XXXXXXXXXXXXXXXX
+```
+
+Take the id from AdSense → Account → Settings → Account information, put it in `.env`, and rebuild. It has to be present at **build** time (pages are prerendered), so a runtime-only env var does nothing. `docker-compose.yml` forwards it from `.env` as a build arg because `.dockerignore` excludes `.env` from the image build.
+
+With the id set, `src/config/adsense.ts` flips the whole site into its advertising state:
+
+- `src/app/layout.tsx` injects the AdSense loader into `<head>` of every page. That is the snippet Google's site verification looks for.
+- `/ads.txt` is served by `src/app/ads.txt/route.ts` with the matching `google.com, pub-…, DIRECT, f08c47fec0942fa0` line.
+- `/privacy-policy` and `/terms` switch to their advertising wording: cookie disclosure, Google's required AdSense statements, opt-out links, and the EEA/UK/Switzerland consent section.
+- The footer shows a **Privacy settings** link that reopens Google's consent message so visitors can change their choice.
+
+Without the id none of that renders, and the privacy policy truthfully says the site has no advertising.
+
+Things that live in the AdSense dashboard, not in this repo:
+
+1. **Privacy & messaging → European regulations**: create and publish the GDPR message. Google requires a certified consent management platform for EEA/UK/Swiss visitors, and this built-in one is certified. The site does not ship its own cookie banner for that reason.
+2. **Ads → By site → Auto ads**: turn on once the site is approved. The head script is all Auto ads need, so no ad-unit components are required.
+3. **Sites → Add site**: `devahmedali.com`, then request review. `robots.txt` already lets `Mediapartners-Google` crawl everything.

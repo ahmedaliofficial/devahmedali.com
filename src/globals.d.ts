@@ -16,5 +16,10 @@ declare global {
         }
       }
     }
+    /** Google's consent management platform (Funding Choices), loaded by the AdSense script */
+    googlefc?: {
+      callbackQueue?: Array<Record<string, () => void>>
+      showRevocationMessage?: () => void
+    }
   }
 }

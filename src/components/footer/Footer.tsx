@@ -1,4 +1,5 @@
 import Logo from '@/components/Logo'
+import PrivacySettingsButton from '@/components/footer/PrivacySettingsButton'
 import { caseStudies } from '@/content/case-studies'
 import { site, socialLinks } from '@/content/site'
 import { Icon } from '@iconify/react'
@@ -26,6 +27,7 @@ const elsewhereLinks: FooterLink[] = [
   { label: 'LinkedIn', href: site.socials.linkedin, external: true },
   { label: 'TrackHRS', href: site.socials.trackhrs, external: true },
   { label: 'Privacy Policy', href: '/privacy-policy' },
+  { label: 'Terms', href: '/terms' },
 ]
 
 const Footer = () => {
@@ -92,6 +94,8 @@ const Footer = () => {
                   </Link>
                 ),
               )}
+
+              <PrivacySettingsButton className="text-default-600 hover:text-default-900 text-sm transition-colors" />
 
               <div className="flex items-center gap-2.5">
                 {socialLinks.map((item, index) => (

@@ -14,9 +14,14 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-# Baked into the HTML at build time (metadata.verification), so it has to be a build arg.
+# Build-time config. .dockerignore excludes .env, so anything the prerendered pages
+# need has to arrive as a build arg (docker-compose.yml forwards these from .env).
+# Search Console token, baked into the HTML via metadata.verification.
 ARG GOOGLE_SITE_VERIFICATION
 ENV GOOGLE_SITE_VERIFICATION=$GOOGLE_SITE_VERIFICATION
+# AdSense publisher id; flips on the head loader, /ads.txt and the ad disclosures.
+ARG NEXT_PUBLIC_ADSENSE_CLIENT
+ENV NEXT_PUBLIC_ADSENSE_CLIENT=${NEXT_PUBLIC_ADSENSE_CLIENT}
 RUN pnpm build
 
 # --- Minimal runtime image ---

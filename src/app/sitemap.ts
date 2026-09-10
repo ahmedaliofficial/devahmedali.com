@@ -11,7 +11,8 @@ const SERVICES_UPDATED = '2026-09-07'
 const WORK_INDEX_UPDATED = '2026-09-07'
 const ABOUT_UPDATED = '2026-09-08'
 const CONTACT_UPDATED = '2026-09-07'
-const PRIVACY_POLICY_UPDATED = '2026-09-06'
+const PRIVACY_POLICY_UPDATED = '2026-09-11'
+const TERMS_UPDATED = '2026-09-11'
 const CASE_STUDIES_UPDATED = '2026-09-07'
 
 const sitemap = (): MetadataRoute.Sitemap => {
@@ -23,6 +24,7 @@ const sitemap = (): MetadataRoute.Sitemap => {
     { url: `${site.url}/blog`, lastModified: getAllPosts()[0]?.date ?? HOME_UPDATED, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${site.url}/contact`, lastModified: CONTACT_UPDATED, changeFrequency: 'yearly', priority: 0.7 },
     { url: `${site.url}/privacy-policy`, lastModified: PRIVACY_POLICY_UPDATED, changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${site.url}/terms`, lastModified: TERMS_UPDATED, changeFrequency: 'yearly', priority: 0.2 },
   ]
 
   // Expertise hub + role articles come straight from the MDX registry, so a new article is

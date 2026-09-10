@@ -4,7 +4,9 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
+        # Compose reads .env for interpolation, so setting these there is enough
         GOOGLE_SITE_VERIFICATION: ${GOOGLE_SITE_VERIFICATION:-}
+        NEXT_PUBLIC_ADSENSE_CLIENT: ${NEXT_PUBLIC_ADSENSE_CLIENT:-}
     restart: always
     ports:
       # Change 3061 to whatever host port you want; the app always listens on
