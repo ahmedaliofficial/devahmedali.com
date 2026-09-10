@@ -1,8 +1,9 @@
+import PostCard from '@/components/blog/PostCard'
 import ContactCta from '@/components/ContactCta'
 import { mdxComponents } from '@/components/mdx/MdxComponents'
-import Chip from '@/components/ui/Chip'
+import SectionHeading from '@/components/ui/SectionHeading'
 import { site, WEBSITE_ID } from '@/content/site'
-import { formatPostDate, getAllPosts, getPost } from '@/lib/blog'
+import { formatPostDate, getAllPosts, getPost, getRelatedPosts, tagToSlug } from '@/lib/blog'
 import { jsonLd, personRef } from '@/lib/schema'
 import { Icon } from '@iconify/react'
 import type { Metadata } from 'next'
@@ -54,6 +55,8 @@ const Page = async ({ params }: PageProps) => {
 
   if (!post) notFound()
 
+  const relatedPosts = getRelatedPosts(post)
+
   const postJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -103,9 +106,13 @@ const Page = async ({ params }: PageProps) => {
             <h1 className="font-heading text-default-900 mt-4 text-3xl leading-tight font-medium tracking-tight md:text-5xl lg:text-6xl">{post.title}</h1>
             <p className="text-default-500 mt-5 text-lg md:text-xl">{post.description}</p>
 
+            {/* Tags link to their hub rather than sitting inert, so every article has an
+                outbound link into its own topic cluster. */}
             <div className="mt-6 flex flex-wrap gap-1.5">
               {post.tags.map((tag) => (
-                <Chip key={tag}>{tag}</Chip>
+                <Link key={tag} href={`/blog/tag/${tagToSlug(tag)}`} className="bg-default-100 text-default-700 hover:bg-default-200 hover:text-default-900 inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium transition-colors">
+                  {tag}
+                </Link>
               ))}
             </div>
           </header>
@@ -123,6 +130,19 @@ const Page = async ({ params }: PageProps) => {
           </div>
         </div>
       </article>
+
+      {relatedPosts.length > 0 && (
+        <section className="pb-12 md:pb-20">
+          <div className="container">
+            <SectionHeading align="left" eyebrow="Keep reading" title="Notes from the same territory" />
+            <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
+              {relatedPosts.map((related) => (
+                <PostCard key={related.slug} post={related} variant="related" />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <ContactCta heading="Working on something similar?" description="If you're wrestling with a pipeline, a scaling problem or an AI system that needs to survive production, I'm happy to talk it through." />
     </>

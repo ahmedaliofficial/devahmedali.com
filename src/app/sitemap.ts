@@ -1,6 +1,6 @@
 import { caseStudies } from '@/content/case-studies'
 import { site } from '@/content/site'
-import { getAllPosts } from '@/lib/blog'
+import { getAllPosts, getAllTags, getPageCount, getPostsByTag } from '@/lib/blog'
 import { getAllExpertise } from '@/lib/expertise'
 import type { MetadataRoute } from 'next'
 
@@ -52,14 +52,41 @@ const sitemap = (): MetadataRoute.Sitemap => {
     priority: 0.9,
   }))
 
-  const postRoutes: MetadataRoute.Sitemap = getAllPosts().map((post) => ({
+  const posts = getAllPosts()
+
+  const postRoutes: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${site.url}/blog/${post.slug}`,
     lastModified: new Date(post.updated),
     changeFrequency: 'yearly',
     priority: 0.7,
   }))
 
-  return [...staticRoutes, ...expertiseRoutes, ...workRoutes, ...postRoutes]
+  // Pagination pages start at 2; page 1 is /blog, already in staticRoutes.
+  const newestPostDate = posts[0]?.date ?? HOME_UPDATED
+  const blogPageRoutes: MetadataRoute.Sitemap = Array.from({ length: Math.max(0, getPageCount(posts.length) - 1) }, (_, index) => ({
+    url: `${site.url}/blog/page/${index + 2}`,
+    lastModified: newestPostDate,
+    changeFrequency: 'weekly' as const,
+    priority: 0.3,
+  }))
+
+  // One hub per tag, plus its own pagination. These are the topic-cluster landing pages.
+  const tagRoutes: MetadataRoute.Sitemap = getAllTags().flatMap((entry) => {
+    const tagPosts = getPostsByTag(entry.tag)
+    const lastModified = tagPosts[0]?.date ?? newestPostDate
+
+    return [
+      { url: `${site.url}/blog/tag/${entry.slug}`, lastModified, changeFrequency: 'weekly' as const, priority: 0.6 },
+      ...Array.from({ length: Math.max(0, getPageCount(entry.count) - 1) }, (_, index) => ({
+        url: `${site.url}/blog/tag/${entry.slug}/page/${index + 2}`,
+        lastModified,
+        changeFrequency: 'weekly' as const,
+        priority: 0.3,
+      })),
+    ]
+  })
+
+  return [...staticRoutes, ...expertiseRoutes, ...workRoutes, ...postRoutes, ...tagRoutes, ...blogPageRoutes]
 }
 
 export default sitemap

@@ -4,12 +4,26 @@ import SpotlightCard from '@/components/ui/aceternity/SpotlightCard'
 import Chip from '@/components/ui/Chip'
 import RollUpButton from '@/components/ui/RollUpButton'
 import SectionHeading from '@/components/ui/SectionHeading'
-import { formatPostDate, getAllPosts } from '@/lib/blog'
+import { formatPostDate, getAllPosts, type PostMeta } from '@/lib/blog'
 import { Icon } from '@iconify/react'
 import Link from 'next/link'
 
+/**
+ * Newest post, then the newest post that shares none of its tags. Without the second rule a
+ * burst of posts in one topic takes both slots and the homepage stops representing the range
+ * of the work. Falls back to plain "two newest" when everything overlaps.
+ */
+const pickTeaserPosts = (all: PostMeta[]): PostMeta[] => {
+  const [newest] = all
+  if (!newest) return []
+
+  const contrast = all.slice(1).find((post) => post.tags.every((tag) => !newest.tags.includes(tag)))
+
+  return [newest, contrast ?? all[1]].filter((post): post is PostMeta => post !== undefined)
+}
+
 const BlogTeaser = () => {
-  const posts = getAllPosts().slice(0, 2)
+  const posts = pickTeaserPosts(getAllPosts())
 
   if (posts.length === 0) return null
 
