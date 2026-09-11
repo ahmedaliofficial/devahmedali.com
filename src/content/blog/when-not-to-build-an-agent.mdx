@@ -1,0 +1,40 @@
+---
+title: 'When not to build an agent'
+description: 'Most problems described as agent problems are retrieval, a workflow, or a form. Agents earn their cost in a narrow band, and it pays to know where it starts.'
+date: '2026-09-11'
+tags: ['AI', 'Agents', 'Architecture', 'System Design']
+---
+
+The most useful thing I do in an early AI design conversation is usually to argue the client out of the architecture they arrived with. Not because agents are a bad idea, but because the thing being described is almost always a retrieval problem, a fixed workflow, or a form with better copy, and all three of those are cheaper to build, cheaper to run and far easier to keep working.
+
+This is not conservatism about the technology. It is that an agent has a specific cost profile, and paying it only makes sense for a specific class of problem. Recognising which class you are in takes about twenty minutes and saves a quarter.
+
+## The cheaper thing usually works
+
+Three patterns get mislabelled as agent problems with some regularity.
+
+A question-answering feature over internal documents is retrieval. It has one step. Wrapping it in a loop adds the possibility of the model deciding to search four more times, which costs more and rarely improves the answer. Getting [the retrieval itself right](/blog/rag-is-a-systems-problem) is where the quality actually lives.
+
+A process with known stages, like extract then validate then file, is a workflow. Each stage may well use a model. None of them require the model to choose what happens next, because you already know. Writing that as an agent means re-deriving your own business process at run time, at model prices, with less reliability than an `if` statement.
+
+Structured data collection is a form. A conversational interface over it is sometimes a genuine improvement in user experience and sometimes a way of making a well-understood interaction slower and less predictable. That is a product decision, and it is worth making as one rather than inheriting it from the architecture.
+
+## Three questions that settle it
+
+**Can you write down the steps?** If you can enumerate them, even as a long branching list, you have a workflow. An agent is then a more expensive way to execute code you could have written, with worse observability and a new class of [failure that does not throw](/blog/how-ai-agents-fail-in-production).
+
+**Does the next step depend on what the previous step found?** This is the real test. Not whether the input varies, but whether the shape of the work is unknown until earlier work is done. Investigating an incident qualifies. Generating a monthly report does not, however variable the numbers are.
+
+**Is a wrong answer recoverable?** Agents are probabilistic and will sometimes be confidently wrong. Where a person reviews the output before it has effect, that is a manageable cost. Where the output moves money, changes permissions or contacts a customer directly, the review step is not optional, and once you have added it you should check whether the agent was still the cheapest way to produce something a human approves.
+
+## Where I have changed my mind
+
+I have argued against agents in situations where I was wrong, and the pattern is consistent: I underestimated how much of the work was genuinely unknowable in advance. The clearest example was decomposing an arbitrary product description into a schema. I initially wanted a fixed pipeline with the model filling in slots, and it fell apart on the second unusual brief, because the slots themselves were the thing that varied.
+
+What I have not seen work is the opposite mistake. I have yet to encounter a team that regretted starting with a workflow and adding agency later at the one step that needed it. Going the other way, from an agent back to something bounded, means unpicking a system whose behaviour nobody wrote down, and that conversion is always harder than the original build.
+
+## The agent is the expensive answer
+
+There is a narrow band where an agent is genuinely right: the path is not knowable in advance, the search space is too large to enumerate, and a wrong turn is cheap to correct. Inside that band nothing else works as well, and the cost is worth paying.
+
+Outside it, the ordinary tools are better on every axis that matters in production. Predictable cost, enumerable failures, a stack trace when something goes wrong. Start with the boring version, find the one decision it genuinely cannot make, and [add the loop only there](/blog/what-makes-a-system-an-agent). The result will be less impressive in a demo and considerably more likely to still be running next year.

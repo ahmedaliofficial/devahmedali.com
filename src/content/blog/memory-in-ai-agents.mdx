@@ -1,0 +1,41 @@
+---
+title: 'Agent memory is three problems wearing one name'
+seoTitle: 'Agent memory in production systems'
+description: 'Conversation history, retrieved knowledge and learned state all get called memory. They have different lifetimes, and conflating them is why agents drift.'
+date: '2026-09-11'
+tags: ['AI', 'Agents', 'RAG', 'Context Engineering']
+---
+
+Ask five teams how their agent handles memory and you will get five answers describing entirely different mechanisms. One means the last ten messages. One means a vector store. One means a row in Postgres holding what the user told them about their company in March. All three are called memory, and the word does no work at all.
+
+The confusion is not cosmetic. These three things have different lifetimes, different consistency requirements and different failure modes, and a system that stores them in one place inherits the worst properties of each. Separating them is usually the single change that stops an agent drifting over a long session.
+
+## The three things people mean
+
+**Working memory** is the current task. It is what the agent has done so far in this run: the steps taken, the tool results returned, the intermediate conclusions. Its lifetime is one invocation. It should not survive the request, and when it does, you get an agent that references a file it opened forty minutes ago in an unrelated session.
+
+**Retrieved knowledge** is everything the agent can look up. Documentation, past tickets, the product catalogue. It does not belong to the conversation at all. It belongs to the organisation, it changes on its own schedule, and the agent's job is to fetch the relevant slice at the moment it is needed. This is ordinary [retrieval](/blog/rag-is-a-systems-problem), and treating it as memory is what leads teams to stuff it into the context window permanently.
+
+**Durable facts** are the small set of things worth remembering about a user or account across every future session. Their timezone, their stack, the decision they made last quarter. This is a database row with an owner and a retention policy, not an embedding.
+
+## Why conflating them breaks things
+
+**Everything ends up in the context window.** When all three live in one blob, the obvious implementation is to append. Working memory grows across turns, retrieved chunks never get evicted, and durable facts sit at the top being re-sent on every call. The window fills with material that was relevant six steps ago, and quality degrades in a way that looks like the model getting worse.
+
+**Stale beats absent, silently.** Retrieved knowledge has a freshness requirement that conversation history does not. Mixed together, a document retrieved at the start of a long session stays in scope long after it was superseded. The agent is not hallucinating. It is faithfully using something it was handed and never told to forget.
+
+**Nothing can be deleted.** When a user asks you to forget something, you need to know which store holds it. A single undifferentiated memory blob makes that a full-text search problem with no guarantees, which is a poor answer to give anyone asking about their own data.
+
+## Where I keep each one
+
+On the multi-agent platform I work on, working memory is graph state and dies with the run. It is the one thing I want to be genuinely ephemeral, because a stuck agent that inherits its own previous confusion is much harder to reason about than one that starts clean.
+
+Durable facts go in Postgres with a user id and an updated timestamp, because they are small, they need to be queryable, and somebody will eventually need to correct one. Retrieved knowledge stays in the vector store and is fetched per step rather than per session, which keeps the window proportional to the current question instead of the session length.
+
+The rule I apply is a retention question rather than a storage one: how long should this be true for? An answer of "this request", "until the source document changes" and "until the user says otherwise" describes three systems, so I build three.
+
+## Memory is a retention policy, not a feature
+
+The framework you use will offer you a memory abstraction, and it will usually be one of these three wearing the general name. That is fine as a starting point and a poor place to end up, because the moment sessions get long or users get regulated, the differences between the three become the whole problem.
+
+Work out the lifetime of each piece of state before choosing where it lives. Storage follows from that, and so does [what happens when it goes wrong](/blog/how-ai-agents-fail-in-production). Skip the question and you will build one store that is simultaneously too persistent to be safe and too forgetful to be useful.

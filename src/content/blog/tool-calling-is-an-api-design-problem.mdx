@@ -1,0 +1,49 @@
+---
+title: 'Tool calling is an API design problem, not a prompt problem'
+seoTitle: 'Tool calling is an API design problem'
+description: "When an agent misuses a tool, the instinct is to rewrite the prompt. Usually it's the tool's own signature that made the mistake available in the first place."
+date: '2026-09-11'
+tags: ['AI', 'Agents', 'MCP', 'Architecture']
+---
+
+An agent calls the wrong tool, or calls the right one with nonsense arguments, and the reflex is to go and edit the system prompt. Add a sentence telling it not to do that. Add three more when the first one does not hold. Six weeks later the prompt is two pages long and is mostly a list of things that went wrong once.
+
+That approach treats a design problem as a persuasion problem. The model is not choosing between everything it could possibly do. It is choosing between the tool descriptions you gave it, using the arguments those signatures permit. A tool that is easy to misuse will be misused, and no amount of instruction reliably fixes a signature that allows the wrong call to be well-formed.
+
+## The model only ever sees the signature
+
+Whatever your tool does internally, the agent sees a name, a description and a parameter schema. That is the entire interface. If the name is ambiguous, the description explains what the function does rather than when to reach for it, or the schema accepts a free-form string where a fixed set of values was intended, the model is being asked to guess.
+
+Compare two versions of the same capability:
+
+```ts
+// invites a guess
+search(query: string, filters?: string)
+
+// admits one correct shape
+searchInvoices(params: { customerId: string; status: 'paid' | 'overdue' })
+```
+
+The second version cannot be called for the wrong entity, and the status argument has no plausible wrong value. Nothing was said to the model to achieve that. The mistake was simply removed from the space of well-formed calls.
+
+## Three properties that make a tool hard to misuse
+
+**A name that says when, not what.** Internal APIs are named for what they do because the caller already knows the context. An agent does not. `lookupCustomerByEmail` is a better tool name than `customerQuery` for exactly the reason it is a worse internal function name: it encodes the situation it belongs to, and the model is choosing based on situation.
+
+**Enums wherever a fixed set exists.** Any parameter that accepts a string will eventually receive a plausible invented one. Status fields, sort orders, regions, document types: if the set is known, put it in the schema. The model cannot hallucinate a value that the schema does not offer, and a validation error at the boundary is far cheaper than a query that silently returns nothing.
+
+**Errors written for the caller that will read them.** A tool returning `400 Bad Request` tells the agent nothing it can act on, so it retries the same call. A tool returning "customerId must be the id from lookupCustomer, not the email address" gets a corrected call on the next turn. Tool errors are prompts, whether or not you wrote them that way.
+
+## Where I draw the line on granularity
+
+The temptation on the platform I work on was to expose a few powerful tools and let the model compose them. That produced exactly the failure above: broad signatures, plausible wrong arguments, and a prompt growing to compensate. Narrowing to more tools with tighter schemas cut the malformed-call rate sharply, at the cost of a longer tool list.
+
+There is a real limit in the other direction. Past roughly twenty tools, selection itself becomes the failure mode and the model starts picking neighbours of the right tool. Where I have landed is to keep the list short by scoping which tools are available at each stage of the run, rather than by making individual tools broader. The agent planning a schema does not need the deployment tools in scope at all.
+
+This is also the argument for putting the boundary in [a protocol like MCP](/blog/building-custom-mcp-servers-for-agent-tools) rather than in framework-specific glue. A schema you have to define properly once is a forcing function, and it survives changing your mind about the [agent loop](/blog/what-makes-a-system-an-agent) above it.
+
+## Tools outlive the agent that calls them
+
+Frameworks turn over fast. Prompts get rewritten every time behaviour surprises someone. The tool layer, if it is designed rather than accreted, is the part that stays: a set of narrow, well-named, strictly typed operations against your own systems, with errors that explain themselves.
+
+Build that layer as though a careful but unfamiliar engineer were calling it with no access to you. That is approximately what a model is, and designing for it turns most prompt engineering back into ordinary interface design, where the tools are better.

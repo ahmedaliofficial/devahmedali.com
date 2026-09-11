@@ -1,0 +1,57 @@
+---
+title: 'What actually makes a system an agent'
+description: 'Most things called agents are workflows with a model bolted on. The line is whether the system picks its own next step, and everything difficult follows.'
+date: '2026-09-11'
+tags: ['AI', 'Agents', 'LangGraph', 'Architecture']
+---
+
+Agent has become the least precise word in AI engineering. It gets applied to a prompt with a retry, to a chain that calls two APIs in a fixed order, and to a system that breaks a goal into twenty steps and rewrites half of them as it goes. Those are three different machines with three different failure profiles, and the shared vocabulary hides it.
+
+The distinction that matters is not the tool count, the framework, or how carefully the prompt is written. It is who chooses the next step. In a workflow you chose at design time and wrote it down. In an agent the model chooses at run time, and every hard problem in the system follows from that one fact.
+
+## Control flow is the entire distinction
+
+A workflow is a program you can read top to bottom:
+
+```ts
+const plan = await planner.invoke(brief)
+const schema = await designer.invoke(plan)
+const code = await generator.invoke(schema)
+```
+
+Three model calls in one order, fixed before anyone ran it. You can reason about cost, latency and failure modes by reading the file.
+
+An agent replaces that with a loop:
+
+```ts
+while (!state.done) {
+  const step = await model.chooseNext(state)
+  state = await apply(step, state)
+}
+```
+
+The loop condition is the whole problem. Nothing in your code decides how many iterations happen, which tools get called, or in what order. You have swapped a program for a policy, and policies are harder to test than programs.
+
+This is also why the [LangChain and LangGraph distinction](/blog/langchain-vs-langgraph-choosing-the-right-abstraction) maps so cleanly onto it. A chain expresses the first shape. A graph with conditional edges expresses the second.
+
+## What you give up when the model decides
+
+**Cost stops being predictable.** A three-call workflow costs three calls, every time, and you can put that number in a spreadsheet. An agent might resolve an easy request in four calls and an ambiguous one in thirty. The ambiguous ones are disproportionately what real users send, so the average you measured in testing is usually the floor rather than the middle.
+
+**The failure surface moves from your code into the model's judgement.** A workflow fails in ways you can enumerate: this API times out, that response fails to parse. An agent adds a category you cannot enumerate, which is the model choosing a reasonable-looking wrong step. It does not throw. It proceeds confidently, and the error surfaces three steps later as something that looks unrelated.
+
+**Debugging becomes archaeology.** When a workflow produces a bad output you read the code and find the branch. When an agent does, you replay a trace and try to work out why step seven looked better than step eight to a system that will not necessarily make the same choice again. Without tracing in place from the start, you are guessing.
+
+## Where I reach for an agent, and where I don't
+
+On a multi-agent platform that turns a written brief into a working application, the planning step is genuinely agentic and has to be. Nobody can enumerate in advance how to decompose an arbitrary product description into entities, screens and relationships, so the model decides and then revises.
+
+Everything downstream of that plan is a workflow, deliberately. Once the schema exists, generating a service from it is a known sequence, and I want it to cost the same every time and fail in ways I can catch. The agentic part is the smallest piece of the system that genuinely needs to be, and that ratio is the design decision.
+
+The test I apply is narrow: can I write down the steps? If I can, an agent is a more expensive way to run code I could have written, with worse observability. If I genuinely cannot, because the steps depend on what the previous step found, then I need the loop and I accept what comes with it.
+
+## Agency is a property you add on purpose
+
+Most systems that get called agents would be better, cheaper and easier to operate as workflows with one model call in the middle. That is not a criticism of them. It means the useful question was never whether to build an agent. It is which single decision in the system genuinely cannot be made until run time, and whether that one decision is worth the [failure modes](/blog/how-ai-agents-fail-in-production) the loop brings with it.
+
+Answer that honestly and most of the architecture settles itself. Answer it by reaching for the framework first and you will spend a quarter discovering which parts of the loop you never needed.

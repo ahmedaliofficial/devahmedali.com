@@ -1,0 +1,44 @@
+---
+title: 'How AI agents fail in production'
+description: 'Agents rarely crash. They loop, they stop early, and they confidently do the wrong thing, which is why ordinary error handling never catches any of it.'
+date: '2026-09-11'
+tags: ['AI', 'Agents', 'Observability', 'Evaluation']
+---
+
+The first agent incident most teams have is not an outage. It is a bill. Nothing alerted, no error rate moved, every request returned 200, and somewhere in the middle of the month somebody noticed the model spend had tripled. The system had been failing continuously for two weeks in a way that none of the existing monitoring was shaped to see.
+
+This is the recurring problem with agent reliability. Conventional error handling catches exceptions, and agents mostly do not throw. They produce a plausible wrong step, act on it, and carry on. The failure is semantic, and semantics do not appear in a status code.
+
+## Nothing throws, so nothing alerts
+
+A normal service fails loudly. A dependency times out, a parse fails, a constraint is violated, and something in the stack raises. Your alerting is built on that assumption, and it works because the system tells you when it has gone wrong.
+
+An agent that picks the wrong tool has not encountered an error. It has made a decision. The tool returns successfully, the result is added to state, the loop continues, and the run completes with an output that is confidently incorrect. From the outside it is indistinguishable from a successful run, and it will stay that way until a user complains or an invoice arrives.
+
+## Three failures worth instrumenting for
+
+**The productive-looking loop.** The agent tries an approach, it does not work, it tries a slight variation, and repeats. Each step is individually reasonable and the transcript reads like persistence. Without a cap it will run until it exhausts a budget, and because every call succeeds, the only signal is duration and cost. Track steps per run and alert on the tail, not the average.
+
+**Premature completion.** The reverse failure, and the more expensive one commercially. The agent decides it is finished while genuinely useful work remains, returns a partial result, and everything downstream treats it as complete. This one produces no cost spike at all, which is precisely why it survives so long. It is caught by checking outputs against expectations, not by watching the run.
+
+**Silent tool degradation.** A tool starts returning empty results rather than errors, because a filter changed or an index went stale. The agent adapts, works around the gap, and produces a worse answer without ever reporting that anything was missing. The tool is healthy by every infrastructure metric you have. The system is not.
+
+## Where I put the guardrails
+
+The first thing I add to any agent loop is a hard step budget, before anything else, including the prompt. It is three lines and it converts an unbounded failure into a bounded one:
+
+```ts
+if (state.steps++ > MAX_STEPS) {
+  return { status: 'exhausted', partial: state.result }
+}
+```
+
+Returning `exhausted` rather than throwing is the part that matters. The caller gets to decide whether a partial answer is useful, and the run appears in metrics as a distinct outcome rather than disappearing into either successes or errors.
+
+After that comes tracing every step with its inputs, chosen tool and result, because a failure you cannot replay is a failure you will argue about rather than fix. The third thing is a small set of [evaluations](/blog/rag-is-a-systems-problem) over known inputs, run on a schedule, since the only reliable detector for premature completion is comparing output against what the output should have been.
+
+## Budgets are the only backstop that always works
+
+Every other guardrail depends on anticipating a specific failure. Prompts address the mistakes you have already seen, validation addresses the malformed outputs you predicted, and both are worth having and neither generalises to the failure you have not met yet.
+
+A budget does. Steps, tokens, wall-clock time, tool calls: pick the ones that map to your costs and enforce them at the loop. It will not make the agent correct, and it is not supposed to. It makes the worst case finite, which is the property that lets you run a system whose [control flow you handed to a model](/blog/what-makes-a-system-an-agent) without also handing over the invoice.

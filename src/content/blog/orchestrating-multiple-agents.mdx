@@ -1,0 +1,39 @@
+---
+title: 'Orchestrating multiple agents without losing the thread'
+seoTitle: 'Multi-agent orchestration in production'
+description: 'A second agent multiplies the coordination problem, not the capability. What decides whether it holds together is who owns the shared plan.'
+date: '2026-09-11'
+tags: ['AI', 'Agents', 'LangGraph', 'Architecture']
+---
+
+The pitch for multi-agent systems is specialisation. One agent plans, one writes the backend, one writes the interface, each with a focused prompt and a narrow tool set. It reads like a team, which is why it is appealing, and the analogy holds further than most people expect. It holds all the way to the part where teams fail for coordination reasons rather than capability reasons.
+
+Splitting one agent into four does not divide the difficulty by four. It replaces a reasoning problem with a distributed systems problem, and the questions that decide the outcome are the ones any distributed system asks. Who owns the shared state? What happens when one participant disagrees with another? How does anyone know the work is finished?
+
+## The handoff is the system
+
+The interesting part of a multi-agent design is never the agents. It is the interface between them, and there are only two honest choices.
+
+Either agents share mutable state, in which case you need to decide who may write what, or they pass messages, in which case you need to decide what a complete message looks like. Teams routinely pick neither, let each agent append free text to a growing transcript, and then wonder why the fourth agent acted on a detail the second one had already revised.
+
+A shared plan with a single writer is the version I keep coming back to. One agent owns the structure, the others read it and return typed results against it. That makes the coordination explicit and gives you something to validate, which is the difference between a system you can debug and a conversation you can only read.
+
+## Three ways coordination fails
+
+**Divergent assumptions compound silently.** The planner decides an entity is called `Customer`. The backend agent generates `Customer`. The interface agent, working from a paraphrase two steps downstream, generates `Client`. Nothing errored. Every individual output was reasonable, and the system is now broken in a way that only shows up at integration.
+
+**Disagreement has no resolution rule.** When two agents produce conflicting outputs, something has to decide. If you have not designed that something, the winner is whichever wrote last, which is an ordering accident rather than a decision. Last-write-wins is a defensible strategy when chosen and a bug when inherited.
+
+**Termination is nobody's job.** A single agent loop at least has one place to check whether it is done. Hand work between four and the completion condition gets distributed too, so each agent finishes its part and hands on, and the system runs until a budget stops it rather than until the work is actually complete.
+
+## Where I let agents talk, and where I don't
+
+On the platform I work on, the planning agent is the only writer of the shared plan. Everything downstream reads it and returns structured output that gets validated against the schema before it goes anywhere. The specialised agents never talk to each other directly, and that constraint has prevented more problems than any prompt change I have made.
+
+The one place I do allow a genuine exchange is review: an agent reading another agent's output and returning findings, with the original author unable to reply. It is a one-way critique rather than a conversation, which keeps it bounded. Anything that would let two agents negotiate freely, I have eventually removed, because the transcript grows without the [working memory](/blog/memory-in-ai-agents) ever being cleared and the run gets slower and less coherent as it goes.
+
+## Multi-agent is an org chart, and org charts are a cost
+
+The reason to add a second agent is the same reason to add a second service: a genuine boundary that lets each side change without breaking the other. Narrower context, focused tools, independently testable pieces. Those are real benefits and they are the same benefits service boundaries give you in ordinary backend work.
+
+What comes with them is also the same. Interfaces to maintain, state to reconcile, and failures that live in the gaps rather than in any component. If you would not split a service along a boundary, splitting an agent along it will not go better. The teams getting value from multi-agent systems are mostly the ones who [kept the agentic part small](/blog/what-makes-a-system-an-agent) and treated the coordination as the real design work.
