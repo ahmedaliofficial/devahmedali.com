@@ -49,7 +49,25 @@ tags: ['Kafka', 'Architecture']
 Your content here.
 ```
 
-Set `draft: true` in the frontmatter to keep a post out of the site. Reading time is calculated automatically. Styling for headings, lists, code blocks and links comes from `src/components/mdx/MdxComponents.tsx`.
+Set `draft: true` in the frontmatter to keep a post out of the site, including the sitemap and every listing. `seoTitle` overrides the `<title>` tag when the headline is too long for a search result, and `updated` sets `dateModified` when you revise a post. Reading time is calculated automatically. Styling for headings, lists, code blocks and links comes from `src/components/mdx/MdxComponents.tsx`.
+
+Nothing needs registering. A new file appears in the listing, the sitemap, its own OG image, the `Blog` JSON-LD, the tag hubs for its tags, and the homepage teaser if it qualifies.
+
+**Tags are functional, not decorative.** Each one gets a hub at `/blog/tag/<slug>`, and related posts under an article are ranked by tag overlap. Reusing an existing tag string puts a post into that cluster; a new tag creates a new hub. `src/content/expertise/*.mdx` also match blog posts by tag through their `blogTags` field.
+
+**Listing routes.** `/blog` shows the newest 12 with pagination at `/blog/page/[page]`, and each tag hub paginates the same way. Page 1 is always the base path, never `/page/1`, so there is one canonical URL per page.
+
+### Blog house style
+
+Run `pnpm lint:content` before committing an article. It enforces the conventions the whole corpus follows, so a new post does not read as though someone else wrote it:
+
+- 640 to 900 words, three to five `##` sections, no `#` (the page renders the title as the h1) and no `###`
+- no em dashes, which have [their own commit](https://github.com/ahmedaliofficial/devahmedali.com/commit/c8e562b) removing 103 of them, plus no exclamation marks, blockquotes, emoji or images
+- British spelling, and no marketing vocabulary
+- frontmatter within the limits that keep OG images from clipping: title under 90 characters, `seoTitle` under 52, description 120 to 175
+- cross-links must point at slugs that exist
+
+All 59 posts pass, including the nine that predate the linter, which is what makes it a description of the existing style rather than a new one imposed on top.
 
 ### Adding an expertise article
 
