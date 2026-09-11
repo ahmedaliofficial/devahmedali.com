@@ -1,0 +1,39 @@
+---
+title: 'Speech to text is easy until the audio is real'
+seoTitle: 'Speech to text in production'
+description: 'Transcription accuracy on clean audio is a solved problem. Production audio is noisy, overlapping and full of the terms your domain depends on.'
+date: '2026-09-11'
+tags: ['AI', 'Multimodal', 'Architecture', 'Performance']
+---
+
+Transcription demonstrates extremely well. Record a sentence in a quiet room, send it to a current model, and the text comes back essentially perfect. The problem looks solved, and for that recording it is.
+
+Production audio is not that recording. It is a call over a poor connection, two people talking across each other, background noise, an accent the model has seen less of, and a vocabulary of product names and abbreviations that appear nowhere in general training data. Accuracy on that material is not a small step down from the demonstration. It is a different number, and the gap is where the engineering lives.
+
+## The errors cluster on exactly the wrong words
+
+General transcription accuracy is a misleading headline because the errors are not evenly distributed. Common words are transcribed reliably. The words that get mangled are proper nouns, product names, technical terms, identifiers and numbers, which are disproportionately the words carrying the information you wanted from the audio.
+
+A transcript that is ninety-five percent accurate sounds excellent and can be useless, if the five percent is concentrated in the account numbers and the drug names. Measuring overall word error rate will not show this. Measuring error rate on the terms that matter to your domain will, and it is a different and much more actionable number.
+
+Most providers accept a vocabulary hint or prompt to bias toward expected terms, and supplying your domain's vocabulary is the single highest-return adjustment available. It is also the one most often skipped, because the default output looked fine on a test recording.
+
+## Three things that decide the design
+
+**Streaming and batch are different products.** Streaming transcription returns words as they are spoken and revises them as more context arrives, which means early tokens are provisional. Batch sees the whole file and is more accurate. Building an interface on streaming output and then treating it as final is a common source of confusing behaviour, and it has the same shape as [everything else that streams](/blog/streaming-responses-and-error-handling).
+
+**Diarisation is a separate problem with its own error rate.** Knowing who spoke is not a by-product of knowing what was said. Speaker attribution degrades badly with overlapping speech and similar voices, and an incorrectly attributed statement is worse than an unattributed one, particularly in anything used as a record.
+
+**Audio is personal data, and so is its transcript.** A voice recording is biometric in several jurisdictions, the transcript carries whatever was discussed, and both now exist in a pipeline that probably was not designed with [a retention policy](/blog/handling-personal-data-in-llm-systems). This is the compliance surface that gets discovered late.
+
+## Where the transcript is an intermediate, not an output
+
+The pattern worth designing for is that transcription is rarely the product. What people want is a summary, an extracted set of fields, a searchable record, a routed ticket. The transcript is a stage in a pipeline, and every error in it propagates into whatever comes next.
+
+That argues for treating it as an intermediate with a confidence signal rather than as text. Where a provider returns per-segment confidence, carrying that forward lets a downstream step know which parts to trust, and lets a summary decline to assert something that rested on a poorly heard passage. Discarding confidence at the transcription boundary, which is the default, throws away the information that would have made the next stage honest.
+
+## An input pipeline, with the usual obligations
+
+The temptation is to treat speech as a solved input problem and move on to the interesting work downstream. The result is a system whose quality is bounded by a stage nobody is measuring, failing hardest on precisely the terms the product exists to handle.
+
+Measure error on your own vocabulary rather than in general, supply the domain terms, decide deliberately between streaming and batch, and carry confidence through rather than flattening it into text. It is ordinary pipeline engineering, and it is the difference between transcription that demonstrates well and transcription that holds up on a bad line.

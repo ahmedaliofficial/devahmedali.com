@@ -1,0 +1,41 @@
+---
+title: 'Fine-tuning teaches form, retrieval supplies facts'
+seoTitle: 'Fine-tuning versus retrieval'
+description: 'Teams reach for fine-tuning to make a model know their data. It is much better at teaching behaviour, and facts have a cheaper home.'
+date: '2026-09-11'
+tags: ['AI', 'RAG', 'LLMs', 'System Design']
+---
+
+The request arrives in a recognisable form. The model does not know our products, our policies or our terminology, so we should fine-tune it on our documents. It sounds like the natural way to make a general system into a specific one, and it is usually the expensive answer to a question that has a cheap one.
+
+My own work sits on the systems side of this, which is a position worth stating plainly: retrieval, tool integration, evaluation and the pipelines around a model rather than the training of it. That shapes what follows. It also means the recommendation is not a preference for the thing I happen to do, because in most cases the honest analysis points away from training regardless of who is doing it.
+
+## The two techniques answer different questions
+
+Fine-tuning adjusts the model's weights on examples, and what it reliably changes is behaviour. Output format, tone, how to structure a response, how to classify within your particular taxonomy, when to refuse. Anything where you can show hundreds of examples of the shape you want, and the shape is the thing that is currently wrong.
+
+Retrieval supplies information at request time. Which policy applies, what this customer's balance is, what the documentation says today. The model was always able to read and summarise; it simply did not have the material.
+
+The confusion comes from both being described as making the model know your domain. Knowing how to speak about your domain and knowing the facts in it are different, and only the first is a weights problem.
+
+## Three reasons facts belong in retrieval
+
+**Facts change and weights do not.** A fine-tuned model knows the corpus as it existed at training time. A policy updated on Tuesday requires a retraining cycle to reach it, where a retrieval system requires reindexing one document. For anything that changes at all, this alone decides it.
+
+**Training does not make a fact reliable.** Fine-tuning shifts probabilities; it does not install a lookup table. A model trained on your documentation will produce confident, fluent, plausible statements about your products that are subtly wrong, and it will do so in exactly the register of your documentation, which makes the errors harder to catch rather than easier.
+
+**Citation disappears.** Retrieval can show which document an answer came from, which is what makes an answer checkable and often what makes it permissible. A fine-tuned model has no source to point at, and "the model said so" is not an acceptable provenance in any domain where the answer matters.
+
+## Where fine-tuning is the right call
+
+It earns its cost on narrow, high-volume, stable tasks with a consistent output shape. Classifying support tickets into your own categories. Extracting a fixed set of fields from a document type you see constantly. Matching a house style precisely enough that prompting cannot get there.
+
+These share a profile: the behaviour is the hard part, the volume makes a smaller specialised model economically attractive, and the task does not change month to month. That last property is what makes the training investment hold its value.
+
+What I would do first in every case is exhaust the cheaper options, because they are genuinely often sufficient. Better [retrieval](/blog/rag-is-a-systems-problem), a [structured output schema](/blog/structured-output-you-can-parse), and [a few well-chosen examples](/blog/few-shot-examples-and-when-they-stop-helping) address a surprising share of what gets brought to me as a fine-tuning requirement, at a fraction of the cost and with none of the retraining commitment.
+
+## Ask which one is actually wrong
+
+The question that resolves this in about five minutes is whether the model is failing because it does not know something, or because it is not behaving as required.
+
+Not knowing is a retrieval problem, and training is an expensive and unreliable way to solve it. Behaving wrongly, consistently, on a task you can demonstrate hundreds of times, is the case where adjusting the weights is the appropriate tool. Most systems that reach for training are in the first situation, and discover the cost of that a training run later.

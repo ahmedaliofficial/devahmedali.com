@@ -1,0 +1,39 @@
+---
+title: 'Open weight or closed model: the decision is mostly not quality'
+seoTitle: 'Open weight versus closed models'
+description: 'The capability gap narrows every few months. What does not narrow is the difference in who controls deprecation, data residency and your cost curve.'
+date: '2026-09-11'
+tags: ['AI', 'LLMs', 'Architecture', 'System Design']
+---
+
+The open versus closed conversation is usually conducted as a capability comparison, and capability is the least durable part of it. The gap has narrowed repeatedly, the ordering changes with each release cycle, and any argument resting on which is better today has a short shelf life.
+
+The differences that persist are structural. Who decides when a model you depend on stops existing, where your data goes when you make a request, what your cost looks like at ten times current volume, and whether you can run the thing at all when the provider is having an incident. Those do not converge, and they are the same questions you would ask about any critical dependency.
+
+## What you are choosing between
+
+A closed model behind an API is a managed dependency. Someone else runs the infrastructure, keeps it available, and improves it without your involvement. You pay per token, you scale by sending more requests, and you have no operational burden at all. That is a genuinely excellent arrangement and it is why the default is correct for most teams.
+
+What comes with it is a provider's roadmap. Versions are deprecated on their schedule, behaviour changes between versions in ways that [a pinned regression suite](/blog/regression-testing-prompts) exists to catch, pricing is theirs to set, and your data leaves your boundary under whatever terms the contract specifies.
+
+An open weight model is infrastructure you own. It does not get deprecated, it does not change under you, it runs where you put it and the data never leaves. The cost moves from per-token to per-hour of hardware, whether or not anyone is using it, and the operational work becomes yours.
+
+## Three constraints that settle it quickly
+
+**Data residency that is contractual rather than preferential.** Where regulation or a customer contract requires that content not leave a jurisdiction or an environment, the API option narrows to whatever the provider offers in that region, and sometimes to nothing. This decides the question outright rather than contributing to it.
+
+**A workload shape that suits owned hardware.** Self-hosting is economic at steady, high, predictable volume, because you are paying for capacity rather than usage. Bursty or low traffic against an always-on machine is worse on every axis. The [arithmetic is worth doing properly](/blog/what-self-hosting-a-model-costs) before the argument becomes philosophical.
+
+**A tolerance for the model changing without you.** Some products can absorb a provider's upgrade; some have behaviour tuned closely enough that they cannot. If a version change is a release-blocking event for you, owning the weights removes a recurring risk that is otherwise permanent.
+
+## Where I would put each
+
+For nearly every product feature, an API model. The capability is higher, the operational cost is zero, and the engineering effort goes into [retrieval, context and evaluation](/blog/why-evals-come-before-scale), which is where quality actually comes from and which is identical either way.
+
+Where I would reach for open weights is high-volume, narrow, repetitive work: classification, extraction, enrichment running continuously over a stream. These are the tasks where a smaller model is sufficient, the volume makes per-token pricing painful, and the behaviour needs to be stable for a long time. They also tend to be the tasks where data sensitivity is highest, because they run over everything rather than over what a user chose to ask about.
+
+## A dependency decision, so decide it as one
+
+The framing that makes this tractable is to stop treating it as a question about models and treat it as a question about a dependency. Managed service or self-operated, with the usual trade between control and effort, and the usual answer that most teams should take the managed option until a specific constraint says otherwise.
+
+Keep the provider behind a narrow interface so the answer can change, because it will. The model you are using in two years is unlikely to be the one you are using now regardless of which side of this you pick, and the systems that survive that are the ones where swapping it is a configuration change rather than a rewrite.

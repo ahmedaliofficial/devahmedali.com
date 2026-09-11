@@ -1,0 +1,43 @@
+---
+title: 'Choosing a model for one feature, not for the company'
+seoTitle: 'Choosing a model for a feature'
+description: 'Teams pick one model and route everything through it. Most systems have several jobs with different requirements, and one answer fits none of them well.'
+date: '2026-09-11'
+tags: ['AI', 'LLMs', 'Performance', 'Architecture']
+---
+
+Model selection usually happens once. Somebody evaluates the options at the start of a project, picks the strongest available, and every call in the system goes to it from then on. The decision is treated as a platform choice, like picking a database, and it inherits that sense of permanence.
+
+It is closer to choosing an instance size. A system doing anything substantial has several distinct jobs inside it, and those jobs have genuinely different requirements: some need careful reasoning, most need speed and consistency, a few need neither and are being asked to classify a sentence. Routing all of them to the most capable model is the equivalent of running every workload on the largest machine in the fleet.
+
+## The jobs inside one feature are not alike
+
+A retrieval-backed assistant contains at least four model calls with different profiles.
+
+Query understanding, turning a user's phrasing into something searchable, is short, high-volume, latency-critical and not difficult. Classification and routing, deciding which path a request takes, is the same. Both are ideal for a small fast model, and both are frequently sent to a frontier one because that is what the client was configured with.
+
+Answer generation over retrieved context is where capability earns its price, because the failures there are visible to the user and the reasoning genuinely matters.
+
+Evaluation, where [a model grades output](/blog/llm-as-judge-and-when-to-trust-it), wants something capable and, more importantly, something stable, since a judge that changes is a measurement instrument that changes.
+
+Treating those as one decision means either overpaying on three of them or underperforming on one.
+
+## Three criteria that matter more than a benchmark
+
+**Latency at the position in the pipeline.** A step in the critical path of an interactive response has a budget measured in hundreds of milliseconds. A background enrichment job does not. Benchmark accuracy tells you nothing about whether the interface will feel responsive, and users notice latency more reliably than they notice a marginal quality difference.
+
+**Stability of behaviour over the deprecation cycle.** How long the version is supported, what the migration path looks like, and how much your prompts depend on its specific quirks. A model that is slightly better and deprecated in six months is a worse choice for a system you intend to keep.
+
+**Cost at the volume that step will actually run at.** A query-understanding call fires on every request, so its unit cost is multiplied by total traffic. An answer-generation call fires once per question. The same price difference has a very different consequence in those two positions.
+
+## Where I would spend the capability
+
+Put the best model where the output is read by a person and the reasoning is hard. Put a small fast one everywhere the task is mechanical: routing, extraction, [structured output against a schema](/blog/structured-output-you-can-parse), query rewriting. That split has consistently cut both cost and latency without a measurable quality change, and it is the first optimisation I would look for in an existing system.
+
+The thing that makes this safe rather than risky is having [an eval set per step](/blog/why-evals-come-before-scale). Swapping a model on the routing call is a ten-minute experiment when there is a suite that tells you whether routing got worse. Without one it is a change nobody can evaluate, which is why teams avoid making it and keep paying for capability they are not using.
+
+## A per-call decision, behind one interface
+
+The practical arrangement is a thin layer where each logical step names the model it wants, rather than a single client configured once and imported everywhere. It costs almost nothing to build at the start and it is what makes the per-step choice available at all.
+
+The models will change. The right one for each step will change independently, at different times, for different reasons. A system where that is a configuration line per step absorbs the churn. One where the model is assumed throughout absorbs it as a project, every time.

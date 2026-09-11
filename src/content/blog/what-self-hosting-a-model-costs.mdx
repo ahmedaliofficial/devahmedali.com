@@ -1,0 +1,39 @@
+---
+title: 'What self-hosting a model actually costs'
+seoTitle: 'What self-hosting a model costs'
+description: 'Running a model locally is free in the sense that a server is free. The bill is idle capacity, and the arithmetic decides this more than principle does.'
+date: '2026-09-11'
+tags: ['AI', 'LLMs', 'Performance', 'Architecture']
+---
+
+Self-hosting starts with a good experience. A model runs on a laptop through one of the local runtimes, the responses are decent, there is no API key and no per-token charge, and the obvious conclusion is that the metered bill was avoidable all along.
+
+The experience is real and it is not the same thing as running a model as a service. The gap between a single-user local runtime and a shared endpoint with acceptable latency under concurrency is where the actual cost sits, and it is mostly not the cost of the hardware. It is the cost of hardware that is paid for whether or not anyone is using it.
+
+## The unit of cost changes, and so does the shape
+
+An API charges per token, which means cost tracks usage exactly. Zero traffic costs nothing, and a traffic spike costs proportionally more with no capacity decision required from you.
+
+Owned inference charges per hour of accelerator, which means cost tracks capacity. An endpoint that must respond quickly at peak has to be sized for peak, and that capacity is billed continuously. At low or intermittent volume the effective cost per request can be many times the API price, and it is worst precisely when a feature is new and traffic is unproven.
+
+The crossover is real and it arrives at sustained high volume on a task where a smaller model suffices. That is a specific shape rather than a general one, and the honest version of this decision is arithmetic: current tokens per day, the hourly cost of hardware that serves peak within the latency budget, and the ratio between them.
+
+## Three costs that are not the hardware
+
+**Memory decides which model you can run, and quantisation decides the quality.** Weights at full precision need roughly two bytes per parameter, so a mid-sized model wants more memory than a single consumer accelerator has. Quantisation brings that down substantially with a quality cost that is modest but real, and it is the difference between one machine and several.
+
+**Concurrency is a serving problem, not a model problem.** A local runtime handling one request at a time is not an endpoint. Batching, queueing, memory management across simultaneous requests and keeping latency stable under load are what the serving layer does, and it is the part people underestimate because the single-user experience hid it entirely.
+
+**Somebody now owns availability.** Upgrades, capacity, monitoring, a page when it stops responding. This was previously the provider's problem and is now on a rotation, and it has to be counted against the saving rather than treated as free because no invoice arrives for it.
+
+## Where the local runtime genuinely wins
+
+None of this argues against the local runtimes, which are excellent at what they are for. Development without an API key or a bill, evaluating whether a smaller model handles a narrow task, working with data that cannot leave a machine, and demonstrations that must run without a network.
+
+Those uses are valuable and they are not the same claim as replacing a production endpoint. Keeping them distinct avoids the common trajectory where a successful local experiment becomes a deployment commitment before anyone did the capacity arithmetic.
+
+## Count capacity, not tokens
+
+The mistake worth avoiding is comparing a per-token invoice against a hardware price and concluding the hardware is cheaper because the number is smaller. They are different units. One scales with what you used and one with what you provisioned, and provisioned capacity sits idle most of the day in most products.
+
+Work out the utilisation honestly, price the peak, add the operational load, and compare. Where the answer favours owning it, the reasons are usually volume, data residency or [stability of behaviour](/blog/open-weight-versus-closed-models) rather than cost alone, and those are good reasons that survive the arithmetic rather than depending on it being skipped.

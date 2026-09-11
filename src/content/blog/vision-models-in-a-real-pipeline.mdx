@@ -1,0 +1,39 @@
+---
+title: 'Putting a vision model somewhere it has to keep up'
+seoTitle: 'Vision models in a real pipeline'
+description: 'A model that describes an image accurately is not yet a system. Frame rate, cost per frame and what happens on a wrong answer decide the architecture.'
+date: '2026-09-11'
+tags: ['AI', 'Multimodal', 'Architecture', 'Performance']
+---
+
+Vision models are startlingly good at describing what is in an image, and that capability makes the first prototype of almost any visual feature work immediately. Send a frame, get an accurate description, act on it. The demonstration is convincing and it is running at one image per request with a person waiting.
+
+The systems that need this are usually not shaped that way. They have a stream rather than a request, a rate the stream arrives at, a budget per unit of content, and a consequence attached to being wrong. None of those appear in the prototype, and all of them determine whether the thing can be built.
+
+## Rate and cost decide the architecture before quality does
+
+A camera producing twenty-five frames a second is two million frames a day. No design sends those to a large model, at any price, and the arithmetic is worth doing early because it eliminates most architectures immediately.
+
+What works is a cascade. Something cheap runs on everything and decides what is interesting: motion detection, a small classifier, a frame difference. Only what survives that filter reaches the expensive model, and the ratio between the two stages is the cost of the system.
+
+The design work is almost entirely in the first stage. A filter that is too permissive means the expensive stage runs constantly and the economics fail. Too aggressive and the events you cared about never reach the model, which is a failure nothing downstream can detect, because a frame that was never escalated leaves no trace. This is the same [ingest path discipline](/blog/designing-event-pipelines-that-survive-100k-events-a-day) that applies to any pipeline with an expensive stage in it.
+
+## Three properties the prototype does not show
+
+**Latency has a deadline, not a target.** Where a visual system triggers an action, there is a time after which the answer is worthless regardless of accuracy. That deadline is a hard constraint on model choice and on how much can be done per event, and it is invisible when a person is waiting patiently for a demonstration.
+
+**The cost of a wrong answer is asymmetric and the threshold is a product decision.** A false positive spends someone's attention. A false negative misses the thing the system exists to catch. These are rarely equally bad, the balance between them is a threshold, and nobody in engineering should be setting it alone. On anything where the output reaches a person, [that judgement needs domain expertise](/blog/human-review-that-earns-its-time).
+
+**Conditions drift and nothing reports it.** Lighting changes, a camera is repositioned, a lens gets dirty, a season changes what the background looks like. Accuracy degrades gradually with no error anywhere, which makes sampled review of production frames a permanent requirement rather than a launch activity.
+
+## Where this differs from the text pipeline
+
+Most of what makes visual systems hard is not the model. It is that they sit on a continuous stream rather than on a request, so there is no natural point at which somebody checks the result, and the failure mode is silence rather than a wrong answer somebody reads.
+
+Having worked on a real-time system where the output was an alert to a person, the part that took the most design attention was not detection quality. It was deciding what happened between the model's judgement and somebody being interrupted: how confident it had to be, how often it was allowed to be wrong before people stopped trusting it, and what the record looked like afterwards. Alert fatigue is a product failure that arrives from a technically working model.
+
+## The model is one stage
+
+The useful correction to the prototype is that a vision model is a component in a pipeline that also contains a filter, a threshold, an escalation path and a review loop. The component is the part that already works, which is why attention drifts to it.
+
+Build the cascade, set the threshold with the people who bear the consequences, and sample production frames continuously, because the environment will change and the model will not tell you when it has. That is ordinary systems engineering around an unusually capable component, which is the recurring shape of [production AI](/blog/rag-is-a-systems-problem) in general.
