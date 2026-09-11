@@ -1,0 +1,43 @@
+---
+title: 'Choosing a vector database on the constraints that bind'
+seoTitle: 'How to choose a vector database'
+description: 'Benchmarks compare query speed at a scale you may never reach. Filtering, tenancy and how updates behave decide more of the outcome than throughput.'
+date: '2026-09-11'
+tags: ['AI', 'Vector Databases', 'Databases', 'Architecture']
+---
+
+Comparisons between vector databases usually end up as throughput tables: queries per second at some recall target, on a public dataset, at a scale chosen by whoever published the benchmark. The numbers are real and they are rarely the thing that decides a project, because most systems are not bottlenecked on nearest-neighbour throughput. They are bottlenecked on everything around it.
+
+The dimensions that have actually mattered on the retrieval systems I have worked on are filtering behaviour, how multi-tenancy is expressed, what an update costs, and who operates the thing. Those vary far more between options than raw speed does, and they are harder to change later.
+
+## The categories differ more than the products
+
+It helps to sort the field into three groups rather than comparing a dozen names.
+
+Embedded libraries run inside your process. This is where FAISS and the local mode of several stores sit. There is no server, latency is excellent, and there is no durability, replication or concurrent write story beyond what you build. Excellent for a prototype, a batch job, or a read-only index rebuilt on deploy.
+
+Extensions to an existing database add vectors to something you already run, which is [the pgvector argument](/blog/pgvector-when-postgres-is-enough). One system, transactional consistency with your rows, ordinary filtering, and a ceiling that arrives later than most projects reach.
+
+Dedicated vector stores, managed or self-hosted, are purpose-built. They handle larger collections, offer index tuning as a first-class concern, and bring their own operational surface, their own consistency model and their own answer to how metadata works.
+
+Choosing the category is most of the decision. Choosing the product within it is comparatively minor and much easier to revisit.
+
+## Three questions that separate real candidates
+
+**How is filtering implemented?** This is the one I would ask first. Pre-filtering restricts candidates before the search, which is correct but can degrade the index's effectiveness. Post-filtering searches then discards, which is fast and can return three results when you asked for ten. Systems differ substantially here, and [filtering behaviour](/blog/metadata-filtering-in-vector-search) affects correctness rather than speed.
+
+**What does an update cost?** Some indexes handle inserts gracefully and degrade on deletes. Some require periodic rebuilds. If your corpus is static this is irrelevant; if it changes hourly it is the dominant operational property, and it is usually discussed last.
+
+**How is tenancy expressed?** Separate collections per tenant, a metadata field, or namespaces. This decides whether isolation is enforced by the system or by your query construction, and getting it wrong is a data leak rather than a performance issue. It is also extremely difficult to change once data is loaded.
+
+## Where I would start today
+
+For a first version, in the database already being used, without hesitation. The retrieval quality problems that dominate early work are about chunking, hybrid search and ranking, and none of them are affected by which store holds the vectors. Solving them against a store you already operate keeps the variables down.
+
+For something beyond that, I would choose on the filtering and update questions and treat throughput as a tiebreak. The one thing I would insist on regardless is keeping the retrieval interface behind a small abstraction of my own: a function that takes a query and filters and returns ranked chunks. Not a full repository pattern, just enough that the store is replaceable. Every system I have worked on that skipped this ended up with vendor specifics threaded through the application.
+
+## Portability is worth more than the benchmark
+
+The embeddings are the expensive artefact, and they are portable. The index is a derived structure that can be rebuilt from them. That asymmetry is what makes this decision less frightening than it looks: if the vectors and their metadata are somewhere you control, changing store is a reindexing job rather than a migration.
+
+Pick on the constraints that are hard to change, keep the interface narrow, and let the benchmark decide only between options that already passed on filtering, updates and tenancy. Most of the time the honest answer is that you [do not need the specialised system yet](/blog/do-you-need-a-vector-database), and the decision can wait until the corpus tells you it cannot.

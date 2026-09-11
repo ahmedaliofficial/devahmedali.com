@@ -1,0 +1,39 @@
+---
+title: 'Do you actually need a vector database yet'
+seoTitle: 'Do you need a vector database'
+description: 'Below a few hundred thousand vectors, a dedicated database mostly adds a system to operate. The threshold is higher than the tooling implies.'
+date: '2026-09-11'
+tags: ['AI', 'Vector Databases', 'RAG', 'Architecture']
+---
+
+A vector database is the second thing most teams add when building retrieval, right after choosing an embedding model, and usually before anyone has measured how much data there will be. It is a reasonable default in the sense that everything in the ecosystem assumes one, and it introduces a new piece of infrastructure to run, monitor, back up, secure and pay for.
+
+That is a real cost and it is worth being deliberate about incurring it. For a large share of projects, particularly internal tools and first versions, the corpus is small enough that the specialised system is solving a problem the project does not have.
+
+## The threshold is about data size, not sophistication
+
+The thing a dedicated vector database provides is approximate nearest-neighbour search that stays fast as the collection grows. Comparing a query against every vector is linear, and at some point linear stops being acceptable, so the index trades exactness for speed.
+
+The question is where that point falls, and it is further out than the tooling suggests. Tens of thousands of vectors can be scanned exhaustively in milliseconds. Hundreds of thousands is still tractable in Postgres with an index. Most internal knowledge bases, documentation sets and product catalogues never leave that range, because the number of documents an organisation actually maintains is smaller than it feels.
+
+Below the threshold, exhaustive search has a genuine advantage that gets overlooked: it is exact. Approximate indexes have a recall parameter, and a recall shortfall looks exactly like a retrieval quality problem, which is a confusing thing to be debugging while you are still deciding whether your chunking works.
+
+## Three costs of adding one early
+
+**It is a second store to keep consistent.** Your documents live somewhere already. A separate vector store means two systems holding related data, with no transaction spanning them, which makes [keeping the index fresh](/blog/keeping-a-vector-index-fresh) a distributed systems problem rather than a query.
+
+**Filtering gets harder, not easier.** Real retrieval queries constrain by tenant, status, date or permission. Where the vectors live beside the relational data, that is a `where` clause. Where they live elsewhere, either the metadata is duplicated into the vector store and kept in sync, or filtering happens after retrieval and quietly breaks the result count.
+
+**It is infrastructure with an on-call rotation.** Backups, upgrades, capacity, access control, and a new dependency in the availability calculation of a feature. For a managed service that is a bill and a vendor; for a self-hosted one it is genuinely another service to operate.
+
+## Where I have started, and when I have moved
+
+I default to [vectors in Postgres](/blog/pgvector-when-postgres-is-enough) for anything under roughly a million and have not regretted it. The metadata is already there, the operational story is one everybody knows, and a join between a vector search and a permissions table is the ordinary kind of query rather than an integration.
+
+What would move me is scale that makes index maintenance the dominant concern, or a genuine need for features the general-purpose database does not have. Those are real reasons and they arrive later than the tooling implies, which is the whole point: the migration is a known quantity, so deferring it costs little and skipping it entirely is often correct.
+
+## Choose the boring option until it stops working
+
+The pattern here is the same one that applies to message queues and search clusters. There is a specialised system that is genuinely better at one thing, and a general-purpose database that is adequate at that thing while also being adequate at everything else you need to do with the same data.
+
+Start with the database you already run, measure the query time as the corpus grows, and move when the numbers say to. The [migration](/blog/choosing-a-vector-database) is not the hard part of this problem. Getting chunking, retrieval quality and freshness right is, and none of that gets easier by adding a service before you need one.

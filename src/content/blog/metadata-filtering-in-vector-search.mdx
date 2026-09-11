@@ -1,0 +1,39 @@
+---
+title: 'Metadata filtering is where vector search meets reality'
+seoTitle: 'Metadata filtering in vector search'
+description: 'Real queries are never purely semantic. They are scoped to a tenant, a status and a date, and where that filter runs changes the results you get.'
+date: '2026-09-11'
+tags: ['AI', 'Vector Databases', 'RAG', 'Architecture']
+---
+
+A demonstration of vector search is a query against a corpus. A production retrieval query is a query against the subset of the corpus this user is allowed to see, from documents that are still current, in the language they are reading, excluding anything superseded.
+
+That gap is where a lot of retrieval systems quietly go wrong, because the filter is treated as a detail applied around the search rather than as part of it. Where the filter runs relative to the similarity computation changes both correctness and performance, and the two obvious implementations each have a failure mode worth understanding before choosing one.
+
+## Pre-filter and post-filter fail differently
+
+Post-filtering runs the vector search first, takes the top results, and discards the ones that do not match the predicate. It is simple and it composes with any store. Its failure is arithmetic: ask for ten, retrieve ten, discard seven that belonged to another tenant, and return three. The system did not error. It returned an incomplete answer, and the incompleteness scales with how selective the filter is, so the worst results go to the users with the narrowest scope.
+
+Pre-filtering restricts the candidate set before searching. It returns the right number of results and it interacts badly with approximate indexes, because [the index structure was built over everything](/blog/how-vector-indexes-work) and a heavily restricted subset may leave the graph or the clusters with very little to work with. Some systems fall back to an exhaustive scan of the filtered set, which is correct and slow.
+
+Neither is wrong. What is wrong is not knowing which one your store does, because the symptoms are so different: one gives you too few results, the other gives you unpredictable latency.
+
+## Three rules that avoid most of the trouble
+
+**Anything with a small set of values belongs in metadata, not in the embedding.** Status, type, language, tenant, year. These embed poorly, because [an embedding encodes usage](/blog/what-embeddings-actually-encode) and a status word carries almost none. As a filter they are exact and free. This is the single change that fixes the largest number of confidently wrong retrievals.
+
+**Over-retrieve when post-filtering, deliberately.** If the filter typically removes three quarters of results, retrieving forty to return ten is the correct compensation. Better still, compute the selectivity rather than guessing, and log when a query returns fewer results than requested, because that is the signal the compensation is insufficient.
+
+**Enforce tenancy in one place, not at every call site.** A tenant filter that each caller must remember to add is a data leak waiting for one missed code path. It belongs in whatever wraps the store, applied unconditionally, with no way to construct a query without it.
+
+## Where I have pushed the filter down
+
+The pattern I keep returning to is filtering in the same system that holds the data, which is most of the practical argument for [keeping vectors in Postgres](/blog/pgvector-when-postgres-is-enough). A tenant predicate and a permissions join in the same statement as the similarity ordering is one query with one plan, and it cannot return the wrong count or leak across a boundary.
+
+Where the vectors live in a separate store, the metadata has to be duplicated into it, and that duplication becomes a sync problem of its own. The version I would build again keeps the filterable fields in the vector store deliberately small: tenant, status, type, date. Enough to scope the search correctly, not so much that the vector store becomes a second copy of the domain model that drifts.
+
+## Search is a query, not a lookup
+
+The framing that helps is to stop thinking of retrieval as similarity with some conditions attached, and start thinking of it as a query with a similarity ordering. That is what it is, and it is how every search system before this one was understood.
+
+Once it is a query, the ordinary questions apply. What is the predicate, how selective is it, where does it execute, and does the plan make sense. Those questions have good answers in every mature data system, and asking them is what turns a retrieval layer from a demonstration into something that can be [scoped, audited and trusted](/blog/what-you-are-exposing-with-an-mcp-server).

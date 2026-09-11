@@ -1,0 +1,39 @@
+---
+title: 'What running vector search at scale actually costs'
+seoTitle: 'Running vector search at scale'
+description: 'Approximate indexes want to be in memory, and memory is the bill. Sizing that before you commit is the difference between a plan and a surprise.'
+date: '2026-09-11'
+tags: ['AI', 'Vector Databases', 'Performance', 'Databases']
+---
+
+Vector search scales differently from the storage most engineers have intuitions about. A relational table that grows tenfold costs more disk and gets slower in ways an index mostly absorbs. A vector index that grows tenfold wants ten times the memory, and when it stops fitting the latency does not degrade gracefully. It falls off a cliff.
+
+That single property drives most of the operational story. Approximate search is fast because it traverses a structure with good locality, and the moment that structure is being read from disk instead of memory, the traversal becomes a sequence of random reads and the query time changes by an order of magnitude rather than a percentage.
+
+## The sizing arithmetic is worth doing early
+
+The raw number is easy and usually surprising. A 1536-dimension vector at four bytes per dimension is about six kilobytes. A million of those is roughly six gigabytes before any index structure, and a graph index adds its own links on top, frequently a substantial fraction again.
+
+So ten million chunks is a machine with serious memory rather than a modest one, and that is the number to establish before committing to an architecture, because it is the one that determines cost. It is also why [chunking strategy](/blog/chunking-decides-your-rag-ceiling) has a budget consequence nobody mentions: halving the chunk size doubles the vector count and doubles the memory.
+
+Two levers reduce it meaningfully. Dimension reduction, where the model supports truncating its output, cuts memory proportionally for a quality loss that is often small. Quantisation, storing each dimension in one byte rather than four, cuts it by roughly four with a modest recall cost that can be recovered by rescoring the top candidates at full precision.
+
+## Three operational realities
+
+**Rebuilds are not free and cannot always be online.** Approximate indexes degrade with churn, particularly deletes, and recovering that means rebuilding. On a large index that is hours of CPU and a period of degraded performance or a second copy of the memory footprint. Plan the rebuild story before the index is large enough to make it urgent.
+
+**Replication multiplies the memory bill, not just the machine count.** Every replica needs the full index resident to serve queries at the expected latency. Three replicas is three times the memory, which makes the availability conversation considerably more expensive than it is for a stateless service.
+
+**Filtering changes the performance profile.** A heavily filtered query over an approximate index can be slower than an unfiltered one, because the structure is being traversed while most of what it reaches is discarded. Latency measured on unfiltered benchmark queries will not predict production, where [nearly every query is scoped](/blog/metadata-filtering-in-vector-search).
+
+## Where the cheaper answers usually are
+
+Before scaling the index, it is worth checking whether the corpus needs to be that large. In most systems a minority of the content answers a large majority of the queries, and archived, superseded or unreferenced material is sitting in the index being paid for. Tiering that out is cheaper than a bigger machine and improves results, because it removes candidates that were never the right answer.
+
+Sharding by a natural boundary is the other move, and it is usually the correct one before sharding by vector space. Where the data partitions by tenant, region or product line, and queries never cross those boundaries, several small indexes are easier to operate and cheaper to run than one large one. Each fits in memory comfortably, each rebuilds independently, and a problem with one does not affect the rest.
+
+## Capacity planning, with a familiar shape
+
+None of this is unique to vector search. It is the same set of concerns as any memory-resident index: size it, watch the point where it stops fitting, decide how it gets rebuilt, and partition on a boundary the queries already respect.
+
+What is different is how sharply the cliff arrives and how early the decisions are made, usually while the corpus is small and none of it seems to matter. Do the arithmetic at the start, write down the number at which the current arrangement stops working, and [revisit the store choice](/blog/choosing-a-vector-database) when the corpus approaches it rather than after it has gone past.

@@ -1,0 +1,41 @@
+---
+title: 'How vector indexes trade accuracy for speed'
+seoTitle: 'How vector indexes work'
+description: 'Approximate search is approximate on purpose. Knowing which results you are giving up explains retrieval failures that look like model problems.'
+date: '2026-09-11'
+tags: ['AI', 'Vector Databases', 'Performance', 'Databases']
+---
+
+Searching a million vectors exhaustively means a million comparisons per query. That is correct, simple and too slow, so every vector index is a structure that avoids most of those comparisons by giving up the guarantee that it finds the true nearest neighbours.
+
+The word approximate does real work in that sentence and it is routinely skimmed past. An index configured for speed will miss results that an exhaustive scan would have found, and those misses do not announce themselves. They surface downstream as an answer that omitted something, which gets investigated as a generation problem because nothing in the retrieval looked wrong.
+
+## The two structures you will meet
+
+Inverted file indexes partition the space into clusters, computing a centroid for each. A query is compared against the centroids, the closest few clusters are searched exhaustively, and the rest are skipped. The tuning parameter is how many clusters to visit: more is slower and finds more. The failure is at boundaries, where a vector near the edge of an unvisited cluster is missed despite being genuinely close.
+
+Graph-based indexes, of which HNSW is the one you will actually encounter, build a navigable graph where each vector links to neighbours across several layers of decreasing sparsity. A search starts at the top and walks greedily downward. It is fast and gives excellent recall, and the cost is memory, because the graph must be resident to be quick, and build time, because constructing it is expensive.
+
+Both are doing the same thing: looking at a small fraction of the data and accepting that the fraction might not contain everything.
+
+## Three parameters that decide your results
+
+**The one that controls search effort.** Clusters visited for an inverted file, the size of the candidate list for a graph. This is the direct recall-versus-latency dial, it usually defaults to something conservative, and raising it is the first thing to try when retrieval quality is disappointing and the data looks right.
+
+**The one that controls build quality.** Graph connectivity for HNSW, cluster count for an inverted file. Set at build time, expensive to change, and it bounds what the search parameter can achieve. A poorly built index cannot be rescued at query time.
+
+**The distance metric, which must match how the vectors were made.** Cosine, inner product and Euclidean give different orderings, and most embedding models are trained for one of them. A mismatch here produces results that are not random and not right, which is the hardest kind of wrong to notice.
+
+## Measure recall before you tune anything else
+
+The single most useful exercise is to take a few hundred queries, run them against the approximate index, run the same queries as an exhaustive scan, and compare the result sets. That number is your recall, and almost nobody computes it.
+
+I have found it worth doing because of what it rules out. If recall against exhaustive search is high, the index is not your problem and the issue is upstream in [chunking](/blog/chunking-decides-your-rag-ceiling) or in the embedding. If it is low, no amount of prompt work or reranking will help, because [reranking can only reorder what was retrieved](/blog/reranking-is-the-cheapest-rag-upgrade).
+
+On a small corpus the comparison is cheap to run. On a large one it is worth sampling, and still worth doing once, because the default index parameters in most tools are chosen for speed on benchmark datasets rather than for recall on yours.
+
+## An approximation with a dial, not a black box
+
+The practical shift is to stop treating the index as an implementation detail of the store and start treating it as a component with a configuration you chose. It has a knob controlling how much of the data it looks at, that knob has a default somebody else picked, and the default is a guess about your priorities.
+
+Compute recall once, set the effort parameter deliberately, and confirm the distance metric matches the model. Three checks, each taking under an hour, and together they eliminate the class of retrieval failure that is invisible from every other vantage point in the system.

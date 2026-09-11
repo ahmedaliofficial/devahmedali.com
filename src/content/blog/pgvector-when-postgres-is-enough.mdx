@@ -1,0 +1,41 @@
+---
+title: 'When Postgres is already the vector database you need'
+seoTitle: 'pgvector: when Postgres is enough'
+description: 'Storing embeddings beside the rows they describe removes a sync problem and makes filtering a join. That is worth more than raw index throughput.'
+date: '2026-09-11'
+tags: ['AI', 'Vector Databases', 'Databases', 'RAG']
+---
+
+The strongest argument for keeping vectors in Postgres has almost nothing to do with vector search performance. It is that the embedding lives in the same row as the thing it describes, in the same transaction, behind the same permissions, in the same backup.
+
+Every retrieval system eventually needs to answer a question that is part similarity and part ordinary predicate. Find passages like this query, belonging to this tenant, from documents this user may see, excluding anything archived. In a general-purpose database that is one statement. Across two systems it is an integration, and the integration is where the bugs live.
+
+## The operations you avoid are the point
+
+Embeddings written in the same transaction as the document are never out of step with it. There is no window where the row is updated and the vector is not, no reconciliation job to catch drift, and no possibility of returning a chunk for a document that was deleted. That whole category of [freshness failure](/blog/keeping-a-vector-index-fresh) stops existing, rather than being managed.
+
+Filtering composes the way you expect, because it is the same planner doing both. A tenant predicate is not a post-processing step applied to whatever the vector search returned, which means it cannot silently reduce twenty results to three.
+
+And the operational surface does not grow. The backup that covers your application data covers the index. The access controls already exist. Nobody has to learn a second query language or a second failure mode at three in the morning.
+
+## Three things to get right at the start
+
+**Store the model and dimension alongside the vector.** A column for the embedding model name costs nothing and makes a future migration tractable. Without it, a half-migrated table is undetectable, because a vector from the wrong model does not error. It just returns quietly worse results.
+
+**Pick the index type deliberately and build it after loading.** Building an approximate index on an empty table and then inserting is slower and produces a worse structure than loading first and indexing after. For anything above a few hundred thousand rows this is the difference between minutes and hours.
+
+**Watch the row width.** A 1536-dimension vector is several kilobytes, which changes how many rows fit in a page and therefore how the rest of your queries on that table behave. Where the table is also serving ordinary application traffic, putting embeddings in a separate table joined by id keeps the hot table narrow.
+
+## Where I have hit the wall
+
+The point at which this stops being comfortable is not query latency. It is index maintenance on a corpus that changes constantly. Approximate indexes degrade as rows are inserted and deleted, rebuilding is expensive, and a table with heavy write churn plus a large vector index will eventually make that rebuild the dominant operational concern.
+
+The other limit is memory. Approximate search wants the index resident, and an index that does not fit in the database's available memory produces latency that is not slightly worse but dramatically worse. That is the number worth watching, ahead of row count, because it is the one that changes behaviour suddenly rather than gradually.
+
+Neither of these arrives at the scale most projects reach, which is why the default is worth defending. Both are clear signals when they do arrive, which is what makes deferring the decision safe rather than reckless.
+
+## One system beats two while it can
+
+The instinct to reach for the specialised tool is strong, and specialised tools are genuinely better at the thing they specialise in. What that framing leaves out is that a retrieval system is mostly not vector search. It is ingestion, permissions, filtering, freshness and joins to data that lives elsewhere, and a general-purpose database is very good at all of those.
+
+Keep it in one place while the numbers allow, measure the two things that actually end the arrangement, and treat [moving to a dedicated store](/blog/choosing-a-vector-database) as a decision with a trigger rather than a starting assumption.
