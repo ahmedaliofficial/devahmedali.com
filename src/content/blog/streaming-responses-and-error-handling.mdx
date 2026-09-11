@@ -1,0 +1,39 @@
+---
+title: 'Streaming responses breaks your error handling'
+seoTitle: 'Streaming LLM responses in production'
+description: 'Once you have sent a 200 and started writing tokens, there is no status code left for the failure that happens halfway through the answer.'
+date: '2026-09-11'
+tags: ['AI', 'LLMs', 'Architecture', 'Performance']
+---
+
+Streaming is the cheapest perceived-performance improvement available in an AI feature. The same answer arriving progressively feels dramatically faster than the same answer arriving whole, because time to first token is a fraction of time to completion. It is almost always the right call for anything a person reads.
+
+It also quietly invalidates the error handling of everything around it. The moment you commit to a streaming response you have sent a 200 and a set of headers, and the request is now unable to fail in the way your stack knows how to express. Everything downstream that assumed a response is a single object with a status is now wrong.
+
+## The status code is spent before the work happens
+
+In a normal request the handler does the work, discovers whether it succeeded, and then chooses a status. Streaming inverts that. You choose the status first, because the headers must go out before the first token, and the work happens afterwards.
+
+So a provider timing out at token four hundred, a rate limit hit mid-generation, a content filter triggering partway through, or a dropped upstream connection all occur inside a response that has already announced success. There is no second status code. The client has a partial answer, no indication that it is partial, and typically no reason to suspect it.
+
+The consequence worth internalising is that a truncated answer and a complete answer look identical to a naive client. Users do not report this as an error. They report it as the assistant being vague or stopping early, which sends the investigation toward the prompt rather than the transport.
+
+## Three things to build in from the start
+
+**Send a terminal event, and make the client require it.** The stream should end with an explicit completion marker carrying the finish reason. A client that treats stream-closed as success cannot distinguish a finished answer from a severed connection. A client that requires the marker turns that into a detectable, reportable state.
+
+**Do the work that can fail before the first byte.** Authorisation, retrieval, validation and budget checks all belong before the response begins, while a real status code is still available. Anything deferred into the stream loses the ability to return 401, 429 or 500, and those are the codes your monitoring is built on.
+
+**Buffer enough to validate the shape.** If the output is meant to be [structured](/blog/structured-output-you-can-parse), streaming it token by token to a parser is a category error. Stream to the user, buffer in parallel, and validate on completion. Anything whose correctness is only knowable at the end should not be acted on before the end.
+
+## Where it caught me out
+
+The mistake I would not make again is treating a closed connection as a completed response on the client. Under ordinary conditions it is, which is exactly why it survives testing. Under a flaky mobile connection it is not, and the user gets an answer that stops mid-sentence and looks like the model gave up.
+
+The related one is metrics. A streaming endpoint reports a 200 and a duration, and neither describes what happened. What I log now is the finish reason, the token count and whether the terminal event was reached, because without those a streaming endpoint is invisible to monitoring in precisely the failure it is most prone to. It is the same argument as [tracing the steps rather than the request](/blog/tracing-llm-systems-in-production), applied at the transport.
+
+## A protocol decision, not a rendering one
+
+Streaming gets adopted as a front-end improvement, decided by how the interface should feel, and it lands as a change to the failure semantics of an API. That gap is why the error handling rarely gets revisited: the people who chose it were reasoning about perceived latency and the people who own the error paths were not in the conversation.
+
+If a partial answer is acceptable to show, stream and design the completion signal properly. If a partial answer would be misleading, as it often is for anything a decision rests on, do not stream, or stream to a buffer and render on completion. The choice is about what a half-finished answer means in your product, and that is worth deciding on purpose.

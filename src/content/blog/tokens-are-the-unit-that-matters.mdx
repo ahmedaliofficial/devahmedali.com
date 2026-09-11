@@ -1,0 +1,39 @@
+---
+title: 'Tokens are the unit your system is actually measured in'
+seoTitle: 'Tokens: cost, latency and truncation'
+description: 'Cost, latency and the point at which text gets cut off are all counted in tokens. Reasoning about the system in words will mislead you in all three.'
+date: '2026-09-11'
+tags: ['AI', 'LLMs', 'Performance', 'Architecture']
+---
+
+Everyone learns early that a token is roughly three quarters of a word and that billing is per token. Then the system gets built in terms of words, characters and messages, because those are the units the code already has, and the mismatch shows up later as three separate surprises: a bill nobody predicted, a latency profile that does not match the benchmarks, and text being silently cut off.
+
+All three are the same oversight. Tokens are not a billing detail sitting underneath the real units. They are the units, and anything measured in characters is an approximation that fails precisely where it matters.
+
+## Where the word-based intuition breaks
+
+English prose tokenises close to the rule of thumb, which is what makes the rule dangerous: it holds for the examples people test with and breaks on the content real systems process.
+
+Code tokenises far worse than prose, because punctuation, indentation and identifiers fragment. JSON is worse again, since every brace, quote and colon is its own token, and a payload that looks small as a string can be several times its apparent size. Identifiers, hashes and base64 fragment almost per character. Non-English text, particularly in non-Latin scripts, can run several times the token count of the same content in English.
+
+So a document that is 4,000 characters of prose and a payload that is 4,000 characters of JSON are not comparable inputs, and a system that budgets in characters will be wrong in the direction that hurts: the structured, dense content is the content that overruns.
+
+## Three consequences worth building around
+
+**Input and output tokens are not the same product.** Output is generated serially and costs several times more per token. A change that adds a paragraph of instructions is cheap. A change that adds a paragraph to every answer is not, which is most of [why chain of thought has a real price](/blog/chain-of-thought-what-it-costs). Budget them separately or the cheap lever and the expensive one look identical.
+
+**Latency tracks output tokens, not total work.** Time to first token depends mostly on input size and queueing. Everything after that is roughly linear in tokens generated. This is why asking for concise answers is a latency optimisation rather than a style preference, and why a model that is faster per token can still feel slower if it is more verbose.
+
+**Truncation is silent by default.** Exceed the window and something gets dropped, usually without an error. The request succeeds, the answer is produced from partial input, and nothing in the response indicates that half a document was missing. Counting before sending is the only way to know, and it needs the provider's tokeniser rather than an estimate.
+
+## Where I put the counter
+
+I count tokens at the point the context is assembled rather than trusting a character estimate, and I log the breakdown per component: instructions, history, retrieved content, tool definitions, tool results. That log is what turned a vague sense that requests were expensive into a specific finding that tool definitions were occupying a fifth of every call on an agent that rarely used most of them.
+
+The other habit worth keeping is asserting on the total before sending, and failing loudly rather than letting the provider truncate. An explicit error saying the assembled context exceeded the budget is a bug report. A silently truncated document is a quality mystery that surfaces weeks later as unreliable answers on long inputs.
+
+## Measure in the unit you are charged in
+
+None of this is difficult, and most of it is one function call at the right place in the pipeline. What stops teams doing it is that the character approximation works well enough during development, when inputs are short and mostly prose, and stops working at exactly the point where the system meets real documents.
+
+Count properly, log the breakdown, assert the budget, and keep input and output in separate columns. Every cost and latency conversation afterwards becomes a matter of reading numbers rather than forming theories, and the [context budget](/blog/context-engineering-vs-prompt-engineering) stops being a thing you discover by running out.

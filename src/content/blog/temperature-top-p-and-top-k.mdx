@@ -1,0 +1,43 @@
+---
+title: 'Temperature, top-p and top-k: which knob to actually turn'
+seoTitle: 'Temperature, top-p and top-k'
+description: 'Three settings control the same thing from different angles. Turning all of them is how teams get output that is either rigid or quietly unhinged.'
+date: '2026-09-11'
+tags: ['AI', 'LLMs', 'Prompt Engineering', 'Performance']
+---
+
+Sampling parameters are where a lot of accidental behaviour comes from. A model produces output that feels repetitive, someone raises temperature. It produces something strange, someone lowers it and also sets top-p, because both appeared in an example. Nobody writes down why, and six months later the configuration is a set of numbers with no rationale that everyone is afraid to touch.
+
+All three settings shape the same underlying step, which is how the next token gets picked from a ranked list of candidates. Understanding that they are three views of one decision is what makes it obvious that you should be adjusting one of them.
+
+## One decision, three ways of constraining it
+
+At each step the model produces a probability for every possible next token. Sampling is the rule for choosing among them.
+
+Temperature reshapes the distribution before anything is picked. Low temperature makes likely tokens more likely and flattens the tail toward nothing, so the output converges on the highest-probability path. High temperature evens the distribution out, giving unlikely tokens a real chance.
+
+Top-k truncates the list to the k most likely candidates and samples within them. Top-p, also called nucleus sampling, truncates to the smallest set of candidates whose probabilities sum to p, which means the size of the candidate set adapts to how confident the model is at that position.
+
+The last property is why top-p is generally the better of the two truncation methods. Where the model is confident, the nucleus is small and the output stays on track. Where it is genuinely uncertain, the nucleus widens and more options stay live. A fixed k applies the same width regardless.
+
+## Three rules that prevent most of the trouble
+
+**Change one, leave the others at their defaults.** Temperature and top-p compose in ways that are hard to predict, and a low value for both produces output far more rigid than either alone. Most providers default top-p to 1, which effectively disables it, and adjusting temperature alone is the clearest path.
+
+**Zero is for extraction, not for accuracy.** Temperature zero makes output nearly deterministic, and deterministic is not the same as correct. It is the right setting for classification, field extraction and anything with [structured output you intend to parse](/blog/structured-output-you-can-parse), because you want the same input to produce the same shape. It does not make the model more truthful.
+
+**Log the settings alongside the output.** When behaviour changes, the sampling configuration is one of the first things worth ruling out and one of the last things anyone checks, because it usually lives in a default somewhere rather than in the call site. Putting it in the trace costs nothing.
+
+## Where I set them, and where I stopped fiddling
+
+For anything whose output feeds code, I use temperature zero and leave top-p alone, and I treat variation at that setting as a signal that the prompt is underspecified rather than something to tune away.
+
+For anything a person reads, I use a low-to-moderate temperature and change it only if there is a specific complaint. The thing I no longer do is adjust sampling to fix a quality problem. Repetitive output is usually a prompt that asked for a narrow thing, and strange output is usually missing context, and in both cases the sampling parameter is a way of making a real problem less visible.
+
+Where it genuinely matters is generating several options: a higher temperature and several samples produces meaningfully different candidates, which is the one case where the knob is doing something no prompt change would.
+
+## Defaults are a reasonable answer
+
+Providers set defaults that work for general use, and a large share of the sampling configuration in production exists because someone copied an example rather than because anyone measured a difference.
+
+Set temperature deliberately, once, based on whether the output is parsed or read. Leave top-p and top-k alone unless you can state what you expect to change. Then spend the attention on [the context](/blog/context-engineering-vs-prompt-engineering), where the differences are larger and the cause and effect is much easier to establish.

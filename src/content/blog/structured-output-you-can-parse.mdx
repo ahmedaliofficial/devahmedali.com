@@ -1,0 +1,48 @@
+---
+title: 'Getting structured output you can actually parse'
+seoTitle: 'Structured output from an LLM'
+description: 'Asking politely for JSON works most of the time, and most of the time is a poor guarantee for something a parser sits behind in production.'
+date: '2026-09-11'
+tags: ['AI', 'LLMs', 'Prompt Engineering', 'Architecture']
+---
+
+The moment a model output feeds code rather than a person, the requirement changes completely. A human reader tolerates a preamble, a stray code fence and a trailing note. A parser does not, and the difference between working ninety-eight percent of the time and working reliably is the difference between a feature and an incident every few thousand requests.
+
+Most systems start by asking for JSON in the prompt, which works well enough to pass review and leaves a failure rate that only becomes visible at volume. The fix is not a better-worded request. It is to stop relying on the request at all.
+
+## Constrained decoding beats asking nicely
+
+There are three levels of guarantee available, and they are worth distinguishing because teams frequently believe they are on a higher one than they are.
+
+Asking in the prompt is a request. The model usually complies, and compliance degrades with longer outputs, unusual inputs and anything that pushes it toward explanation.
+
+A JSON mode is stronger: the provider guarantees the output parses. It does not guarantee your fields are present or that their types are right, so a response can be valid JSON and useless to the code expecting a particular shape.
+
+Schema-constrained output is the one worth using where it exists. The provider constrains generation to a supplied schema, so the fields, types and enums are enforced during decoding rather than checked afterwards. Malformed output stops being possible rather than becoming unlikely, which is a categorical difference.
+
+## Three things that still go wrong
+
+**Enums are where hallucination survives.** A schema that types a field as `string` invites an invented value that parses perfectly and means nothing. Constraining to an explicit set removes the failure entirely, and it is the single highest-return schema decision, exactly as it is in [tool definitions](/blog/tool-calling-is-an-api-design-problem).
+
+**Optional and null are not the same, and the model will not guess correctly.** Decide whether an absent value should be an omitted key or an explicit null, state it, and validate it. Systems that leave this ambiguous get both, and the consumer handles one of them.
+
+**Reasoning wants somewhere to go.** A model asked for JSON and also asked to think ends up putting prose outside the object or a rationale inside a field that was meant to hold a value. Give it a dedicated field for that, first in the schema so it is generated before the decision, or turn the reasoning off. Fighting it produces output that parses and reads oddly.
+
+## Where I put the boundary
+
+I validate every model output against a schema at the application boundary, even when the provider constrained generation, because the provider is a dependency and the guarantee is theirs rather than mine. It is a few lines with any schema library, it costs nothing at run time, and it converts a whole category of downstream confusion into one clear error at a known place:
+
+```ts
+const parsed = ExtractionSchema.safeParse(raw)
+if (!parsed.success) return retryWithFeedback(parsed.error)
+```
+
+Passing the validation error back into the retry is the part worth copying. A bare retry asks the model to do the same thing again with no new information, and it fails the same way. Telling it which field was wrong usually gets a correct response on the second attempt.
+
+The other thing I have settled on is temperature zero for anything parsed. Variation in a field name or a structure serves no purpose when the consumer is a program.
+
+## The parser is the contract, so write it down
+
+The habit worth forming is treating the schema as the specification and the prompt as a hint toward it. Written the other way round, with the prompt describing the format and the code trusting it, the system has no enforcement point and the failures land in whatever consumes the output.
+
+Define the schema, constrain generation to it where the provider allows, validate at the boundary regardless, and feed validation errors back on retry. That is four ordinary engineering steps, and together they take structured output from something that usually works to something [you can write a deterministic test for](/blog/deterministic-evals-for-llm-systems).

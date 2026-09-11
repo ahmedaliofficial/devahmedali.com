@@ -1,0 +1,47 @@
+---
+title: 'Prompt caching is the cheapest win available, if you order for it'
+seoTitle: 'Prompt caching in practice'
+description: 'Caching the stable prefix of a prompt cuts cost and time to first token substantially. It only works if the stable part is genuinely first.'
+date: '2026-09-11'
+tags: ['AI', 'LLMs', 'Performance', 'Context Engineering']
+---
+
+Most prompts in a production system are mostly identical. The instructions do not change between requests, the tool definitions do not change, the few-shot examples do not change. Only the last part, the user's actual question and whatever was retrieved for it, is new. And yet the whole thing is sent and processed on every call, at full cost and full latency.
+
+Prompt caching addresses exactly that. The provider keeps the processed state of a prefix it has seen before, so a subsequent request sharing that prefix skips the work. The saving on cached input is substantial and time to first token drops noticeably. It is close to free money, with one requirement that is easy to get wrong.
+
+## The cache is a prefix match, and prefix means prefix
+
+Caching works on the longest identical prefix of the request. Everything up to the first byte that differs can be reused, and nothing after it can.
+
+That single rule determines whether the feature does anything for you. A prompt that opens with a timestamp, a request id, a user's name or a freshly shuffled set of examples has a prefix that differs immediately, so nothing is reusable no matter how much identical text follows.
+
+The fix is to order the context by how often it changes:
+
+```
+system instructions -> tool definitions -> examples -> retrieved content -> user message
+```
+
+Static first, volatile last. Many systems are built in roughly the opposite order, because putting the user's message near the top feels natural and because personalisation gets prepended as an afterthought.
+
+## Three things that quietly break the hit rate
+
+**Anything per-request near the top.** A session id in the system message, a current date, or a greeting with the user's name. Each is small and each moves the divergence point to the beginning. Personalisation belongs after the static block, not woven into it.
+
+**Non-deterministic serialisation.** Tool definitions or configuration built from an object whose key order is not stable produce a different string on some requests and an identical one on others, which looks like an intermittent cache problem and is actually a serialisation one. Serialise once, deterministically, and reuse the string.
+
+**Deploys, on every one.** Changing the system prompt invalidates every cached prefix, which is correct and worth knowing, because the first requests after a deploy are slower and more expensive. On a frequently deployed service with small prompt tweaks, the cache may rarely be warm, which is a good argument for not editing the prompt casually.
+
+## Where it has paid, and where it has not
+
+The clearest gains I have seen are on agent loops, because every iteration re-sends the same instructions and the same tool definitions, and the loop runs many times per task. Caching the front of that is a direct multiplier on the whole run rather than a one-off saving.
+
+Where it has done less than expected is on retrieval-heavy single-turn features, and the reason is structural: the retrieved passages are different for every question and they sit before the user message in the natural ordering, so the reusable prefix is only the instructions. Still worth having, and a smaller share of the total than the agent case.
+
+The thing worth checking is that you are measuring it. Providers report cached versus uncached input tokens, and that number belongs in the same place as [the rest of the token breakdown](/blog/tokens-are-the-unit-that-matters). A hit rate nobody looks at is a hit rate that silently went to zero three deploys ago.
+
+## An ordering decision made once
+
+What makes this worth doing early is that it costs nothing to design in and is annoying to retrofit. Ordering the context static-first is free at the point of writing the assembly code. Doing it afterwards means untangling personalisation that got prepended and a template that grew in whatever order the requirements arrived.
+
+It is the same discipline as everything else in [assembling a context deliberately](/blog/context-engineering-vs-prompt-engineering): decide what goes where and why, rather than letting the order emerge. Here the payoff happens to be measurable in the bill.

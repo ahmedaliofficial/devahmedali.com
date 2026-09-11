@@ -1,0 +1,41 @@
+---
+title: 'What a larger context window does not fix'
+seoTitle: 'Large context windows in practice'
+description: 'A million-token window suggests you can stop being selective about context. Attention is uneven across a long window, and cost scales with what you send.'
+date: '2026-09-11'
+tags: ['AI', 'Context Engineering', 'LLMs', 'Performance']
+---
+
+Every jump in context window size produces the same argument, which is that retrieval is now unnecessary. If the whole handbook fits, why build an index? Put the documents in the prompt and let the model find what it needs.
+
+It is a reasonable thing to expect from the specification and it does not survive contact with a real corpus. A large window changes what is possible and it does not change three things: attention is not uniform across a long context, cost is proportional to what you send on every call, and a window large enough to hold your documents today is not large enough to hold them next year.
+
+## Capacity and attention are different properties
+
+A window size is a limit on what the model will accept. It is not a promise about how evenly the model will use it. Across a long context, material at the beginning and end carries measurably more influence than material in the middle, and the effect gets more pronounced as the context grows.
+
+This means filling a large window changes the failure mode rather than removing it. Instead of the relevant passage being absent, it is present and under-weighted, sitting among a hundred pages of material that is competing for the same attention. The answer that comes back is worse in a way that is harder to diagnose than a missing document, because the evidence was technically supplied.
+
+Selecting the right four passages and placing them deliberately outperforms supplying four hundred, and it does so by a margin that surprises people the first time they measure it.
+
+## Three costs that do not go away
+
+**You pay for the whole window on every call.** Input tokens are cheaper than output, and a hundred thousand of them on every request is still a large recurring bill for content that is identical each time. A retrieval step that sends two thousand tokens instead is not a compromise forced by the window. It is the cheaper design at any window size.
+
+**Time to first token grows with input.** The model processes what you sent before it produces anything, so a very large context is felt directly as latency on an interactive interface. This is the cost most often discovered after launch, because it is invisible in a batch test.
+
+**Freshness is still your problem.** Pasting documents into a prompt means the documents in the prompt are whatever your code last loaded. The [staleness problem](/blog/keeping-a-vector-index-fresh) does not belong to vector databases. It belongs to any system serving content that changes, and putting the content in a prompt just moves it somewhere with no reconciliation story at all.
+
+## Where the large window genuinely earns it
+
+The case where it changes the design is a single large artefact that has to be reasoned over as a whole: one long contract, one codebase, one transcript. Chunking these has always been lossy precisely because the interesting questions span the whole thing, and being able to supply it entirely is a real improvement rather than a convenience.
+
+The other case is at the end of a retrieval pipeline rather than in place of one. Retrieve widely, [rerank](/blog/reranking-is-the-cheapest-rag-upgrade), and then pass more of the surviving material than you could have before, with less anxiety about the budget. That is a genuine relaxation of a constraint that used to bite.
+
+What I have not seen work is treating the window as a substitute for deciding what is relevant. The systems that hold up still make that decision. The window just makes the consequences of getting it slightly wrong less severe.
+
+## More room, same discipline
+
+The useful comparison is memory in an ordinary program. Machines have vastly more than they did, and the result was not that data structures stopped mattering. It was that the naive approach works for longer before you meet the wall, which changes when you have to be careful rather than whether.
+
+Context is the same. A larger window buys headroom, and headroom is worth having. It does not remove the need to decide what the model should be looking at, and [that decision](/blog/context-engineering-vs-prompt-engineering) remains where most of the quality in these systems is won or lost.
