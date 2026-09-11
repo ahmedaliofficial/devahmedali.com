@@ -1,0 +1,39 @@
+---
+title: 'Why evaluations come before scale, not after it'
+seoTitle: 'Why LLM evaluations come first'
+description: 'Without evals you cannot tell an improvement from a regression, so every change becomes an argument. That is a team problem before it is a quality one.'
+date: '2026-09-11'
+tags: ['AI', 'Evaluation', 'LLMs', 'System Design']
+---
+
+Evaluation is the step everyone agrees is important and almost nobody does first. The demo works, the deadline is real, and building a test set feels like the kind of rigour you add once the thing is in front of users. So the system ships, and the team enters a phase that is difficult to leave.
+
+The phase looks like this. Someone changes the prompt. Someone else says the answers feel worse. A third person says they feel better on the cases they tried. There is no way to settle it, so it gets settled by seniority or by whoever is most tired, and the same conversation happens again next week about a different change. Without evaluation you have not just lost a quality signal. You have lost the ability to make decisions.
+
+## You cannot improve what you cannot compare
+
+Every other part of a software system has an answer to "did that change help". Latency has a number. Error rates have a number. A refactor has a test suite that either passes or does not.
+
+Model-driven features arrive without any of that by default. The output is text, correctness is often a judgement, and the same input can produce different outputs on consecutive calls. Nothing about the system tells you whether today's version is better than last week's, and human memory of "how it used to feel" is worthless at this resolution.
+
+What an eval set buys is not certainty. It is a shared number that moves when the system changes, which converts an argument about taste into a measurement two people can look at together.
+
+## Three reasons it has to come early
+
+**The cases you collect before launch are the honest ones.** Once real users arrive, the test set inevitably fills with cases pulled from complaints, which skews it toward known failures and away from the ordinary traffic that makes up most of the volume. Building an initial set from expected questions, before you know which ones will embarrass you, produces a more representative baseline than anything assembled afterwards.
+
+**Every day without one adds changes you cannot audit.** Prompts, retrieval parameters, model versions and chunking all get adjusted during early development, each on somebody's judgement. By the time evaluation arrives, the system is the sum of twenty unmeasured decisions, and you will not go back and check them. You will freeze them.
+
+**It is the only way to survive a model upgrade.** Providers deprecate versions on their schedule, and the replacement behaves differently on your specific prompts in ways no release note predicts. A team with [a pinned regression suite](/blog/regression-testing-prompts) runs it and knows within an hour. A team without one ships and waits for complaints, which is an unpleasant way to discover that a system prompt tuned for months no longer holds.
+
+## Where I start, and how small it is
+
+Thirty cases. That is genuinely enough to begin, and the resistance to starting usually comes from imagining something much larger. Thirty real inputs with a note on what a good answer contains, kept in a file next to the code, runnable in one command.
+
+On a retrieval-backed advisory feature, the first thing I measure is not answer quality at all. It is whether the correct source document appears in the retrieved set, because that is objective, it needs no judgement, and when it is failing nothing downstream can be fixed. Answer-level evaluation comes after, once retrieval is no longer the bottleneck. Splitting the pipeline and measuring the mechanical stage first is what makes the whole thing tractable.
+
+## A tool for deciding, not for grading
+
+The framing that gets teams over the hump is to stop treating evaluation as quality assurance and start treating it as the instrument that makes change safe. It is the same role a test suite plays in ordinary engineering, and nobody argues about whether to write tests on the grounds that the code currently works.
+
+Start with thirty cases and [a deterministic check](/blog/deterministic-evals-for-llm-systems) before reaching for anything more sophisticated. The value does not come from the score being accurate in absolute terms. It comes from being able to say that this change moved it up, and to have somebody else be able to check.

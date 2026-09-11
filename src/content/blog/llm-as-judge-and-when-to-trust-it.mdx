@@ -1,0 +1,41 @@
+---
+title: 'Using a model as a judge, and when to trust the score'
+seoTitle: 'LLM as a judge: when to trust it'
+description: 'Grading output with another model scales in a way humans cannot. It also has biases of its own, and a judge nobody validated is just a number.'
+date: '2026-09-11'
+tags: ['AI', 'Evaluation', 'LLMs', 'Observability']
+---
+
+Once the mechanical checks are in place, the remaining question is whether the answers are actually any good, and that needs judgement. Human review gives the best answer and does not scale past a few dozen cases a week. Using a model to grade the output scales to thousands and costs almost nothing, which is why every team arrives at it.
+
+It works well enough to be genuinely useful and badly enough to mislead, and which one you get depends almost entirely on whether anyone checked the judge against people. A grader nobody validated produces a number that moves, and a number that moves is very easy to mistake for a measurement.
+
+## A judge is a system with its own failure modes
+
+The graders people build first tend to ask for a score out of ten on a vague criterion, and inherit a set of well-documented biases.
+
+Length is the most reliable one. Longer answers score higher, largely independent of content, which means any prompt change that increases verbosity registers as an improvement. Position matters too: in pairwise comparison, the option presented first tends to win. And a model grading output from the same family is measurably kinder to it than a different model would be.
+
+None of these make the approach useless. They make an unvalidated judge unusable as evidence, in the same way an uncalibrated instrument is unusable regardless of how precise its readings look.
+
+## Three things that make a judge worth believing
+
+**Ask for a decision, not a rating.** "Score this answer from 1 to 10" produces noise, because the scale has no shared meaning between runs. "Does this answer contain the eligibility condition, yes or no" produces something closer to a measurement. Decompose quality into specific binary questions and the judge becomes dramatically more stable.
+
+**Give it the reference, not just the output.** Grading an answer in isolation asks the model to know the correct answer, which is the problem you were trying to solve. Grading it against a reference answer or the source passage turns the task into comparison, which models do far more reliably than recall.
+
+**Validate against humans on a sample, then keep validating.** Have a person grade fifty cases, have the judge grade the same fifty, and measure agreement. Below rough agreement the judge is not measuring what you think. This is not a one-off: rerun it whenever the judge prompt or its model changes, because both will.
+
+## Where I use it and where I stop
+
+I use a model judge for regression detection across a few hundred cases, where the question is whether this build is worse than the last one, and where the bias is roughly constant between the two runs so it partly cancels. That is the job it does well, and it is genuinely valuable.
+
+I do not use it to decide whether the system is good enough to ship, or to compare two materially different systems, because in both cases the bias no longer cancels and nobody can tell how much of the difference is real. For that I still want [a person who knows the domain](/blog/human-review-that-earns-its-time) reading outputs, and so far nothing has replaced that.
+
+The most useful discipline I have kept is logging the judge's reasoning alongside its verdict. When a score moves, the reasoning tells you whether the system changed or the judge got confused, and without it you are left re-running things and hoping.
+
+## An instrument, and instruments need calibrating
+
+Model-based grading is the only way to evaluate quality at a scale that catches regressions before users do, and dismissing it means going back to reading samples and arguing about them. Treating it as ground truth is the other failure, and it is the more expensive one, because it produces confident numbers pointing in the wrong direction.
+
+Validate it once against people, keep the [deterministic checks](/blog/deterministic-evals-for-llm-systems) underneath it doing the work they are better at, and treat the output as a trend rather than a truth. That is roughly how every noisy metric in production gets used, and there is nothing about this one that earns an exception.

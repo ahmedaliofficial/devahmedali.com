@@ -1,0 +1,39 @@
+---
+title: 'Human review that earns the time it costs'
+seoTitle: 'Human evaluation of AI output'
+description: 'People are the only judges who catch what nobody thought to check for. Spending that attention on random samples wastes most of it.'
+date: '2026-09-11'
+tags: ['AI', 'Evaluation', 'Observability', 'System Design']
+---
+
+Human review is the most accurate evaluation available and the one teams run worst. The usual implementation is a recurring meeting where several people read a random sample of outputs, agree that most look fine, disagree about two, and produce no artefact that survives the session. It consumes the scarcest resource in the process, which is domain expert attention, and converts almost none of it into anything durable.
+
+The accuracy is not the problem. A person who knows the domain will catch things no automated check was written for, which is exactly the category that matters most. The problem is that random sampling spends that ability on cases where it was not needed.
+
+## Random samples spend expertise on easy cases
+
+If the system is right eighty percent of the time, a random sample is eighty percent cases where an expert confirms what a schema check already established. That is not review, it is confirmation, and it is expensive.
+
+The outputs worth a person's time are the ones where automated signals are ambiguous or absent. Low retrieval scores, unusually long or short answers, runs that hit a retry, inputs unlike anything in the test set, and cases where a [model judge](/blog/llm-as-judge-and-when-to-trust-it) returned low confidence or contradicted itself. Sampling from those strata puts expert attention where nothing else can substitute for it.
+
+The same applies to the cases users flagged. A thumbs-down is a free label pointing at a case the system probably got wrong, and most teams collect them and never look at them systematically.
+
+## Three practices that make review compound
+
+**Every session produces test cases, not opinions.** A reviewer marking an output as wrong should be creating a row: the input, what was wrong, what the right answer contains. That row joins the regression suite, and the same failure is then checked automatically forever. Review that ends in discussion evaporates; review that ends in cases accumulates.
+
+**Ask one specific question, not for a general impression.** "Is this good" produces inconsistent answers between reviewers and from the same reviewer on different days. "Does this cite the correct policy version" produces agreement. Decomposing quality into specific checks is what makes multiple reviewers comparable, and it is the same discipline that makes an automated judge stable.
+
+**Measure agreement between reviewers before trusting either.** Give two people the same twenty cases. Where they disagree, the criteria are underspecified, and no amount of reviewing will fix a rubric that two experts read differently. This is a cheap check that is almost never run.
+
+## Where I insist on people
+
+On a real-time safety monitoring system, human review was not an evaluation practice bolted on afterwards. It was part of the product, because an alert that reaches a person carries a cost when it is wrong and a much larger cost when it is missing, and no automated metric was going to settle where that threshold belonged.
+
+What I took from it into ordinary AI work is that the reviewer needs to see the inputs and not only the output. Reviewing an answer without the retrieved passages tells you the answer sounded wrong but not why, and "sounded wrong" is not an actionable finding. Showing the full trace turns a reviewer from a grader into a diagnostician, which is a much better use of somebody who understands the domain.
+
+## The scarce resource is attention, so route it
+
+Automated checks are cheap, wide and shallow. People are expensive, narrow and deep. A sensible evaluation strategy uses each for what it is good at, which means the machines look at everything and the humans look at what the machines flagged.
+
+Every review session should leave behind more automated coverage than it found, so the same expert is never asked the same question twice. Done that way, human review is not a permanent tax. It is [the mechanism that keeps generating the test set](/blog/why-evals-come-before-scale), and the set it generates is the one that reflects what actually goes wrong.

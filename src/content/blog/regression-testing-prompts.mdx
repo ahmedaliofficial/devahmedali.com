@@ -1,0 +1,39 @@
+---
+title: 'Prompts need regression tests more than code does'
+seoTitle: 'Regression testing prompts'
+description: 'A prompt is a load-bearing configuration string with no type checker behind it. Changing one line can break behaviour nobody remembers depending on.'
+date: '2026-09-11'
+tags: ['AI', 'Evaluation', 'Prompt Engineering', 'LLMs']
+---
+
+A prompt accumulates. It starts as a paragraph describing the task, and then something goes wrong and a sentence gets added. Then something else, and another sentence. After a few months it runs to two pages, and a meaningful fraction of it exists because of a specific incident that nobody currently on the team witnessed.
+
+At that point the prompt is load-bearing configuration with no type system, no compiler and no callers you can grep for. Removing a line that looks redundant is indistinguishable from removing a line that is the only reason a particular failure stopped happening. The only way to tell is to have written down what each line was for, and the practical form of writing that down is a test.
+
+## Every constraint arrived because of a failure
+
+The reason prompt regression is different from code regression is that the dependencies are invisible. When you delete a function, something fails to compile. When you delete "always include the currency symbol", nothing happens until a customer sees an amount without one, three weeks later, in a context nobody was testing.
+
+This makes prompts unusually hostile to cleanup. Engineers correctly identify that the prompt is bloated, correctly suspect that half of it is unnecessary, and cannot safely act on either observation. So the prompt keeps growing, and growth makes the model's attention thinner across all of it, which causes new failures, which get addressed by adding more.
+
+A test per constraint breaks that cycle. It converts an undocumented rule into an executable one, and makes deletion a decision you can verify rather than a gamble.
+
+## Three rules that keep the suite useful
+
+**One case per constraint, named after the failure.** When you add a line to a prompt, add a case that fails without it. Name the case after the thing that went wrong, not after the prompt line, so the next person reads a description of a real problem rather than a restatement of the instruction.
+
+**Pin the model version in the suite.** A prompt suite that runs against a floating model alias is measuring two variables at once, and when it fails you cannot tell whether your change or the provider's broke it. Pin explicitly, and treat the version bump as its own change with its own run.
+
+**Assert on properties, not on exact strings.** Output varies between identical calls, so comparing full text produces a suite that fails constantly and gets ignored. Assert that the currency symbol is present, that the refusal did not happen, that the JSON parses and the status field holds a permitted value. Specific, and stable across rewording.
+
+## Where this saved a release
+
+The clearest value I have had from this was a provider deprecation. The replacement model was better on every published benchmark and quietly different on two behaviours a long-lived system prompt had come to rely on, one of them a formatting convention the interface parsed.
+
+The suite caught both in the time it took to run. Without it the discovery path would have been a user reporting a broken panel, and the diagnosis would have started from the interface rather than from the model swap, which is a long way round even with [good tracing](/blog/tracing-llm-systems-in-production) in place. That afternoon is most of why I now treat a pinned suite as a prerequisite for taking a model upgrade rather than something to add afterwards.
+
+## Configuration that changes behaviour deserves tests
+
+Teams write tests for a feature flag that switches between two known paths, and ship a two-page prompt that determines everything about a system's behaviour with no coverage at all. The asymmetry is habit rather than reasoning: prompts look like copy, so they inherit the review standards of copy.
+
+Treat the prompt as what it is, which is source. Version it, pin what it runs against, and keep [a small suite](/blog/deterministic-evals-for-llm-systems) that encodes why each constraint is there. The immediate benefit is catching regressions. The larger one is that the prompt becomes something you can delete from, which is the only way it ever stops growing.

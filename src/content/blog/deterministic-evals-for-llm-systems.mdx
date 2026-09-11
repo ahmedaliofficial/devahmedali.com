@@ -1,0 +1,47 @@
+---
+title: 'Start with the evaluations that need no judgement'
+seoTitle: 'Deterministic evals for LLM systems'
+description: 'A surprising share of what matters in an AI feature is mechanically checkable. Those checks are fast, free and boring, which is why teams skip past them.'
+date: '2026-09-11'
+tags: ['AI', 'Evaluation', 'LLMs', 'RAG']
+---
+
+The moment a team decides to evaluate an AI feature, the conversation goes straight to the hard part. How do we judge whether an answer is good? Do we need human raters, or a model grading the output, and how do we know the grader is right? The difficulty is genuine, and it stalls the project long enough that nothing gets measured at all.
+
+Meanwhile a substantial fraction of what actually goes wrong in production is mechanically checkable, needs no judgement of any kind, and can be running this afternoon. These checks are unglamorous, they do not capture answer quality, and they catch most of the failures that reach users.
+
+## The checkable surface is larger than it looks
+
+Start with what a correct response must structurally be, independent of whether it is a good answer.
+
+Valid JSON, if the caller parses it. Required fields present. Enum fields holding permitted values. Numbers inside plausible ranges. No placeholder text. Length within what the interface can display. Latency under the budget. No refusal when the input was ordinary.
+
+For retrieval systems there is a better one, and it is the single most useful measurement in the category: given a question, does the correct source document appear in the retrieved set? That is a set-membership test against a labelled pair. It requires no opinion about the generated text, it isolates [the stage where quality is usually lost](/blog/rag-is-a-systems-problem), and it moves immediately when chunking or ranking changes.
+
+A check like this is ordinary code:
+
+```ts
+const hit = retrieved.some((chunk) => chunk.sourceId === expected.sourceId)
+```
+
+One line, no model involved, and it will tell you more about why answers are wrong than a week of reading them.
+
+## Three properties that make them worth doing first
+
+**They are free and fast enough to run on every commit.** No grader model, no rate limits, no per-run cost. That means they can sit in continuous integration rather than in a weekly ritual, which is the difference between catching a regression in minutes and catching it after it ships.
+
+**They never disagree with themselves.** A model-based grader is itself a probabilistic system, and when the score moves you have to establish whether the output changed or the judge did. A schema check has no such ambiguity, which makes it the right instrument for detecting change.
+
+**They catch the failures that actually reach users.** Malformed output breaking a parser, a missing field rendering an empty panel, a response arriving after the request timed out. These are outages. Nuanced quality differences are not, and they get prioritised ahead of outages purely because they are more interesting to discuss.
+
+## Where the line falls for me
+
+I run deterministic checks in continuous integration and keep the judgement-based evaluation as a separate, slower suite that runs before a release rather than on every push. Mixing them produces a suite too slow and too expensive to run often, and one that is flaky for two different reasons at once.
+
+The habit that has paid off most is converting every production incident into a deterministic case if it can possibly be expressed as one. A response that broke the interface becomes a schema assertion. A question that retrieved nothing becomes a retrieval case with a labelled document. Over time the suite becomes a record of everything that has actually gone wrong, which is a far better test set than anything designed in advance.
+
+## The boring half is the load-bearing half
+
+None of this measures whether an answer is any good, and that matters, which is why [model-based grading](/blog/llm-as-judge-and-when-to-trust-it) and human review both have a place. But that work is expensive, slower to build and easier to get wrong, and it is the reason so many teams have no evaluation at all: they went for the hard thing first and never finished it.
+
+The mechanical checks are available today, cost nothing to run, and cover the failures that generate support tickets. Build them first, put them in the pipeline, and the harder evaluation becomes something you add to a working foundation rather than a project that has to succeed before anything is measured.

@@ -1,0 +1,41 @@
+---
+title: 'Tracing an LLM system so failures stay diagnosable'
+seoTitle: 'Tracing LLM systems in production'
+description: 'Request logs tell you a call succeeded. For a model-driven system the useful record is the whole chain, because the mistake is rarely in the last step.'
+date: '2026-09-11'
+tags: ['AI', 'Observability', 'Evaluation', 'Architecture']
+---
+
+The first serious debugging session on an AI feature is where teams discover what their logging is missing. A user reports a wrong answer, somebody pulls up the request, and it contains a status code, a duration and a token count. All healthy. None of it explains anything, because nothing about the failure was visible at the boundary.
+
+Model-driven systems need a different record. The answer was produced by a chain of steps, each of which transformed the input to the next, and the mistake is almost never in the last one. Without the intermediate state you are not debugging. You are re-running the request and hoping it goes wrong the same way, which with a non-deterministic system it may not.
+
+## The span is the step, not the request
+
+The structure that works is the one distributed tracing already established. One trace per user request, one span per step, each span carrying what went in and what came out.
+
+For a retrieval-backed answer that means a span for the query as the user wrote it, a span for whatever rewriting happened to it, a span for the retrieval carrying the ids and scores of what came back, a span for the reranking if there is one, and a span for the generation carrying the assembled prompt and the raw completion. For an agent it means a span per loop iteration with the chosen tool and its result.
+
+The rule that makes this useful is to record the actual values, not summaries. Chunk ids rather than a count. The assembled prompt rather than its length. When something goes wrong the question is always which specific input produced this, and an aggregate cannot answer it.
+
+## Three things the trace tells you that metrics cannot
+
+**Whether the answer was ever retrievable.** Most bad answers in a retrieval system are bad because the correct passage was not in the context. The trace shows what was retrieved, so the diagnosis takes seconds and points at [retrieval rather than the prompt](/blog/rag-is-a-systems-problem). Without it, teams spend weeks tuning generation to compensate for a retrieval failure.
+
+**Where the cost went.** A token count for the request tells you it was expensive. The spans tell you that one step re-sent the entire conversation history on every iteration, which is a fixable problem and invisible in the aggregate.
+
+**What the model actually saw.** The prompt that reaches the provider is assembled from a template, retrieved content, history and tool results. It is frequently not what anyone believes it is. Logging the final assembled string has resolved more confusing behaviour for me than any other single piece of instrumentation.
+
+## Where I draw the retention line
+
+Traces contain user input and retrieved documents, which means they are personal data and sometimes confidential material sitting in an observability tool. Treating them as ordinary logs with a default retention is a mistake that is easy to make and unpleasant to discover.
+
+What I do is keep full traces for a short window, long enough to debug what users are reporting now, and keep a redacted skeleton for longer: step names, durations, chunk ids, scores, token counts, outcome. The skeleton is enough for trend analysis and contains nothing sensitive, and the full detail expires on a schedule somebody agreed to rather than on the tool's default.
+
+Sampling is worth being careful with too. Sampling one percent of traces is normal in high-volume services and wrong here, because the interesting cases are rare by definition. Sample the successes heavily and keep everything that errored, [hit a budget](/blog/how-ai-agents-fail-in-production), retrieved nothing, or got a thumbs-down.
+
+## Non-deterministic systems need a record, not a reproduction
+
+The ordinary debugging loop assumes you can reproduce the failure. Run it again with the same input, observe the same wrong behaviour, narrow it down. That loop is unavailable when the same input can produce a different path, and losing it is what makes these systems feel opaque.
+
+Tracing replaces reproduction with a record. You cannot re-run the failure reliably, but you can read exactly what happened the one time it occurred, which turns out to be enough. It is also the substrate everything else sits on: the flagged traces become [the cases a person reviews](/blog/human-review-that-earns-its-time), and those become the regression suite.
