@@ -1,0 +1,39 @@
+---
+title: 'What embeddings actually encode, and what they miss'
+seoTitle: 'What embeddings actually encode'
+description: 'Embeddings capture how text is used, not what it means. That distinction explains most of the retrieval failures that look inexplicable from the outside.'
+date: '2026-09-11'
+tags: ['AI', 'Embeddings', 'RAG', 'System Design']
+---
+
+An embedding is usually introduced as a way to turn text into meaning, expressed as a list of numbers. That framing is close enough to be useful for about a week, and then it starts producing confusion, because a retrieval system will confidently return a passage that is obviously wrong to any human reader and nothing about the explanation accounts for it.
+
+The more accurate description is duller and far more predictive. An embedding encodes how a piece of text is used: which words tend to surround it, in which contexts, across the corpus the model was trained on. Similarity in that space means similar usage, and usage is correlated with meaning most of the time. The interesting failures all live in the gap.
+
+## Similar usage, not similar meaning
+
+Two sentences that appear in the same kinds of documents end up close together, whether or not they say the same thing. "The transaction was approved" and "the transaction was declined" occupy nearly identical linguistic territory. They differ by one word, they appear in the same reports, next to the same fields, and to a general-purpose embedding model they are close neighbours.
+
+That is not a defect. The model is doing precisely what it was trained to do. It is a defect in a retrieval design that assumed proximity meant agreement, and it shows up as a system that answers questions about failed payments using documentation about successful ones.
+
+Negation is the sharpest version of this, and it generalises. Numbers, dates, identifiers and units are all encoded weakly, because their distinguishing information is not in how they are used. A query about the 2024 policy will happily retrieve the 2019 one.
+
+## Three consequences worth designing for
+
+**Exact terms need a second mechanism.** Product codes, error identifiers, account numbers and names are exactly what users search for and exactly what embeddings represent poorly. This is the whole case for [pairing semantic search with keyword search](/blog/hybrid-search-beats-pure-semantic-search) rather than choosing between them, and it is the most common single fix for a retrieval system that feels vague.
+
+**The unit you embed decides what you can find.** A vector represents a whole chunk, so everything in that chunk is averaged into one point. Embed a page covering four topics and you get a vector that is near none of them. Embed a single sentence and you get precision without the context needed to make the answer useful. This is why [chunking is not a preprocessing detail](/blog/chunking-decides-your-rag-ceiling).
+
+**Domain language drifts from the training distribution.** A general model has seen your industry's vocabulary, but weighted by how the internet uses it rather than how your organisation does. Internal shorthand, product names that are also ordinary words, and terms that mean something specific in your domain will all sit in the wrong neighbourhood.
+
+## Where this bit me
+
+On a financial advisory feature, the recurring complaint was that answers were subtly wrong rather than absent. The retrieval was finding passages about the right product and the wrong state of it: eligible versus ineligible, active versus lapsed. Semantically adjacent, operationally opposite.
+
+No amount of prompt work fixed it, because the correct passage was frequently not in the retrieved set at all. What fixed it was separating the state into metadata and filtering on it before ranking, which took the problem out of the embedding space entirely. The lesson I took was that anything with a small set of discrete values should be a filter, not a hope.
+
+## Treat it as a retrieval index, not a meaning machine
+
+The productive mental model is closer to a fuzzy index than to comprehension. It is very good at finding text that reads like the query, across paraphrase and synonym and imperfect wording, which is genuinely hard and worth having. It is unreliable at anything that turns on a single token carrying all the weight.
+
+Design around that shape rather than against it. Put discrete facts in metadata, keep exact-match terms on a lexical path, choose the chunk to match the question you expect, and check what is actually being retrieved before concluding the model is at fault. Most of the time the model is reporting faithfully on whatever it was handed, which is [the argument that RAG is a systems problem](/blog/rag-is-a-systems-problem) restated one layer down.

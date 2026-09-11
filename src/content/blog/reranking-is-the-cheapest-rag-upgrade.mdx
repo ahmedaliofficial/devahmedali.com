@@ -1,0 +1,39 @@
+---
+title: 'Reranking is usually the cheapest upgrade a RAG system can get'
+seoTitle: 'Reranking in RAG pipelines'
+description: 'Retrieval optimises for recall and the model needs precision. A reranker sits between them and fixes the mismatch without touching the index.'
+date: '2026-09-11'
+tags: ['AI', 'RAG', 'Embeddings', 'Performance']
+---
+
+There is a stage in most retrieval projects where the obvious moves are exhausted. The chunks are sensibly sized, the embedding model is a current one, [keyword search is back in the mix](/blog/hybrid-search-beats-pure-semantic-search), and the answers are good but not reliably good. Evaluation shows the right document is usually retrieved. It is just not always near the top, and the model is reading the top five.
+
+That gap has a name and a standard fix. Retrieval and generation want different things from a ranking, and a reranker is the component that translates between them.
+
+## Recall and precision want different rankings
+
+A vector index is built for recall at speed. It compares one query vector against millions of document vectors, which is only tractable because the comparison is cheap and approximate. The job is to get the right material into a candidate set of twenty or fifty, and it does that well.
+
+The model reading the results wants something different. It needs the best three or four passages, in order, because everything else is tokens spent on material that dilutes the answer. Approximate nearest-neighbour ranking within a candidate set is not especially good at that ordering, since it never looked at the query and the document together. It compared two independently computed vectors.
+
+A cross-encoder reranker does look at them together. It takes the query and each candidate as a pair and scores the pair directly, which is far more accurate and far too slow to run over a whole corpus. Over fifty candidates it is entirely affordable.
+
+## Three reasons it lands so well
+
+**It needs no reindexing.** This is the practical argument and it dominates the others. Changing the embedding model or the chunking strategy means reprocessing the corpus, which is a project. A reranker is a step inserted between retrieval and generation, and it can be added, evaluated and removed in a day without touching stored data.
+
+**It lets you retrieve more and send less.** Without reranking, the number retrieved and the number passed to the model are the same, so you are trading recall against context pollution. With it, you can retrieve fifty and pass four, taking the recall benefit of a wide net and the precision benefit of a narrow one.
+
+**It is where the quality gap usually is.** In systems I have measured, the right document was already in the top twenty far more often than it was in the top three. That specific gap, between retrieved and read, is exactly what reranking closes, and it is why the improvement often exceeds what a better embedding model delivers.
+
+## Where I put it, and what it costs
+
+I add reranking once retrieval evaluation shows decent recall at twenty and poor precision at three, and not before, because until then the problem is upstream and reranking only reorders material that has to already be there. A reranker cannot retrieve what the index missed.
+
+The cost is latency, and it is real. An extra model call over fifty candidates adds meaningfully to the response time, which is fine for a research or advisory interface and can be too much for an interactive one. Where it has mattered, cutting the candidate set rather than dropping the reranker has been the better trade, since most of the benefit shows up well before fifty.
+
+## A pipeline, not a lookup
+
+The mental shift that makes this obvious is to stop treating retrieval as a single lookup and start treating it as a funnel: filter on metadata, retrieve widely with cheap methods, rerank the survivors expensively, pass a small ordered set to the model. Each stage has a different cost profile and a different job, which is the ordinary shape of every search system built in the last twenty years.
+
+Teams reach for a better embedding model because that is the component with a version number. The larger wins are usually in the stages around it, and reranking is the one that costs an afternoon and does not require [rebuilding the index you already committed to](/blog/chunking-decides-your-rag-ceiling).

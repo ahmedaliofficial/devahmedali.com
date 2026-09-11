@@ -1,0 +1,39 @@
+---
+title: 'Keeping a vector index fresh after the launch'
+seoTitle: 'Keeping a vector index fresh'
+description: 'Most RAG systems are built against a snapshot and then quietly decay. Indexing is a pipeline with a freshness target, not a one-off import script.'
+date: '2026-09-11'
+tags: ['AI', 'RAG', 'Embeddings', 'Architecture']
+---
+
+Almost every retrieval system starts with an import script. Point it at the corpus, chunk, embed, write, and the index exists. The script runs once, works, and gets committed next to a comment saying it should probably be a job at some point.
+
+Six months later the answers have quietly degraded and nobody can say when it started. The documents changed, the index did not, and there was never a moment where anything failed. This is the most common way a working retrieval system stops working, and it is not a retrieval problem. It is a data pipeline that was never treated as one.
+
+## Deletions are the failure nobody sees
+
+Updates get handled eventually, usually by someone re-running the import. Deletions are different, because a deleted source document leaves its chunks sitting in the index, fully retrievable, with nothing to compare them against.
+
+The system then answers questions using a policy that was withdrawn, a price that no longer applies, or an employee who left. There is no error, no missing result, and no signal in any metric. It is worse than a gap, because a gap at least produces an answer that admits it does not know.
+
+An import that only ever inserts and updates cannot detect this. Detecting it requires comparing the set of source identifiers against the set in the index, which means the index has to store the source identifier, which is a decision made at ingestion and painful to add later.
+
+## Three things to build in from the start
+
+**Store provenance on every chunk.** Source id, content hash, model version and ingestion timestamp. This is four columns and it is the difference between an index you can reconcile and one you can only rebuild. The content hash in particular lets you skip re-embedding unchanged material, which is what makes incremental updates affordable.
+
+**Make the update path idempotent and keyed.** Re-running ingestion for one document should replace exactly that document's chunks, not append a second copy. Duplicate chunks are insidious: retrieval returns both, the model sees the same passage twice, and the redundancy crowds out other material without anything looking wrong.
+
+**Reconcile on a schedule, not just on change events.** Event-driven updates are correct and will miss things, because events get dropped, consumers restart, and some changes never emit one. A periodic job that compares source ids against indexed ids and removes orphans is the backstop that catches all of it.
+
+## Where I put the boundary
+
+I treat the index as a derived store with a stated freshness target, the same way I would treat a read model or a search index in any other system. On an event-driven platform that meant the ingestion consumer was an ordinary Kafka consumer with the ordinary concerns: [idempotency, because redelivery is normal](/blog/designing-event-pipelines-that-survive-100k-events-a-day), and a dead-letter path for documents that fail to parse.
+
+The part I would insist on again is keeping embedding off the ingest path itself. Embedding is a network call to a model, it is slow relative to everything around it, and putting it inline makes document updates as available as the embedding provider. Writing the change to a queue and embedding asynchronously keeps the source system unaffected when the provider is having a bad afternoon.
+
+## Freshness is a number, so pick one
+
+The question to answer before launch is how stale an answer is allowed to be. Minutes, hours, a day. It is a product decision with an architecture attached: minutes means event-driven ingestion and a reconciliation job, a day means a nightly rebuild and considerably less machinery.
+
+Either is defensible. What is not defensible is the common answer, which is that nobody decided, the import script ran in March, and the [retrieval quality everyone tuned so carefully](/blog/reranking-is-the-cheapest-rag-upgrade) is now operating over a corpus that no longer matches the one the organisation actually runs on.

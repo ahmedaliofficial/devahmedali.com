@@ -1,0 +1,39 @@
+---
+title: 'Hybrid search beats pure semantic search almost everywhere'
+seoTitle: 'Hybrid search versus semantic search'
+description: 'Vector search handles paraphrase well and exact terms badly. Keyword search is the reverse, and users send both kinds of query in the same session.'
+date: '2026-09-11'
+tags: ['AI', 'RAG', 'Embeddings', 'Performance']
+---
+
+Vector search arrived looking like a replacement for keyword search, and for a while it was treated as one. Semantic retrieval understands intent, handles paraphrase, works across synonyms, and does not need the user to guess which words the document used. Keyword search looked like the thing you were finally allowed to stop maintaining.
+
+Then the support tickets arrive, and a meaningful share of them are one shape: the user searched for something exact and did not get it. An error code, an invoice number, a product name, a person. The system that understands intent cannot find the string. Both mechanisms turn out to be partial, in opposite directions, and the sensible design uses both.
+
+## The two failure sets barely overlap
+
+Semantic search fails on identifiers and precise tokens, because [an embedding encodes usage rather than characters](/blog/what-embeddings-actually-encode). An error code has almost no usage signature. Two invoice numbers are near-identical vectors. A rare product name sits wherever similar-looking words sit, which is nowhere useful.
+
+Keyword search fails on everything the user did not phrase the way the document did. Ask about "cancelling a subscription" when the manual says "terminating an agreement" and lexical matching returns nothing, regardless of how obviously related they are.
+
+What makes this worth engineering around is that the failures are nearly disjoint. A query that defeats one mechanism is usually handled well by the other, which means the combination is not a marginal improvement over the better of the two. It closes most of a gap that neither could close alone.
+
+## Three things that make the combination work
+
+**Run both and fuse the rankings.** The standard approach, reciprocal rank fusion, needs no tuning and no score normalisation: take each result's position in each list, and score it by the reciprocal of that rank. Documents that do well in either list surface, and documents that do reasonably in both surface higher. It is a dozen lines and it outperforms most weighted-score schemes people build instead.
+
+**Do not try to classify the query first.** The tempting alternative is routing: decide whether a query is lexical or semantic, then send it down one path. This fails on the mixed queries that are most of real traffic, like a product name plus a conceptual question. Running both is cheap enough that choosing between them is a false economy.
+
+**Filter on metadata before either runs.** Anything with a small set of discrete values, such as status, document type, date range or tenant, belongs in a `where` clause rather than in the ranking. Both mechanisms rank better over a smaller, correct candidate set, and it removes an entire class of confidently wrong neighbour.
+
+## Where I stopped treating it as an upgrade
+
+I have built retrieval both ways, and the pattern is consistent enough that I now start hybrid rather than arriving at it. On a financial advisory feature the queries were split almost evenly between conceptual questions and questions naming a specific product or code, and the pure-vector version handled the first group well and the second group badly enough to be embarrassing.
+
+The thing that surprised me was how little work the fix was. The lexical index already existed, because the application had ordinary search before it had a model in it. Combining two ranked lists took an afternoon, and it moved retrieval quality more than a month of tuning chunk sizes had.
+
+## Two partial indexes, one honest answer
+
+The framing that helped me was to stop thinking of vector search as the modern replacement and keyword search as the legacy thing still hanging around. They are two indexes with different competencies over the same corpus, the way a database has more than one index for good reasons.
+
+Most teams already have the lexical half, in Postgres full-text search or an existing search cluster, and are not using it because the new thing was supposed to make it unnecessary. Putting it back is usually the highest-return change available to a struggling retrieval system, ahead of a better embedding model and ahead of [reranking](/blog/reranking-is-the-cheapest-rag-upgrade), because it fixes queries that were previously returning nothing at all.

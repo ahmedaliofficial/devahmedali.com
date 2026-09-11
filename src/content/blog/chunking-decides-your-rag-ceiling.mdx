@@ -1,0 +1,39 @@
+---
+title: 'Chunking decides the ceiling on your RAG quality'
+seoTitle: 'Chunking strategy for RAG systems'
+description: 'Chunk size is treated as a tuning parameter and behaves like an architectural decision. It sets the best answer your system can possibly retrieve.'
+date: '2026-09-11'
+tags: ['AI', 'RAG', 'Embeddings', 'Architecture']
+---
+
+Chunking gets introduced as preprocessing. Split the documents, pick a size, add some overlap, move on to the interesting part. Every tutorial suggests 500 or 1000 tokens with a bit of overlap, nobody explains where those numbers came from, and the decision gets made in the first hour of a project and never revisited.
+
+It deserves more attention than that, because chunking sets a ceiling. Retrieval can only ever return a chunk, so the best possible answer your system can give is the best answer contained in a single chunk, plus whatever the model can assemble from a handful of them. No amount of reranking, prompt work or model upgrade lifts that ceiling. It is fixed at ingestion.
+
+## The two failures are opposite and both common
+
+Chunk too large and precision collapses. A long passage covering several topics produces one vector that sits between all of them and close to none. It gets retrieved for queries it only partly answers, and when it is retrieved, most of the tokens spent on it are irrelevant to the question.
+
+Chunk too small and context disappears. A single sentence embeds cleanly and retrieves precisely, then arrives at the model stripped of the thing that made it meaningful. "This does not apply to accounts opened before the migration" is a precise, well-embedded, completely useless chunk if the reader cannot tell what "this" refers to.
+
+There is no size that avoids both, which is why the question is not what size to use. It is what a self-contained answer looks like in your corpus.
+
+## Three things that beat tuning the number
+
+**Split on structure, not on length.** Documents already contain the boundaries you want: headings, sections, list items, table rows, function definitions. A splitter that respects them produces chunks that were written to stand alone, because a human wrote them that way. Fixed-length splitting cuts through the middle of the one sentence that mattered, and overlap is a partial patch for a problem you created.
+
+**Carry the parent context into the chunk.** Prefixing each chunk with its document title and section heading costs a handful of tokens and resolves most of the dangling-reference problem. The chunk embeds with the context it needs to be interpretable, and the retrieved text arrives at the model already situated. This is the single cheapest improvement available at ingestion.
+
+**Match the chunk to the question shape.** A corpus answering "what is the policy on X" wants section-sized chunks. A corpus answering "which customers did Y" wants records. If you have both kinds of question, you probably want both indexes rather than a compromise that serves neither well.
+
+## Where I got this wrong
+
+On a document question-answering feature over policy material, I started with fixed 800-token chunks and reasonable overlap, because that is what the examples do. Retrieval looked acceptable in testing and degraded immediately on real questions, in a specific way: answers were confidently incomplete, citing a condition without its exception, because the exception lived in the next chunk.
+
+Re-splitting on the document's own section headings, with the heading path prefixed onto each chunk, changed the result more than any subsequent change I made to the model or the prompt. The chunks became uneven in length, which felt wrong and was not, because length was never the property that mattered.
+
+## Ingestion is the part you cannot fix later
+
+Everything downstream of chunking is adjustable at run time. You can change the embedding model, add [reranking](/blog/reranking-is-the-cheapest-rag-upgrade), tune how many results you retrieve, rewrite the prompt. All of it operates on whatever chunks exist.
+
+Chunking is the one decision baked into the index, and changing it means reprocessing the corpus, which is why teams live with a bad split far longer than they should. Spend the afternoon on it at the start. Look at fifty real chunks and ask whether each one would answer a question on its own, because that is the only question that matters and [the embedding will not rescue you](/blog/what-embeddings-actually-encode) if the answer is no.

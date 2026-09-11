@@ -1,0 +1,39 @@
+---
+title: 'Choosing an embedding model without reading a leaderboard'
+seoTitle: 'How to choose an embedding model'
+description: 'Benchmark rankings measure averages over corpora that are not yours. Four practical constraints narrow the field faster than any leaderboard position.'
+date: '2026-09-11'
+tags: ['AI', 'Embeddings', 'RAG', 'Databases']
+---
+
+The usual way to pick an embedding model is to open a benchmark leaderboard, look at the top few rows, and take whichever is cheapest among them. It is a reasonable-looking process and it answers the wrong question, because the ranking is an average across many retrieval tasks over corpora that are not yours, and the differences between adjacent rows are frequently smaller than the difference your chunking makes.
+
+The constraints that actually decide this are mostly not about quality at all. They are about dimensions, cost at your volume, whether you can afford to reprocess, and whether the text you are embedding looks anything like general web prose.
+
+## The decision is mostly made by four constraints
+
+Dimension count is the one with the longest tail. It sets your storage, your index size and your query latency, and it is fixed for the life of the index. Moving from 1536 to 3072 dimensions doubles the vector storage and slows every comparison, for a quality difference that is often marginal on a well-chunked corpus. Several current models support truncating the output, which is worth using deliberately rather than ignoring.
+
+Cost at ingestion volume matters more than cost per query for most systems, because you embed the whole corpus once and then re-embed it every time anything changes. A corpus that updates continuously is a recurring bill, not a one-off.
+
+Then there is the question nobody asks until it is expensive: can you change your mind? Switching models means re-embedding everything, because vectors from different models are not comparable. That is an afternoon on a small corpus and a project on a large one.
+
+## Three checks worth more than a benchmark position
+
+**Test on fifty real queries from your own domain.** Not a benchmark, not queries you invented. Take real questions, check whether the correct document appears in the top twenty, and compare candidate models on that number. It takes a morning and it is the only measurement that reflects your corpus, your chunking and your users' phrasing.
+
+**Check how the model handles your identifiers.** Every domain has tokens that carry disproportionate weight: part numbers, error codes, drug names, legal citations. Models vary more than you would expect here, and a model that handles yours acceptably removes some of the pressure on [the lexical half of a hybrid setup](/blog/hybrid-search-beats-pure-semantic-search).
+
+**Confirm the query and document paths match.** Several models expect an instruction prefix, or distinguish between embedding a query and embedding a passage. Getting this wrong degrades retrieval quietly and substantially, and it is a configuration mistake rather than a model one, which makes it easy to miss for months.
+
+## Where I have landed in practice
+
+I default to a well-supported general model at moderate dimensions and spend the saved effort on chunking and reranking, because that is consistently where the larger gains have been. The one time I moved off that default, it was not for a quality reason. It was that the corpus was domain-specific enough that a general model put too many near-identical technical terms in the same neighbourhood.
+
+The habit I would keep from all of it is storing the model name and version alongside every vector, from the first day. It costs one column. Without it, a future migration means guessing which rows were embedded with what, and a half-migrated index fails in a way that is genuinely hard to diagnose because nothing errors. Results just quietly get worse.
+
+## An interface decision, not a model decision
+
+The useful frame is that the embedding model is a contract between your ingestion pipeline and your index, in the same way a serialisation format is a contract between a producer and a consumer. Its version is part of your data, changing it is a migration, and the cost of changing it scales with how much you have stored.
+
+Pick something current and well supported, record the version, verify it on your own queries, and move on to the parts that are still adjustable. The quality ceiling in a retrieval system is set by [what you put in each chunk](/blog/chunking-decides-your-rag-ceiling) far more often than by which model turned it into numbers.
