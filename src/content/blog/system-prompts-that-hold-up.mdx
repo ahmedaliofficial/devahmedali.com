@@ -1,0 +1,39 @@
+---
+title: 'Writing a system prompt that holds up under change'
+seoTitle: 'System prompts that hold up'
+description: 'A system prompt is the one piece of a feature everybody edits and nobody owns. Structure decides whether it stays coherent or becomes sediment.'
+date: '2026-09-11'
+tags: ['AI', 'Prompt Engineering', 'LLMs', 'Architecture']
+---
+
+The system prompt is the least engineered artefact in most AI features. It has no owner, no structure anyone agreed, and an edit history consisting of whoever last needed something to change. It is also the single input with the widest influence over behaviour, which is an unusual combination of importance and neglect.
+
+The failure is not that people write bad instructions. Individually the sentences are fine. The failure is that a prompt written as continuous prose has no organising principle, so every addition goes wherever it fits, contradictions accumulate out of sight, and after a few months nobody can say what the thing as a whole asks for.
+
+## Structure is what makes it editable
+
+A prompt organised into labelled sections is easier to change safely, for the same reason a file organised into functions is. Role, then capabilities, then constraints, then output format, then examples. Each addition has an obvious home, and when two instructions conflict they now sit next to each other where somebody will notice.
+
+The specific sections matter less than having them. What they buy is the ability to answer "where does this new rule go" without re-reading two pages, and the ability to see that the constraints section contains six rules about tone and none about accuracy.
+
+Ordering matters as well, and in a predictable direction. Material at the start and end of the context carries more weight than material in the middle, so the output format belongs near the end where it is closest to the generation, and the role belongs at the top.
+
+## Three habits that keep it coherent
+
+**State what to do, not what to avoid.** Negative instructions require the model to hold the prohibited thing in mind, and they specify an infinite space by exclusion. "Answer only from the provided documents" is a rule with one interpretation. "Do not make things up" is a hope. Where I have replaced prohibitions with positive specifications, behaviour got more consistent without the prompt getting longer.
+
+**Put the output contract in the prompt and validate it in code.** Describing the shape helps and does not guarantee. The prompt gets you compliance most of the time, the [schema check](/blog/deterministic-evals-for-llm-systems) catches the rest, and skipping either means discovering the gap through a parser error in production.
+
+**Keep examples few and adversarial.** Two or three examples earn their tokens when they illustrate the boundary rather than the obvious case. Ten typical examples mostly demonstrate what the model would have done anyway, at real cost in [context you needed for something else](/blog/context-engineering-vs-prompt-engineering).
+
+## Where I keep it, and why that matters
+
+The prompt lives in a version-controlled file, not a database row and not a string literal buried in a handler. That sounds like a small thing and it decides whether changes get reviewed. A prompt in a file goes through the same pull request as the code, which means a second person reads it before it ships.
+
+The other rule I hold to is that no line goes in without a case that fails without it. It is the same discipline as [regression testing a prompt](/blog/regression-testing-prompts), applied at the moment of writing rather than afterwards. The effect is that the prompt stops being a place where fixes accumulate permanently, because anything that can be deleted can be proven deletable.
+
+## An interface, and interfaces get designed
+
+Teams treat the system prompt as configuration, which is why it drifts. Configuration is edited in place, by whoever needs it changed, without review. Source is structured, versioned, reviewed and tested, and there is nothing about a two-page string determining a product's behaviour that makes it the first thing rather than the second.
+
+Give it sections, put the format near the end, prefer positive instructions, and require a test for each constraint. None of that is clever, and the result is a prompt that a new engineer can read and change without fear, which is a lower bar than most of them currently clear.

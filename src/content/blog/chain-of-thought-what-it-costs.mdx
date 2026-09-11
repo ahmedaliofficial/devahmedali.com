@@ -1,0 +1,41 @@
+---
+title: 'Chain of thought: what it buys and what it costs'
+seoTitle: 'Chain of thought in production'
+description: 'Asking a model to reason step by step improves some tasks and slows every one of them. The trade is latency and tokens, paid on every single call.'
+date: '2026-09-11'
+tags: ['AI', 'Prompt Engineering', 'LLMs', 'Performance']
+---
+
+Chain of thought is the most reliably reproduced trick in prompting. Ask a model to work through a problem step by step before answering and accuracy improves on tasks with intermediate structure: arithmetic, multi-constraint filtering, anything where the answer depends on several facts being combined correctly.
+
+It is also the technique most often applied to tasks that have none of that structure, at full cost. The reasoning tokens are generated, billed and waited for whether or not they contributed anything, and on a classification task with a fixed label set they usually do not. The technique is sound. The default of applying it everywhere is not.
+
+## It helps where the answer has a middle
+
+The tasks that benefit share a property: a correct answer requires combining several pieces, and getting one of them wrong changes the result. Working out whether a customer qualifies under three conditions. Reconciling figures across two documents. Deciding a next action from a state and a set of rules.
+
+The tasks that do not benefit are the ones where the answer is a lookup or a recognition. Extracting a field from a document. Choosing one of five categories. Deciding whether a message is a complaint. For these, reasoning before answering adds latency and tokens, and frequently adds a second failure mode where the model talks itself out of a correct initial judgement.
+
+The test I use is whether you could plausibly get the answer wrong by making an error in the middle. If there is no middle, there is nothing for the technique to improve.
+
+## Three costs that show up in production
+
+**Latency, on every call, in full.** Reasoning tokens are generated serially before the answer begins. On an interactive interface that is the difference between a response that feels immediate and one that does not, and it is paid on the easy requests as well as the hard ones.
+
+**Output tokens, which are the expensive kind.** Reasoning is generated rather than read, so it bills at the higher rate. A step-by-step preamble several times longer than the answer is normal, and it multiplies the cost of the feature for a benefit concentrated in a minority of requests.
+
+**Confident, well-argued wrong answers.** This is the subtle one. Written reasoning is persuasive to whoever reads it, reviewers included, and it is a narrative produced alongside the answer rather than a proof of it. Plausible steps leading to a wrong conclusion are harder to catch than a bare wrong conclusion, because they look like diligence.
+
+## Where I turn it on
+
+I default to off and enable it for specific paths, which is the reverse of what most teams do. Extraction, classification and routing run without it. Anything combining conditions, or anything an agent uses to [decide a next step](/blog/the-react-loop-in-practice), runs with it, because that is where I have measured a real difference.
+
+The version that has worked best is asking for brief structured reasoning rather than open-ended thinking: the two or three specific facts that determine the answer, then the answer. It captures most of the accuracy benefit at a fraction of the token cost, and it produces something a person can check, which open-ended reasoning rarely does.
+
+Whether it is worth it is an empirical question with a cheap answer. Run [the eval set](/blog/why-evals-come-before-scale) both ways and compare accuracy against latency and cost. I have had that comparison come back showing no accuracy difference and a threefold latency increase, which settles an argument faster than any amount of discussion.
+
+## Reasoning is a feature with a price tag
+
+The literature reports that chain of thought improves accuracy, and it does, on the tasks it was measured on. What gets lost between the paper and the codebase is that the improvement is conditional and the cost is not.
+
+Treat it the way you would any optimisation trading latency for correctness: apply it where correctness matters and the structure exists, measure rather than assume, and keep it off the paths where the model was already right. The default in most systems is the opposite, which is how a classification endpoint ends up three times slower than it needed to be for no measurable gain.

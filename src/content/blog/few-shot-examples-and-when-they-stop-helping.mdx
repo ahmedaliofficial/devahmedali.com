@@ -1,0 +1,39 @@
+---
+title: 'Few-shot examples, and the point where they stop helping'
+seoTitle: 'Few-shot prompting in practice'
+description: 'Examples are the fastest way to fix a format problem and a slow way to fix a reasoning one. Adding more has a ceiling that arrives earlier than expected.'
+date: '2026-09-11'
+tags: ['AI', 'Prompt Engineering', 'LLMs', 'Context Engineering']
+---
+
+Few-shot prompting is the first thing most people reach for when output is not quite right, and it usually works, which is why it keeps getting reached for. Two examples of the format you want and the model produces that format. It feels like a dial: if two helped, ten should help more.
+
+It is not a dial. Examples do one thing extremely well, do a second thing weakly, and start costing more than they return earlier than most teams notice. Knowing which of those you are asking for is the difference between a cheap fix and a prompt that has quietly become mostly examples.
+
+## Examples teach shape, not judgement
+
+What few-shot demonstrations reliably convey is form. Field names, casing, how to phrase a refusal, whether dates are ISO or written out, how terse to be. For anything in that category, one or two examples outperform several paragraphs of description, because showing a format is more precise than describing it.
+
+What they convey much more weakly is when a rule applies. If the decision requires domain knowledge or a judgement about an unfamiliar case, examples give the model a handful of points and leave it to infer the boundary between them. Sometimes the inference is right. Where the boundary is subtle, adding more examples of correct cases does surprisingly little, because the model was never uncertain about those.
+
+This is the distinction worth holding: a format problem is an example problem, and a reasoning problem is usually a [context problem](/blog/context-engineering-vs-prompt-engineering) or a retrieval problem wearing a prompt costume.
+
+## Three ways more examples make things worse
+
+**They anchor the output to their own surface features.** A model shown five examples that happen to be short produces short answers. Five that happen to concern one product will bias toward that product. The pattern being learned includes properties nobody intended to teach, and the more examples there are, the stronger the pull.
+
+**They consume the window that retrieval needed.** Ten worked examples is real token weight, permanently present on every call, competing with the material that is specific to this request. In a retrieval system that trade is almost always bad: examples are the same every time, retrieved passages are the reason the answer is right.
+
+**They make the failure mode harder to see.** With two examples it is obvious what the model was shown. With twelve, nobody rereads them, and a stale example demonstrating a format you stopped using last quarter keeps teaching it. Examples rot exactly like documentation, and unlike documentation they are executed on every call.
+
+## Where I stop adding them
+
+My rule is that examples earn their place by covering a boundary, not by covering a case. If an example demonstrates what the model already does correctly, it is costing tokens to confirm existing behaviour. The examples worth keeping are the awkward ones: the input that looks like it should produce an answer but should produce a refusal, the field that is optional but must be omitted rather than nulled.
+
+In practice that has meant three or four examples in most prompts and rarely more. When I have wanted a fifth, the useful question has almost always been what the fifth is trying to fix, and the answer has usually been a reasoning failure that needed better retrieval or an explicit rule rather than another demonstration.
+
+## Cheap to add, quietly expensive to keep
+
+Few-shot is genuinely the highest-return move available for format problems, and the fact that it costs one edit is why it is the right first attempt. It deserves its reputation for the job it does.
+
+The trouble is that it has no natural stopping point, no error when there are too many, and no signal that any individual example has gone stale. Treat the example block as part of the prompt that gets [tested and pruned](/blog/regression-testing-prompts) like everything else, and it stays a tool. Leave it to grow and it becomes the largest thing in your context window, teaching the model a format nobody has read in a year.

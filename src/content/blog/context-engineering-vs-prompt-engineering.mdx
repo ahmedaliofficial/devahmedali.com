@@ -1,0 +1,39 @@
+---
+title: 'Context engineering is where prompt engineering ran out'
+seoTitle: 'Context engineering vs prompt engineering'
+description: 'Prompt engineering asks what to say to the model. Context engineering asks what should be in front of it at all, which is the harder half.'
+date: '2026-09-11'
+tags: ['AI', 'Context Engineering', 'Prompt Engineering', 'Architecture']
+---
+
+Prompt engineering had a good run as the name for this work, and it is being replaced for a reason that is easy to state. Once a system does anything beyond a single turn, the wording of your instructions stops being the variable that decides quality. What decides it is which material occupies the window when the model is asked to produce something.
+
+That is a different discipline with a different shape. Prompt engineering is a writing problem, and it has diminishing returns fairly quickly. Context engineering is a systems problem: selection, ordering, budgeting and eviction, over a resource that is fixed in size and shared by everything competing for it.
+
+## The window is a budget, and everything wants a share
+
+A model call has a fixed number of tokens available, and in a real system at least five things have a claim on them. The system instructions. The conversation so far. Retrieved documents. Tool definitions. Tool results from earlier steps.
+
+Each of those grows independently, and none of them has an owner whose job is to keep it small. Retrieval returns ten chunks because ten was the default. History accumulates because appending is the obvious implementation. Tool definitions expand as the catalogue grows. Nothing in the code says these are competing, so nothing balances them, and the balance that emerges is whatever the defaults produced.
+
+Treating the window as an allocation changes the questions. Not "is this useful", because everything is arguably useful, but "is this more useful than what it displaces".
+
+## Three failures that no prompt rewrite fixes
+
+**The middle stops being read.** Models attend unevenly across a long context, and material placed in the middle of a large window is measurably less influential than the same material at either end. A system that pads the context with marginally relevant chunks does not just waste tokens. It pushes the decisive passage into the weakest position.
+
+**Stale material outlives its relevance.** A document retrieved at step two is still in the window at step nine, long after the task moved on. Nothing evicts it, so the model is reasoning over a mix of current and superseded material with no signal about which is which. This is the same conflation that makes [agent memory](/blog/memory-in-ai-agents) go wrong, seen from the token side.
+
+**Tool definitions crowd out the task.** Twenty tools with thorough schemas can occupy a substantial share of the window before the actual question arrives. Scoping which tools are visible at each stage is a context decision, not a capability decision, and it is usually made once and never revisited.
+
+## Where I spend the effort now
+
+On retrieval-backed features the change that moved quality most was retrieving more and sending less: widen the candidate set, then [rerank and pass four passages](/blog/reranking-is-the-cheapest-rag-upgrade) instead of ten. Fewer tokens, better answers, lower cost. That result surprised me the first time and has held up every time since.
+
+For anything with a loop, I now budget the window explicitly rather than letting it fill. A cap on history, a cap on retrieved content, a cap on accumulated tool output, and a defined rule for what gets dropped when each is exceeded. Writing those numbers down takes an hour and converts a slow degradation over a long session into a bounded, predictable behaviour.
+
+## The instructions were never the scarce resource
+
+There is still craft in how instructions are written, and it still matters. It is just no longer the constraint that binds, because a well-written prompt over the wrong context produces a well-expressed wrong answer.
+
+The systems that hold up treat assembling the context as its own component with its own tests: what went in, in what order, and what was dropped to make room. That is closer to cache design than to writing, which is why [tracing the assembled prompt](/blog/tracing-llm-systems-in-production) tells you more than reading the template ever will.

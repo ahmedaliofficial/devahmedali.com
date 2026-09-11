@@ -1,0 +1,39 @@
+---
+title: 'Compacting context without losing the thread'
+seoTitle: 'Context compaction in long runs'
+description: 'Long sessions fill the window and something has to go. What you drop, and what you replace it with, decides whether the system degrades or forgets.'
+date: '2026-09-11'
+tags: ['AI', 'Context Engineering', 'Agents', 'Performance']
+---
+
+Any system that runs for more than a handful of turns eventually meets the same wall. The transcript, the retrieved material and the tool results have filled the window, and the next call either will not fit or will be expensive and slow. Something has to be removed.
+
+The default answer is to drop the oldest messages, because it is the easiest to implement and it is right often enough to survive review. It is also the strategy most likely to discard the thing the session depends on, since the constraint a user stated in their first message is both the oldest content and frequently the most important.
+
+## Recency is a poor proxy for relevance
+
+In a conversation, the opening usually establishes the frame: who the user is, what they are working on, the constraint everything else is subject to. The middle is where most of the volume accumulates, often exploratory and much of it superseded. The end is what is immediately in play.
+
+Dropping oldest-first removes the frame and keeps the exploration, which is close to backwards. The observable result is an assistant that was helpful for twenty minutes and then starts suggesting things the user ruled out at the start, which reads as the model getting worse and is actually the eviction policy working exactly as written.
+
+The fix is not a better cutoff. It is recognising that different categories of content have different value curves, which is the same separation that keeps [agent memory](/blog/memory-in-ai-agents) coherent.
+
+## Three strategies that beat dropping the oldest
+
+**Summarise the middle, keep both ends.** Preserve the opening turns verbatim, preserve the last several verbatim, and replace what is between them with a summary produced by a model call. This keeps the frame and the immediate context at full fidelity and compresses the part where redundancy actually lives. It costs one extra call per compaction, which is cheap against what it saves.
+
+**Evict by category, not by position.** Tool results are usually the largest and shortest-lived content in the window, and a result consumed three steps ago has no remaining value. Dropping stale tool output first often recovers enough room that nothing else needs touching, and it removes material the model was never going to reference again.
+
+**Promote durable facts out of the transcript.** When a user states a constraint, extract it into a structured list that is re-sent in full on every call rather than left as a message that ages out. A dozen short facts cost almost nothing and are immune to compaction entirely, which is the correct treatment for anything that should hold for the whole session.
+
+## Where I trigger it
+
+I compact on a token threshold rather than a turn count, because turns vary enormously in size and a fixed count either fires too early on short exchanges or too late on one that included a large document. Somewhere around seventy percent of the usable window has worked well: early enough that the compaction call itself fits comfortably, late enough not to fire on sessions that never needed it.
+
+The thing I would insist on is logging what was dropped. A session that degrades after compaction is very hard to diagnose without knowing what left the window, and the compaction step is invisible in the ordinary trace unless you make it a span of its own. This is one of the clearest arguments for [tracing the assembled context](/blog/tracing-llm-systems-in-production) rather than only the model call.
+
+## Eviction policy, and the name is the answer
+
+Every long-running model system is a cache with a fixed size and no eviction policy, which is why the behaviour degrades in ways nobody predicted. Caches have had well-understood answers to this for decades, and the useful move is to stop treating it as a novel problem.
+
+Decide what is hot, what is cold, what is derivable and what must never be evicted, then implement that explicitly instead of inheriting whatever truncation the framework does by default. The systems that stay coherent over long sessions are not the ones with the largest windows. They are the ones where somebody decided what leaves.

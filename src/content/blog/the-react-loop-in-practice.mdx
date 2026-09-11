@@ -1,0 +1,39 @@
+---
+title: 'The ReAct loop in practice, and where it frays'
+seoTitle: 'The ReAct loop in practice'
+description: 'Reason, act, observe, repeat is the shape almost every agent uses. Its weaknesses are structural, and they show up in the same three places every time.'
+date: '2026-09-11'
+tags: ['AI', 'Agents', 'Prompt Engineering', 'LLMs']
+---
+
+Almost every agent running in production today is some version of the same loop. The model reasons about what to do, picks an action, sees the result, and reasons again with that result added to what it knows. Reason, act, observe, repeat. It predates the current generation of frameworks and it has survived them because it is the simplest structure that lets a model use tools iteratively.
+
+It is worth understanding as a pattern rather than as a framework feature, because the places it frays are properties of the loop itself. They appear whether you wrote it yourself in forty lines or inherited it from a library, and no amount of prompt tuning removes them.
+
+## The observation is the part that decides everything
+
+The reasoning step gets the attention and the observation step does the work. What the model sees after an action is its entire basis for the next one, and that text is produced by your code rather than by the model.
+
+This is where most ReAct implementations quietly go wrong. A tool returns a large JSON payload and the whole thing is stringified into the observation, so the next reasoning step happens over three thousand tokens of structure, most of it irrelevant. Or a tool fails and the observation is a stack trace, which the model cannot act on, so it retries identically.
+
+Treating the observation as a designed message rather than a dump changes agent behaviour more than rewriting the reasoning instructions. It is the same insight as [errors being prompts](/blog/tool-calling-is-an-api-design-problem), applied to successes as well.
+
+## Three places the loop frays
+
+**Nothing accumulates a conclusion.** Each iteration appends to a transcript, and the transcript is the only memory. There is no place where the agent records what it has established, so facts discovered at step two are re-derived at step seven or quietly contradicted. Adding an explicit scratchpad the agent writes findings into, separate from the transcript, is a small change that noticeably improves long runs.
+
+**The transcript grows faster than the task progresses.** Every reasoning step and every observation is retained, so the window fills with the history of the attempt rather than the substance of it. Past a certain length the early steps are effectively ignored and the later ones dominate, which is [why compaction is not optional](/blog/compacting-context-in-long-agent-runs).
+
+**Failure looks like progress.** A tool returning nothing useful still produces an observation, the model still reasons about it, and the loop still advances. From the outside the agent is working. Nothing distinguishes eight productive steps from eight steps that learned nothing, which is [the productive-looking loop](/blog/how-ai-agents-fail-in-production) in its natural habitat.
+
+## Where I have changed the loop
+
+The change I would make again on any implementation is separating the observation from the raw tool result. Tools return whatever they return, and a formatting layer decides what the model sees: the three fields that matter, a count instead of a list where the list is long, and an error message written as guidance. That layer is ordinary code, it is testable, and it is where I now spend the effort that used to go into the reasoning prompt.
+
+The second is recording, per iteration, whether the observation actually changed the state. An agent that has taken three steps without learning anything new is in a loop, and that is detectable in code without asking the model to notice. It is a cheaper and more reliable signal than any instruction telling it to avoid repeating itself.
+
+## A control structure, so treat it like one
+
+The temptation with ReAct is to treat the whole thing as a prompting pattern, because the canonical description is a prompt format. In a real system it is a control structure with a transcript, a memory policy, an observation format and a termination condition, and only the first of those is prompting.
+
+The implementations that hold up are the ones where somebody designed the other three. Pick a loop, and the interesting work is in [what the agent sees between iterations](/blog/context-engineering-vs-prompt-engineering), not in the words you use to ask it to think.
