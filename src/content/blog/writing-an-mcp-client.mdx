@@ -1,0 +1,47 @@
+---
+title: 'Writing an MCP client, and why you might not need to'
+seoTitle: 'Writing an MCP client'
+description: 'Most teams only ever write servers. Building the client side is what shows you where the protocol stops and your own orchestration has to take over.'
+date: '2026-09-11'
+tags: ['AI', 'MCP', 'Agents', 'LLMs']
+---
+
+Almost everything written about the Model Context Protocol is about servers, because that is what most teams need. You have internal systems, you want an agent to reach them, so you expose them and point an existing client at the result. The client is somebody else's problem, usually a desktop application or a framework integration, and that division of labour is correct for most projects.
+
+It is still worth understanding what the client does, and worth writing a minimal one at least once. Not because you will ship it, but because the client is where the protocol's guarantees run out and your own design decisions start, and that boundary is invisible from the server side.
+
+## What the client is actually responsible for
+
+A server advertises tools and executes them. Everything between those two things belongs to the client: establishing the connection, enumerating what is available, deciding what to show the model, translating a model's chosen call into a protocol request, and deciding what to do with whatever comes back.
+
+Listing tools and passing them to a model is a short piece of code:
+
+```ts
+const { tools } = await client.listTools()
+const response = await model.complete({
+  messages,
+  tools: tools.map((tool) => ({ name: tool.name, description: tool.description, schema: tool.inputSchema })),
+})
+```
+
+The interesting decision is hidden in that `map`. Every tool the server offers becomes a tool the model can see, and nothing in the protocol says it has to. Filtering that list by the current stage of the run, or by who the user is, is a client responsibility that is easy to miss precisely because the default is to forward everything.
+
+## Three decisions the protocol hands you
+
+**Which tools are in scope right now.** Servers advertise their full catalogue. A client that forwards all of it to the model on every call is making a choice by omission, and past roughly twenty tools the model starts selecting neighbours of the right one. Scoping by phase is the cheapest quality improvement available at this layer.
+
+**What a tool result means.** The protocol returns content. Whether an empty result is an answer or a failure, whether an error should be retried or surfaced, and whether a large result should be summarised before it reaches the context window are all yours. Getting the last one wrong is a common way to fill a window with material nobody reads.
+
+**How many servers, and who reconciles them.** Connecting to several servers is normal and the protocol is happy to allow it. Two servers offering a similarly named tool is then your ambiguity to resolve, and namespacing tool names by server is a decision better made before it becomes a bug.
+
+## Where writing one changed how I build servers
+
+I wrote a small client mostly as a test harness, to exercise servers without a full agent in the way. It was a few hundred lines and I have never deployed it, and it remains one of the more useful afternoons I have spent on this, because it made the server's shortcomings obvious from the other side.
+
+Seeing my own tool descriptions arrive as the entire context a model would get is what convinced me that descriptions should say when to use a tool rather than what it does. I had written them as API documentation for a developer who already knew the domain. From the client side they read as what they were, which is the only briefing the model receives, and most of them were useless in that role.
+
+## The client is where your judgement lives
+
+The server side of MCP is largely mechanical once you have [designed the tools properly](/blog/tool-calling-is-an-api-design-problem). Schemas, handlers, errors that explain themselves. It is ordinary interface work and the protocol keeps you honest.
+
+The client is where the decisions with real consequences sit: scope, interpretation, aggregation, and the point at which a tool result becomes part of the [context you are managing](/blog/memory-in-ai-agents). Most teams inherit those decisions from whichever client they happen to use, which is a reasonable default and worth knowing you have made. Writing a throwaway one for an afternoon is the cheapest way to find out what you accepted.

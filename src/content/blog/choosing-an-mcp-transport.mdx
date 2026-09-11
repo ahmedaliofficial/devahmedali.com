@@ -1,0 +1,39 @@
+---
+title: 'Choosing an MCP transport: stdio, HTTP, or neither yet'
+seoTitle: 'Choosing an MCP transport'
+description: 'Stdio is the default and it quietly decides your deployment model. The transport question is really a question about process lifetime and blast radius.'
+date: '2026-09-11'
+tags: ['AI', 'MCP', 'Architecture', 'Security']
+---
+
+Transport looks like the least interesting decision in a Model Context Protocol integration. The protocol is the same either way, the tools are the same, and the examples all start with stdio because it is the fastest thing to get running. So most projects pick stdio by not picking, and discover several months later that they chose a deployment model.
+
+The choice is not really about serialisation or latency. It is about where the server process lives, who can reach it, and what happens to it when the thing that started it goes away. Those are infrastructure questions wearing a protocol costume.
+
+## What stdio actually commits you to
+
+With stdio, the client launches the server as a child process and talks to it over standard input and output. That has genuine advantages and they are worth naming: there is no port, no network surface, no authentication to configure, and the operating system handles lifetime. When the client exits, the server exits. For a tool running on a developer's machine against local files, it is close to ideal.
+
+What it commits you to is co-location. The server runs wherever the client runs, as whoever the client runs as, with that machine's filesystem and network access. One server process exists per client, so there is no shared state between them and no way to put the server behind anything. Scaling, in the ordinary sense, does not apply, because you are not running a service. You are running a subprocess.
+
+That is fine until any of those become constraints, and then none of them can be relaxed without changing transport.
+
+## Three questions that decide it
+
+**Who owns the credentials?** A stdio server inherits the environment of whatever launched it, which in practice means the user's own credentials sit in the process that the model is driving. For a personal tool that is the point. For anything acting on shared systems it means every user needs their own copy of access that would normally live in one service with an audit trail.
+
+**Does more than one client need the same server?** Stdio gives each client its own process. If the server holds a connection pool, a cache, or a rate limit that needs to be shared, you are now maintaining that state in N independent processes that cannot see each other. An HTTP server with several clients is the ordinary shape for that, and it is the shape your existing infrastructure already knows how to run.
+
+**What is the blast radius when a tool is called wrongly?** This is the one that gets underweighted. A local process has local reach. A remote server sits behind whatever boundary you put in front of it, which means you can put a boundary in front of it: authentication, per-caller scopes, rate limits, logging. Those are the controls that make [exposing systems to an agent](/blog/what-you-are-exposing-with-an-mcp-server) defensible in an organisation.
+
+## The version most teams should actually deploy
+
+Start on stdio while the tools are still changing, because the iteration loop is unbeatable and the questions above do not bite during development. Treat it as a local development transport rather than an architecture.
+
+Move to HTTP at the point where the server stops being personal: when a second person needs it, when it touches a shared system, or when someone asks who called what. Making that move is not painful if the [tool layer was designed as an interface](/blog/tool-calling-is-an-api-design-problem) rather than as a wrapper around local state, which is the real reason to keep handlers free of filesystem assumptions even while stdio makes them convenient.
+
+## The transport is a deployment decision made early
+
+Picking stdio is reasonable and picking it by default is how a prototype quietly becomes production. The visible cost of changing later is small, a configuration change and a deployment target. The cost that actually bites is that six months of handlers have been written assuming local files, ambient credentials and a single caller, and none of those assumptions survive the move.
+
+Decide it the way you would decide whether something is a library or a service, because that is the question being asked. Ask it on day one, write the handlers as though the answer were service, and the transport becomes what it should be, which is configuration.

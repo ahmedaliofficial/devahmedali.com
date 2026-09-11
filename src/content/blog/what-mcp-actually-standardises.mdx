@@ -1,0 +1,39 @@
+---
+title: 'What MCP actually standardises, and what it leaves to you'
+seoTitle: 'What MCP actually standardises'
+description: 'MCP gets described as USB-C for AI tools. The useful question is narrower: which parts of tool integration stop being your problem, and which never were.'
+date: '2026-09-11'
+tags: ['AI', 'MCP', 'Agents', 'Architecture']
+---
+
+The standard explanation of the Model Context Protocol is that it is USB-C for AI applications. It is a fair analogy for a slide and an unhelpful one for a design decision, because it implies the hard part was the connector. The hard part was never the connector.
+
+What MCP genuinely removes is a specific, boring, recurring cost: writing the same tool integration once per agent framework, then writing it again when the framework changes. That cost is real and it is worth removing. What it does not remove is everything that makes tool use difficult in the first place, and being precise about the boundary saves a lot of disappointment.
+
+## The part that stops being your problem
+
+Before MCP, exposing an internal API to an agent meant writing a tool definition in whatever shape your framework expected, wiring it into that framework's calling convention, and repeating the exercise the next time you added an agent or changed stacks. The integration was written against a library rather than against a specification, so it had a shelf life.
+
+MCP moves the boundary. You describe your tools once, against the protocol: a name, a description, a JSON Schema for the arguments, and a handler. Anything that speaks MCP can then discover and call them. The connection is negotiated, tools are enumerated at run time rather than hardcoded, and the same server works for a coding assistant, a chat application and your own agent without modification.
+
+That is a genuine architectural improvement, and it is roughly the same one that gRPC service definitions gave polyglot backends. The value is not the wire format. It is that the contract is written down somewhere neither side owns.
+
+## Three things it deliberately does not do
+
+**It does not decide whether the model should call your tool.** Discovery is solved; selection is not. The model still chooses based on your tool names, descriptions and schemas, which means [tool design](/blog/tool-calling-is-an-api-design-problem) remains exactly as consequential as it was. A badly named MCP tool is misused just as reliably as a badly named function.
+
+**It does not give you authorisation.** The protocol carries a call from a client to a server. Who is allowed to make that call, on whose behalf, and against which records, is entirely yours to enforce, and the natural implementation of exposing an existing internal API tends to inherit whatever trust that API already assumed about its callers. That assumption is usually wrong once a model is the caller.
+
+**It does not manage the agent loop.** Retries, step budgets, what happens when a tool returns something unexpected, when to stop: all outside the protocol. MCP hands you a clean tool boundary and leaves the [orchestration](/blog/what-makes-a-system-an-agent) exactly where it was.
+
+## Where it has actually paid off for me
+
+The clearest return I have had was not the first integration. It was the third. On a platform where agents act on real systems rather than describing intentions, the tool layer was written once against the protocol, and since then the framework above it has changed more than once without the tools being touched.
+
+That is the whole argument, and it is an unglamorous one. It is the same reason to put a typed contract between two services you control: not because today's caller needs it, but because next year's will be different and you would rather not rewrite the callee. I have written up [the server side of this in detail](/blog/building-custom-mcp-servers-for-agent-tools), and the part that has aged best is precisely the part that is just interface design.
+
+## A protocol solves the problem protocols solve
+
+MCP is a good piece of engineering aimed at a narrow and genuine problem: integration churn at the boundary between models and systems. Judged on that, it succeeds, and adopting it early has cost me less than the glue it replaced.
+
+Judged as a solution to agent reliability, it will disappoint, because it was never addressed to that. The model still picks the wrong tool sometimes, your permissions model is still yours to get right, and the loop still needs a budget. What you get is that those remain the same problems next year, instead of being re-created in a new shape every time the ecosystem moves.

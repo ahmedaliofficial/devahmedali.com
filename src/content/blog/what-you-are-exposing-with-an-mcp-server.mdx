@@ -1,0 +1,39 @@
+---
+title: 'What you are exposing when you add an MCP server'
+seoTitle: 'MCP server security in production'
+description: 'An MCP server turns an internal API into something a model calls on its own initiative. The threat model changes, and the existing auth boundary rarely fits.'
+date: '2026-09-11'
+tags: ['AI', 'MCP', 'Security', 'Architecture']
+---
+
+Exposing an internal service through the Model Context Protocol usually takes an afternoon. The API already exists, the handlers are thin, and the schema work is mostly transcription. The speed is genuine and it is also the problem, because nothing in that afternoon prompts anyone to revisit who is now allowed to call what.
+
+Internal APIs carry assumptions they never had to state. That the caller is code you wrote, that the caller only makes calls a user interface could produce, that anything reaching this endpoint has already passed a check somewhere upstream. A model calling the same endpoint on its own initiative violates all three, and it does so without anything looking unusual in the logs.
+
+## The caller changed, so the trust model did
+
+An ordinary service is called by other services along paths you designed. The set of possible call sequences is roughly the set you implemented, which is why it is tolerable for an internal endpoint to accept a customer id and return the record without asking why.
+
+An agent generates its own call sequences. It will combine tools in orders nobody wrote down, pass an identifier it obtained from a different tool two steps earlier, and retry with variations when something fails. None of that is malicious and all of it is outside the envelope your internal API was designed against. The relevant question stops being "is this caller authenticated" and becomes "is this specific call, with these arguments, something this user should be able to cause right now".
+
+## Three exposures worth checking before you ship
+
+**Ambient authority.** The server typically runs with a service account or the developer's own credentials, so every tool call carries whatever that identity can do. If a tool takes a `customerId`, the model can supply any customer id, and the server will happily serve it because the service account is allowed to. Scoping to the end user, rather than to the process, is the fix, and it is much harder to retrofit than to design in.
+
+**Untrusted content reaching the model as instructions.** Tools return data, and data arrives from places you do not control: ticket bodies, uploaded documents, third-party records. That text lands in the context window next to your system prompt, where it is structurally indistinguishable from guidance. A support ticket containing a line addressed to the agent is not a hypothetical attack, it is an obvious one, and the defence is at the boundary rather than in the prompt.
+
+**Write operations that looked harmless individually.** Read tools get scrutiny. A tool that updates a status field, sends a notification or triggers a job usually does not, because each one is small. Composed by something exploring the space, small write operations are how a bad run stops being a bad answer and starts being an incident with external effects.
+
+## Where I draw the boundary
+
+The rule I hold to is that a tool gets the permissions of the person the agent is acting for, never the permissions of the server process. That means threading identity through the protocol rather than relying on the connection, and it is the single design decision that has saved the most trouble, because the alternative is discovering the gap during a review rather than a design.
+
+The second rule is that write tools go in last. I ship read-only first, run it against real traffic, look at what the model actually tried to do, and only then decide which mutations are safe to expose. The gap between the calls I expected and the calls I saw has been wide enough, every time, that I would not now design the write surface without looking at it first.
+
+Both of these are easier on a networked transport than a local one, which is a large part of [why the transport choice matters](/blog/choosing-an-mcp-transport) more than it appears to.
+
+## Old problems, new caller
+
+None of this is novel security work. Scope credentials to the acting user, treat external content as data rather than instruction, and put a review step in front of anything with irreversible effects. Any engineer who has built a public API has done all three.
+
+What is new is how quickly an MCP server can be stood up over systems that were only ever internal, and how thoroughly that speed hides the change in caller. The protocol is doing its job, which is making integration cheap. Deciding what should be reachable was always yours, and it does not get cheaper just because [the tool layer](/blog/what-mcp-actually-standardises) finally did.
