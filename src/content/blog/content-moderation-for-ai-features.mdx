@@ -1,0 +1,39 @@
+---
+title: 'Content moderation for a feature that generates text'
+seoTitle: 'Content moderation for AI features'
+description: 'Moderating what users send is the familiar half. Moderating what your own product says, in your name, is the half that carries the liability.'
+date: '2026-09-11'
+tags: ['AI', 'Security', 'Evaluation', 'System Design']
+---
+
+Products that accept user content have moderated it for years, and the tooling is mature. A feature that generates content adds a second obligation that is less familiar and carries more weight: the output is published by you. A user posting something objectionable is a moderation incident. Your product saying the same thing, in your interface, in your voice, is a statement from the company.
+
+That asymmetry is worth stating plainly because it changes where the effort belongs. Most teams port their existing inbound moderation, which is the correct and easy half, and give much less thought to the outbound path where the reputational exposure actually sits.
+
+## The inbound and outbound checks are not the same check
+
+Inbound moderation asks whether this user should be allowed to submit this. The response is well understood: reject, flag, rate limit, escalate. The categories are the familiar ones and the same classifier that protects a comment field works here.
+
+Outbound is different in kind. The question is not whether the text is abusive, which it rarely is. It is whether the product should be saying this: a claim outside what the business can stand behind, advice in a regulated domain, a confident statement about a competitor, a commitment about pricing or eligibility that nobody authorised.
+
+A general moderation classifier detects almost none of that, because none of it is toxic. It is ordinary, fluent, plausible text that happens to be a problem in your specific context, and detecting it needs rules written against your domain rather than a general model.
+
+## Three controls that carry most of the weight
+
+**Ground the output and refuse when grounding is absent.** The most effective outbound control is not a filter, it is a design: answer only from retrieved material, and say so when nothing relevant was retrieved. A system that declines to answer is dealing with the failure honestly. One that answers anyway has converted a retrieval gap into a statement.
+
+**Write deterministic rules for your own forbidden territory.** A regulated domain has specific phrasings that must not appear, and those are checkable in code rather than by a classifier. This is unglamorous string and pattern work, and it is auditable, testable and does not vary between runs, which are exactly the properties a compliance conversation needs. It belongs in [the deterministic suite](/blog/deterministic-evals-for-llm-systems).
+
+**Log what was blocked, and read it.** Blocks are the highest-signal data available about where the system is drifting. A category that starts firing more often is a change in behaviour, and it is visible weeks before anyone would have noticed from output quality alone.
+
+## Where refusal is the feature
+
+The instinct is to treat a refusal as a failure and tune it down, because refusals look bad in testing and generate complaints. On anything touching money, health, law or eligibility that instinct is backwards.
+
+The systems I would defend are the ones where the scope is narrow and stated, the answer is grounded in a retrievable source, and the behaviour outside that scope is a clear handoff rather than a best effort. That is a smaller product than the demo suggested and a much easier one to stand behind, and it converts the moderation question from filtering output into [deciding what the system is for](/blog/when-not-to-build-an-agent).
+
+## The publisher is you
+
+The framing that clarifies most decisions here is that the output is your publication regardless of how it was produced. Nobody outside the team distinguishes between what the company wrote and what the company's model generated, and that is a reasonable position for them to take.
+
+Moderate what comes in with the tools you already have. Constrain what goes out by grounding it, by refusing outside scope, and by checking for the specific things your domain cannot say. The general-purpose classifier is a backstop for the obvious cases, and the obvious cases were never the ones likely to cost you.

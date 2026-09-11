@@ -1,0 +1,41 @@
+---
+title: 'Where personal data ends up in an LLM system'
+seoTitle: 'Personal data in LLM systems'
+description: "Prompts, traces, embeddings and evaluation sets all quietly become copies of user data, and most of them were never on anybody's data map."
+date: '2026-09-11'
+tags: ['AI', 'Security', 'Observability', 'Architecture']
+---
+
+An organisation that has done its data protection work knows where personal data lives. There is a map, retention is set per store, deletion requests have a runbook, and the auditors have seen it. Then an AI feature ships, and within a few months personal data exists in four places that are not on the map.
+
+None of it is deliberate. Each copy arrives as a side effect of an ordinary engineering decision: log the prompt so failures can be debugged, keep the traces so quality can be analysed, build an eval set from real cases, index the documents so they can be retrieved. Every one of those is good practice, and together they create a data estate nobody described.
+
+## The four copies nobody planned
+
+Traces are the largest and the least expected. A useful trace holds the user's input, the retrieved passages and the assembled prompt, which means the observability platform now contains the same personal data as the source system, usually with a default retention measured in months and an access model built for engineers rather than for regulated data.
+
+The provider request is the second. Whatever is sent goes to a third party, and the contractual terms around retention and training vary by provider and by plan. It is a processor relationship, it needs to be in the record, and the answer changes if someone switches to a cheaper tier.
+
+Evaluation sets are the third and the stickiest. A regression suite built from real production cases is the most useful test set available and it is a permanent, version-controlled, widely copied snapshot of user data that will be checked out on laptops.
+
+Embeddings are the fourth, and the one people argue about. A vector is not reversible in any convenient sense, and it is derived from personal data, describes an identifiable person's document, and sits in a store alongside metadata that identifies it. Treating it as anonymous because it looks like numbers is a position that will not survive a question from a regulator.
+
+## Three practices that keep it manageable
+
+**Redact before the boundary, not after.** Detect and replace identifiers on the way into the prompt and the trace, rather than storing them and filtering on read. Model quality rarely depends on a real account number, and a placeholder is enough for the answer to be correct while keeping the value out of every downstream copy.
+
+**Give traces a shorter retention than your instinct suggests.** Full traces are for debugging what is happening now. A redacted skeleton with step names, durations, chunk ids and outcomes supports trend analysis indefinitely and contains nothing sensitive. Two retention policies for two purposes, rather than one policy chosen by a tool's default.
+
+**Make deletion reach the derived stores.** A deletion request has to remove the source document, its chunks, its vectors, matching traces and any eval case built from it. That is only possible if every derived record carries the source identifier, which is a decision made at ingestion and painful to retrofit. It is the same provenance column that makes [keeping an index fresh](/blog/keeping-a-vector-index-fresh) tractable, doing a second job.
+
+## Where I draw the line on eval sets
+
+This is the one I have gone back and forth on, because the tension is real: the best test cases come from production, and production data is the data you are trying to contain.
+
+What I have settled on is that eval cases get anonymised at the point they are created rather than at some later review. Names, identifiers and account numbers replaced with consistent stand-ins, keeping the shape and the difficulty of the original. The case stays useful, since what made it a good test was the structure of the question rather than whose account it concerned, and it stops being a personal record living in a repository forever.
+
+## Put the new stores on the old map
+
+There is nothing conceptually novel here. These are ordinary processor relationships, ordinary retention decisions and an ordinary deletion obligation, applied to stores that did not exist when the data map was drawn.
+
+The failure is one of omission, and it is nearly universal, because the copies are created by engineers solving engineering problems rather than by anyone making a data decision. Write down the four places, set retention on each, ensure deletion reaches all of them, and the AI feature stops being the part of the system nobody can answer questions about.

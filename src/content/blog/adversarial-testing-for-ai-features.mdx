@@ -1,0 +1,43 @@
+---
+title: 'Testing an AI feature the way someone would attack it'
+seoTitle: 'Adversarial testing for AI features'
+description: 'Normal testing asks whether the system works for people trying to use it. Adversarial testing asks what happens when somebody is trying to make it fail.'
+date: '2026-09-11'
+tags: ['AI', 'Security', 'Evaluation', 'Agents']
+---
+
+Test sets for AI features are built from what users are expected to ask, which is the right foundation and covers the wrong half of the risk. Those cases describe a cooperative user with a legitimate question. They say nothing about someone probing the edges, and edges are where a model-driven system behaves in ways nobody specified.
+
+This is not primarily a security exercise, though it overlaps with one. It is the recognition that a system whose behaviour was never fully specified will do something at the boundary, and it is better to find out what during development than from a screenshot circulating publicly.
+
+## The interesting inputs are the ones nobody would send
+
+Four categories tend to produce everything worth finding.
+
+Out-of-scope requests, where a user asks a support assistant for legal advice or an internal tool about something outside its remit. The question is whether it refuses cleanly, answers anyway, or produces something confident and wrong.
+
+Instruction conflicts, where the input contradicts the system prompt directly. Asking it to ignore its rules, reveal its instructions, or adopt a different role. The successful version of this is rarely dramatic and often just a system quietly operating outside its brief.
+
+Content-borne instructions, where the payload arrives inside a document or a tool result rather than from the user. This is [prompt injection](/blog/prompt-injection-is-an-architecture-problem), and it deserves cases in the suite rather than a line in the prompt.
+
+Malformed and extreme inputs: empty strings, enormous documents, mixed languages, nested quoting, deliberate encoding. These mostly find engineering bugs rather than model ones, which is a good reason to run them.
+
+## Three habits that make it produce something
+
+**Write down the expected behaviour before running the case.** Adversarial testing without a stated expectation degenerates into reading outputs and finding them interesting. Decide first: this should refuse, this should answer only from context, this should not reveal the system prompt. Then the case has a verdict instead of an impression.
+
+**Turn every finding into a permanent case.** The value is not in the session, it is in the suite afterwards. A finding that becomes a regression case is checked forever. A finding that becomes a prompt edit and a message in a channel is a fix nobody can verify still holds after the next model upgrade.
+
+**Include the tool layer, not just the text.** For anything agentic, the question is not whether the model says something wrong. It is whether it can be induced to call something it should not, with arguments it should not have. That is where the consequences are, and it is routinely tested less than the conversational surface.
+
+## Where I run it, and how often
+
+Before launch, and again on every model change, because a model upgrade is precisely when the boundary behaviour shifts without warning. The prompt did not change, the code did not change, and the thing interpreting both did.
+
+What I would push back on is treating this as a one-off review conducted by a specialist before release. The people who find the most useful cases are the ones who know the domain, because the dangerous outputs are domain-specific: the claim that creates an obligation, the advice that needs a licence. A generalist probing for jailbreaks finds generic failures. Someone who knows what the business cannot say finds the expensive ones, which is the same argument as [routing human review to where expertise is irreplaceable](/blog/human-review-that-earns-its-time).
+
+## Specify the boundary by testing it
+
+The reason this work pays is not mainly that it finds vulnerabilities. It is that it forces a decision about what the system should do at every edge, and most of those decisions were never made. Should it refuse or hand off? Answer partially or not at all? Say it does not know, or say nothing?
+
+Answering those questions produces a specification, and the adversarial suite is that specification in executable form. A system with one behaves predictably under pressure. A system without one behaves however the model felt at the time, which is fine until somebody goes looking.

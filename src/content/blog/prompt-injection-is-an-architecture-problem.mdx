@@ -1,0 +1,38 @@
+---
+title: 'Prompt injection is an architecture problem'
+description: 'Instructions and data arrive in the same channel, so the model cannot tell them apart. No wording fixes that, because it is a property of the design.'
+date: '2026-09-11'
+tags: ['AI', 'Security', 'Agents', 'Architecture']
+---
+
+The standard response to prompt injection is to add a line to the system prompt telling the model to ignore instructions found in documents. It is the obvious move, it reduces the success rate of naive attempts, and it cannot solve the problem, because the defence and the attack occupy the same channel.
+
+Everything the model receives is one sequence of tokens. Your instructions, the user's question and the contents of a retrieved document are distinguishable to you because you assembled them. To the model they are text in a context window, with no structural marker separating the parts you trust from the parts you do not. Asking it to honour a boundary that does not exist in its input is asking it to infer intent, and inference is exactly what an attacker gets to influence.
+
+## The trusted and untrusted channel are the same channel
+
+This is the same class of problem as SQL injection, and the comparison is worth taking seriously because it points at the solution.
+
+SQL injection was not solved by escaping more carefully or by asking the database to be more discerning. It was solved by parameterised queries, which put the instruction and the data into structurally separate channels so that no amount of cleverness in the data could become instruction.
+
+There is no equivalent primitive here yet. Everything is one context. Which means the defence cannot live inside the model call at all, and has to live in what the model is allowed to do afterwards.
+
+## Three defences that work at the boundary
+
+**Give the model no authority worth capturing.** An injected instruction only matters if following it does something. Where tools are read-only and scoped to the acting user, the worst outcome of a successful injection is a strange answer. Where the model can send email, modify records or spend money, it is an incident. [Scoping tools to the user rather than the process](/blog/what-you-are-exposing-with-an-mcp-server) is the control that turns the severity down.
+
+**Put a deterministic check between the model and any effect.** Anything irreversible should pass through code that validates it independently of the model's reasoning. A recipient must be on an allowed list. An amount must be within a bound. A record must belong to the current tenant. These checks do not care why the model asked, which is exactly the property needed.
+
+**Treat every tool result as hostile input.** Content from tickets, uploaded documents, scraped pages and third-party systems is attacker-influenceable in most products. Marking it clearly as data when assembling the context helps a little. Assuming it may contain instructions, and designing so that following them is harmless, helps considerably more.
+
+## Where I would not rely on detection
+
+Classifier-based filters that try to spot injection attempts before the content reaches the model are worth having as a layer and are not a boundary. They are pattern matching against an adversary who can rephrase, encode, translate or split the payload across documents, and the failure is silent: a bypass looks like ordinary operation.
+
+The place I put effort instead is making the blast radius small enough that a bypass is survivable. Read-only by default, writes behind explicit validation, human confirmation for anything with an external effect, and [a trace](/blog/tracing-llm-systems-in-production) detailed enough to reconstruct what happened afterwards. That is an unglamorous posture and it is the one that holds when the filter misses.
+
+## Design for the injection that succeeds
+
+The useful planning assumption is that some injection attempt will eventually work. Given that, the question stops being how to prevent every attempt and becomes what the system does when one lands.
+
+If the answer is that the model produces a wrong answer and a user notices, the design is sound. If the answer is that it takes an action nobody authorised against data it should not have reached, no prompt wording was ever going to be sufficient. The security of these systems lives in [what the tools permit](/blog/tool-calling-is-an-api-design-problem), not in how firmly the instructions were phrased.
