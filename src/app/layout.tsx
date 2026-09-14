@@ -2,7 +2,6 @@ import '@/assets/css/style.css'
 import favicon from '@/assets/images/favicon.ico'
 import AppProvidersWrapper from '@/components/wrappers/AppProvidersWrapper'
 import { adsense } from '@/config/adsense'
-import { analytics } from '@/config/analytics'
 import { DEFAULT_PAGE_TITLE } from '@/config/constants'
 import { site } from '@/content/site'
 import { jsonLd, siteGraphJsonLd } from '@/lib/schema'
@@ -72,25 +71,27 @@ const RootLayout = ({ children }: RootLayoutProps) => {
             once it is published in AdSense → Privacy & messaging. */}
         {adsense.enabled && <script async src={adsense.scriptSrc} crossOrigin="anonymous" />}
 
-        {/* Google tag (gtag.js). Same reasoning as the AdSense loader: Google's "Your Google tag
-            wasn't detected" check reads the served HTML, and next/script's `afterInteractive`
-            leaves only a <link rel="preload"> plus an RSC payload entry there, building the real
-            tag client-side after hydration. A plain async <script> in <head> is what the detector
-            finds. GA4 enhanced measurement follows App Router client-side navigations through its
-            own history listener, so there is no per-route page_view to send. */}
-        {analytics.enabled && (
-          <>
-            <script async src={analytics.scriptSrc} />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `window.dataLayer = window.dataLayer || [];
+        {/* Google tag (gtag.js), verbatim from GA4 → Admin → Data streams → Install manually.
+            Hardcoded on purpose. It is a public id, not a secret, and routing it through an env
+            var cost a broken deploy: Docker's ENV resolves an unpassed ARG to "" rather than
+            leaving it undefined, so the fallback never fired and the container shipped no tag.
+
+            A plain async <script> in <head>, not next/script: `afterInteractive` leaves only a
+            <link rel="preload"> plus an RSC payload entry in the served HTML and builds the real
+            tag client-side after hydration, so Google's "Your Google tag wasn't detected" check,
+            which reads the HTML, finds nothing. Same reason the AdSense loader above is plain.
+
+            GA4 enhanced measurement follows App Router client-side navigations through its own
+            history listener, so there is no per-route page_view to send. */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-0X052TCNFT" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', '${analytics.measurementId}');`,
-              }}
-            />
-          </>
-        )}
+gtag('config', 'G-0X052TCNFT');`,
+          }}
+        />
       </head>
       <body className={`bg-body-bg ${googleSansFlex.variable} ${stackSansHeadline.variable}`} suppressHydrationWarning>
         {/* WebSite + Person graph, emitted once. Page schemas reference these nodes by @id. */}

@@ -157,17 +157,22 @@ Search Console: set `GOOGLE_SITE_VERIFICATION` at build time (see `.env.example`
 
 ## Google Analytics
 
-Google Analytics 4 is on by default. `src/config/analytics.ts` holds the measurement id for this
-site's property and `src/app/layout.tsx` loads `gtag.js` through `next/script` with the
-`afterInteractive` strategy, so it never blocks first paint. GA4's enhanced measurement follows App
-Router client-side navigations through its own history listener, so there is no per-route
-`page_view` call to maintain.
+Google Analytics 4 is always on. The tag sits in `src/app/layout.tsx` as the literal snippet GA4
+issues under Admin → Data streams → Install manually, with the measurement id `G-0X052TCNFT`
+hardcoded. There is deliberately **no env var**: the id is public, and routing it through one broke
+a deploy once. Docker's `ENV` resolves an unpassed `ARG` to an empty string rather than leaving it
+undefined, so a `??` fallback never fired and the container shipped with no tag at all.
 
-Set `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX` to point a fork at a different property, or to an
-empty value to turn analytics off entirely. Like the AdSense id it is read at **build** time, and
-`docker-compose.yml` forwards it as a build arg. With analytics off, the Analytics section of
-`/privacy-policy` truthfully says the site runs no tracking scripts; with it on, that section names
-Google Analytics, lists what is recorded and links the opt-out add-on.
+Two details worth keeping if you touch it:
+
+- It is a plain `<script async>` in `<head>`, not `next/script`. With `afterInteractive` the served
+  HTML gets only a `<link rel="preload">` and an RSC payload entry, and the real tag is built
+  client-side after hydration, so Google's "Your Google tag wasn't detected" check finds nothing.
+- There is no per-route `page_view` call. GA4 enhanced measurement follows App Router client-side
+  navigations through its own history listener.
+
+To point a fork at a different property, change the id in `src/app/layout.tsx`. `/privacy-policy`
+names Google Analytics, lists what is recorded and links the opt-out add-on.
 
 ## Known issue
 

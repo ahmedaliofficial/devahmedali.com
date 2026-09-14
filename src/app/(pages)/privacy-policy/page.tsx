@@ -1,5 +1,4 @@
 import { adsense } from '@/config/adsense'
-import { analytics } from '@/config/analytics'
 import { site } from '@/content/site'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -28,13 +27,11 @@ const Page = () => (
       <div className="text-default-600 mt-10 flex max-w-3xl flex-col gap-8 text-base md:text-lg">
         <div>
           <h2 className={headingClasses}>The short version</h2>
-          {/* Assembled from the integrations that are actually switched on, so this paragraph
-              cannot over- or under-claim when AdSense or Analytics is turned off. */}
+          {/* The AdSense clause appears only when ads are switched on, so this paragraph cannot
+              over- or under-claim. Analytics is always on, so its clause is unconditional. */}
           <p>
             This is a personal portfolio site run by {site.name}. It has no user accounts. The personal information it receives is what you choose to type into the contact form
-            {adsense.enabled && ', the cookies and device data that advertising partners (Google AdSense) use to serve and measure ads'}
-            {analytics.enabled && ', and the usage data Google Analytics collects about how pages here are read'}.{' '}
-            {adsense.enabled || analytics.enabled ? 'This page explains each of those, and what you can do about them.' : 'There is no advertising and there are no tracking cookies.'}
+            {adsense.enabled && ', the cookies and device data that advertising partners (Google AdSense) use to serve and measure ads'}, and the usage data Google Analytics collects about how pages here are read. This page explains each of those, and what you can do about them.
           </p>
         </div>
 
@@ -67,13 +64,10 @@ const Page = () => (
 
         <div>
           <h2 className={headingClasses}>Cookies</h2>
-          <p>
-            A cookie is a small text file a website stores in your browser. {analytics.enabled ? 'This site sets no cookies of its own beyond the measurement cookies described below.' : 'This site sets no cookies of its own for tracking or analytics.'} Cookies you may encounter
-            here come from:
-          </p>
+          <p>A cookie is a small text file a website stores in your browser. This site sets no cookies of its own beyond the measurement cookies described below. Cookies you may encounter here come from:</p>
           <ul className="mt-3 flex list-disc flex-col gap-2 ps-6">
             {adsense.enabled && <li>Advertising partners. Google and its partners use cookies and similar technologies (such as web beacons and device identifiers) to serve and measure ads. The next section explains this in detail.</li>}
-            {analytics.enabled && <li>Measurement. Google Analytics sets cookies (named _ga and similar) so a returning visit is not counted twice. The Analytics section below says what is recorded and how to opt out.</li>}
+            <li>Measurement. Google Analytics sets cookies (named _ga and similar) so a returning visit is not counted twice. The Analytics section below says what is recorded and how to opt out.</li>
             <li>Hosting and security. The infrastructure that serves the site, including the Cloudflare content delivery network, may set cookies needed to protect the site from abuse and keep it available. These do not identify you to me.</li>
           </ul>
           <p className="mt-3">You can delete or block cookies in your browser settings. The site keeps working if you do.</p>
@@ -123,22 +117,16 @@ const Page = () => (
 
         <div>
           <h2 className={headingClasses}>Analytics</h2>
-          {analytics.enabled ? (
-            <>
-              <p>This site uses Google Analytics 4 to count visits and see which pages get read. It is the only analytics tool running here.</p>
-              <ul className="mt-3 flex list-disc flex-col gap-2 ps-6">
-                <li>What it records is the pages you open, the page or search that sent you here, an approximate location worked out from your IP address, and your device and browser type.</li>
-                <li>Google Analytics 4 does not log or store IP addresses. The address is used to derive that coarse location and is then discarded.</li>
-                <li>It is not connected to the contact form, so your name, email address and message never reach it. I see aggregated reports only, such as how many people read a given article, and cannot identify you from them.</li>
-              </ul>
-              <p className="mt-3">
-                You can opt out by installing <ExternalLink href="https://tools.google.com/dlpage/gaoptout">Google&apos;s Analytics opt-out browser add-on</ExternalLink>, or by blocking cookies or scripts for this site in your browser. Nothing here stops working if you do.
-                Google&apos;s own account of what it collects is in <ExternalLink href="https://policies.google.com/technologies/partner-sites">How Google uses information from sites or apps that use our services</ExternalLink>.
-              </p>
-            </>
-          ) : (
-            <p>This site does not currently run any analytics or visitor-tracking scripts. If that changes, this policy will be updated first and the new provider named here.</p>
-          )}
+          <p>This site uses Google Analytics 4 to count visits and see which pages get read. It is the only analytics tool running here.</p>
+          <ul className="mt-3 flex list-disc flex-col gap-2 ps-6">
+            <li>What it records is the pages you open, the page or search that sent you here, an approximate location worked out from your IP address, and your device and browser type.</li>
+            <li>Google Analytics 4 does not log or store IP addresses. The address is used to derive that coarse location and is then discarded.</li>
+            <li>It is not connected to the contact form, so your name, email address and message never reach it. I see aggregated reports only, such as how many people read a given article, and cannot identify you from them.</li>
+          </ul>
+          <p className="mt-3">
+            You can opt out by installing <ExternalLink href="https://tools.google.com/dlpage/gaoptout">Google&apos;s Analytics opt-out browser add-on</ExternalLink>, or by blocking cookies or scripts for this site in your browser. Nothing here stops working if you do.
+            Google&apos;s own account of what it collects is in <ExternalLink href="https://policies.google.com/technologies/partner-sites">How Google uses information from sites or apps that use our services</ExternalLink>.
+          </p>
         </div>
 
         <div>
@@ -146,7 +134,7 @@ const Page = () => (
           <p>
             The site is served from a hosting provider through Cloudflare, which together process standard request logs (such as IP address, browser type and the pages requested) for security, abuse prevention and reliability. Contact form messages are delivered by Resend.
             {adsense.enabled ? ' Advertising is served by Google.' : ''}
-            {analytics.enabled ? ' Page measurement is provided by Google Analytics.' : ''} None of these providers is used by me to build a profile of you.
+            Page measurement is provided by Google Analytics. None of these providers is used by me to build a profile of you.
           </p>
         </div>
 

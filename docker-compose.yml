@@ -7,7 +7,6 @@ services:
         # Compose reads .env for interpolation, so setting these there is enough
         GOOGLE_SITE_VERIFICATION: ${GOOGLE_SITE_VERIFICATION:-}
         NEXT_PUBLIC_ADSENSE_CLIENT: ${NEXT_PUBLIC_ADSENSE_CLIENT:-}
-        NEXT_PUBLIC_GA_MEASUREMENT_ID: ${NEXT_PUBLIC_GA_MEASUREMENT_ID:-}
     restart: always
     ports:
       # Change 3061 to whatever host port you want; the app always listens on
