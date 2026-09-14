@@ -2,11 +2,13 @@ import '@/assets/css/style.css'
 import favicon from '@/assets/images/favicon.ico'
 import AppProvidersWrapper from '@/components/wrappers/AppProvidersWrapper'
 import { adsense } from '@/config/adsense'
+import { analytics } from '@/config/analytics'
 import { DEFAULT_PAGE_TITLE } from '@/config/constants'
 import { site } from '@/content/site'
 import { jsonLd, siteGraphJsonLd } from '@/lib/schema'
 import type { Metadata, Viewport } from 'next'
 import { Google_Sans_Flex, Stack_Sans_Headline } from 'next/font/google'
+import Script from 'next/script'
 
 const googleSansFlex = Google_Sans_Flex({
   variable: '--font-body',
@@ -75,6 +77,22 @@ const RootLayout = ({ children }: RootLayoutProps) => {
         {/* WebSite + Person graph, emitted once. Page schemas reference these nodes by @id. */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(siteGraphJsonLd()) }} />
         <AppProvidersWrapper>{children}</AppProvidersWrapper>
+
+        {/* Google tag (gtag.js). afterInteractive is the right strategy here: the measurement only
+            needs to run once the page is usable, and unlike the AdSense loader above nothing
+            crawls for a literal tag in <head>. GA4 enhanced measurement picks up App Router
+            client-side navigations through its history listener, so no per-route page_view. */}
+        {analytics.enabled && (
+          <>
+            <Script src={analytics.scriptSrc} strategy="afterInteractive" />
+            <Script id="gtag-init" strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${analytics.measurementId}');`}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   )

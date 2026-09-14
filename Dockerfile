@@ -22,6 +22,9 @@ ENV GOOGLE_SITE_VERIFICATION=$GOOGLE_SITE_VERIFICATION
 # AdSense publisher id; flips on the head loader, /ads.txt and the ad disclosures.
 ARG NEXT_PUBLIC_ADSENSE_CLIENT
 ENV NEXT_PUBLIC_ADSENSE_CLIENT=${NEXT_PUBLIC_ADSENSE_CLIENT}
+# GA4 measurement id. Only needed to override the default in src/config/analytics.ts.
+ARG NEXT_PUBLIC_GA_MEASUREMENT_ID
+ENV NEXT_PUBLIC_GA_MEASUREMENT_ID=${NEXT_PUBLIC_GA_MEASUREMENT_ID}
 RUN pnpm build
 
 # --- Minimal runtime image ---

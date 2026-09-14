@@ -155,6 +155,20 @@ Location rule: `site.location` exists for structured data and the `/expertise` p
 
 Search Console: set `GOOGLE_SITE_VERIFICATION` at build time (see `.env.example`; in Docker it is a build arg) and the verification meta tag is emitted. Left empty, no tag is rendered.
 
+## Google Analytics
+
+Google Analytics 4 is on by default. `src/config/analytics.ts` holds the measurement id for this
+site's property and `src/app/layout.tsx` loads `gtag.js` through `next/script` with the
+`afterInteractive` strategy, so it never blocks first paint. GA4's enhanced measurement follows App
+Router client-side navigations through its own history listener, so there is no per-route
+`page_view` call to maintain.
+
+Set `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX` to point a fork at a different property, or to an
+empty value to turn analytics off entirely. Like the AdSense id it is read at **build** time, and
+`docker-compose.yml` forwards it as a build arg. With analytics off, the Analytics section of
+`/privacy-policy` truthfully says the site runs no tracking scripts; with it on, that section names
+Google Analytics, lists what is recorded and links the opt-out add-on.
+
 ## Known issue
 
 `pnpm lint` currently fails with a plugin error (`eslint-plugin-react` 7.37.5 is not compatible with ESLint 10). This came with the original template and is unrelated to the site code. Both `npx tsc --noEmit` and `pnpm build` type-check cleanly. Upgrading `eslint-config-next` / `eslint-plugin-react` will resolve it.
