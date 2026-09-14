@@ -8,7 +8,6 @@ import { site } from '@/content/site'
 import { jsonLd, siteGraphJsonLd } from '@/lib/schema'
 import type { Metadata, Viewport } from 'next'
 import { Google_Sans_Flex, Stack_Sans_Headline } from 'next/font/google'
-import Script from 'next/script'
 
 const googleSansFlex = Google_Sans_Flex({
   variable: '--font-body',
@@ -72,27 +71,31 @@ const RootLayout = ({ children }: RootLayoutProps) => {
             The same loader also serves Google's certified consent message for EEA/UK/Swiss visitors
             once it is published in AdSense → Privacy & messaging. */}
         {adsense.enabled && <script async src={adsense.scriptSrc} crossOrigin="anonymous" />}
+
+        {/* Google tag (gtag.js). Same reasoning as the AdSense loader: Google's "Your Google tag
+            wasn't detected" check reads the served HTML, and next/script's `afterInteractive`
+            leaves only a <link rel="preload"> plus an RSC payload entry there, building the real
+            tag client-side after hydration. A plain async <script> in <head> is what the detector
+            finds. GA4 enhanced measurement follows App Router client-side navigations through its
+            own history listener, so there is no per-route page_view to send. */}
+        {analytics.enabled && (
+          <>
+            <script async src={analytics.scriptSrc} />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${analytics.measurementId}');`,
+              }}
+            />
+          </>
+        )}
       </head>
       <body className={`bg-body-bg ${googleSansFlex.variable} ${stackSansHeadline.variable}`} suppressHydrationWarning>
         {/* WebSite + Person graph, emitted once. Page schemas reference these nodes by @id. */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(siteGraphJsonLd()) }} />
         <AppProvidersWrapper>{children}</AppProvidersWrapper>
-
-        {/* Google tag (gtag.js). afterInteractive is the right strategy here: the measurement only
-            needs to run once the page is usable, and unlike the AdSense loader above nothing
-            crawls for a literal tag in <head>. GA4 enhanced measurement picks up App Router
-            client-side navigations through its history listener, so no per-route page_view. */}
-        {analytics.enabled && (
-          <>
-            <Script src={analytics.scriptSrc} strategy="afterInteractive" />
-            <Script id="gtag-init" strategy="afterInteractive">
-              {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', '${analytics.measurementId}');`}
-            </Script>
-          </>
-        )}
       </body>
     </html>
   )
