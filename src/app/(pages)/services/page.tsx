@@ -43,20 +43,22 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
   const initialService = requestedService || clientServices[0]
 
   return (
-    <>
+    <div className="studio-services-page">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <section className="service-intro">
         <div className="service-intro-grid container">
           <div>
-            <p className="service-kicker">Good ideas deserve good execution</p>
+            <p className="studio-page-kicker">
+              <span aria-hidden="true" /> From first idea to what’s next
+            </p>
             <h1>
-              What do you
+              Built for
               <br />
-              want to <em>build?</em>
+              <em>your ambition.</em>
             </h1>
           </div>
           <div className="service-intro-copy">
-            <p>A new product. A better website. A smarter way of working. Choose your starting point and we’ll shape the right solution.</p>
+            <p>Thoughtful websites. Useful products. Smarter workflows. One experienced partner to help founders, agencies and teams bring the right idea to life.</p>
             <Link href="/contact" className="text-link">
               Talk through your idea <Arrow diagonal />
             </Link>
@@ -112,6 +114,6 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
         </div>
       </section>
       <ContactCta heading="Let’s make it happen." description="Share the idea, the challenge or the product you already have. We’ll figure out a useful next step." />
-    </>
+    </div>
   )
 }

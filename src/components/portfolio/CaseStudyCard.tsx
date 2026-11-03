@@ -67,6 +67,7 @@ export default function CaseStudyCard({ study, size = 'default', className = '',
             </Link>
           </h3>
           <p>{p?.description ?? study.hero.subtitle}</p>
+          {p?.outcome && <p className="project-contribution">{p.outcome}</p>}
         </div>
         {size === 'large' && (
           <Link href={'/work/' + study.slug} className="text-link">

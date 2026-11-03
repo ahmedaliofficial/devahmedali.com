@@ -6,8 +6,8 @@ export const site = {
   roleFull: 'Software Architect & Engineering Lead',
   /** Supporting line that carries the breadth the title alone cannot */
   specialisms: 'Distributed systems · AI platforms · Full-stack delivery',
-  tagline: 'Let’s build what’s next.',
-  intro: 'I build websites, mobile and desktop apps, and AI systems that move your business forward.',
+  tagline: 'Big ideas. Made real.',
+  intro: 'I turn ambitious ideas into distinctive websites, thoughtful apps, and useful AI.',
   availability: 'Open to remote and hybrid work worldwide',
   /** Years in the industry. One source so the hero stats, About copy and articles never disagree. */
   experience: { years: 6, label: '6+', words: 'six years' },

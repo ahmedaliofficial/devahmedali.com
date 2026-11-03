@@ -4,7 +4,7 @@ The production site uses the optimized WebP files in `public/images/work/`. This
 
 ## Visual direction
 
-An editorial software portfolio: oversized typography, ink and cobalt on a quiet ivory surface, generous spacing, product imagery as the main proof, and concise calls to action. The homepage stays focused on client enquiries; architecture details remain available within each case study.
+An independent product studio: clean Inter typography throughout, warm ivory, charcoal and lime, generous spacing, and product imagery as the main proof. The homepage speaks to founders, agencies and businesses, with clear services and a direct path to an enquiry. Architecture details remain within each case study.
 
 UI/UX Pro Max was consulted from [its upstream skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/main/.claude/skills/ui-ux-pro-max/SKILL.md). Its generated style matches were not appropriate to this brand, so its accessibility, image-performance and interaction rules informed the implementation while the visual direction was chosen for this portfolio. The skill was read/run from ignored scratch space; it is not a new runtime dependency.
 
@@ -55,3 +55,25 @@ The header now uses a contained wordmark layout, balanced desktop navigation and
 TrackHRS documentation, the existing mobile mockup and AgentX workflow mockup supply the imagery. The automation option is a local, clearly labelled sample workflow with replay; it performs no network, email or storage actions. Its timers are cleaned up on unmount and reduced motion completes the sequence immediately. Mobile choices reveal the preview, with a return link to the controls.
 
 Production build/TypeScript, scoped ESLint, CSS parsing, all four enquiry destinations and three optimized preview images passed. The development server at port 3000 serves the revised header and hero successfully. Keyboard behavior, responsive sizing and contrast were reviewed in source; browser interaction and rendered screenshot verification remain unavailable because the browser access host is offline.
+
+## Independent studio redesign — 4 November 2026
+
+The homepage now opens with a large typographic hero and a TrackHRS documentation preview, followed by a flagship case study, two supporting projects, a four-part service overview, the collaboration process, and an agency partnership invitation. A new shared navigation, charcoal/lime contact section, and editorial footer carry the identity through Work, Services, About, Contact, and Writing. Service selection, enquiry prefilling, article pagination, technical case-study content, and metadata remain connected to their existing sources.
+
+UI/UX Pro Max was read and run from a temporary upstream checkout at commit `713eef51b04efc98d6fa565323b495f7c9c89fd4`. Its generated style matches did not fit this portfolio; the visual direction is a deliberate design choice. The applicable image sizing, focus visibility, responsive layout, contrast, and restrained-motion guidance informed implementation. No runtime dependency was added. Existing image provenance and role disclosures are preserved.
+
+Validation: the final production build and TypeScript checks passed, generating 203 pages. All 15 internal homepage destinations, local anchors, and four optimized images passed HTTP checks. All eight service-to-enquiry paths retained the matching selected option; unknown, empty, and repeated service parameters used the general form. Three invalid contact requests returned 400 without sending mail. Writing pagination, a topic index, an article, expertise, legal pages, and the missing-case-study 404 were checked. Content validation passed for 59 files. Review corrected a contact-text CSS collision and a clipped keyboard-focus indicator. Existing fallback-metric warnings for Google Sans Flex and Stack Sans Headline remain.
+
+The browser access host was unavailable, so rendered desktop/mobile screenshots and browser interaction checks remain unverified. Changes are local; no deployment or remote push was performed.
+
+## Typography and interface refinement ? 4 November 2026
+
+Following feedback to use a simple, non-rounded font, the site now uses one self-hosted Inter family for body text and headings. Decorative serif display styling, pill buttons, tilted hero artwork, and large asterisks were replaced with normal sans-serif headings, restrained 4px corners, a straight product preview, and an AA monogram. Heading sizes, small labels, spacing, and the contact/footer layout were rebalanced across the site.
+
+The production build and TypeScript passed for all 203 pages without the previous font fallback warnings. Compiled Inter font assets, simplified hero markup, revised CSS syntax, and whitespace checks passed. Browser access remained unavailable, so rendered viewport checks are still unverified. No deployment was performed.
+
+## Full-width hero upgrade ? 4 November 2026
+
+Replaced the split headline/screenshot card with a full-width Inter opening, concise founder/agency positioning, and a 50/25/25 project image strip for TrackHRS, AgentX, and Hysab Kytab. Project roles and screenshot/mockup disclosures stay visible. Phones show the main TrackHRS preview; narrower phones use deliberate four-line headline wrapping. Removed the old generic credential row and 78 unused hero CSS rules. The rest of the site retains the previous refinement.
+
+The production build and TypeScript passed for 203 pages. HTTP checks verified the new hero, all five link destinations/anchors, and three optimized images with dimensions and descriptions. CSS parsing and whitespace checks passed. The existing local server at localhost:3000 serves this revision. Browser screenshot verification remains unavailable; no deployment was performed.

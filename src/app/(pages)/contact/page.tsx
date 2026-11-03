@@ -35,20 +35,24 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
-      <section className="pt-36 pb-16 md:pt-44 md:pb-24">
-        <div className="container grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
-          <div>
-            <p className="text-primary text-xs font-semibold tracking-[0.18em] uppercase">Let’s work together</p>
-            <h1 className="mt-5 text-[2.75rem] leading-[1.08] font-medium tracking-[-0.045em] md:text-[4.5rem]">
-              Big idea?
+      <section className="studio-contact-hero">
+        <div className="studio-contact-grid container">
+          <div className="studio-contact-copy">
+            <p className="studio-page-kicker">
+              <span aria-hidden="true" /> It starts with a conversation
+            </p>
+            <h1 className="studio-page-title">
+              Your next
               <br />
-              <span className="text-primary">Let’s talk.</span>
+              big thing.
+              <br />
+              <em>Let’s talk.</em>
             </h1>
-            <p className="text-default-600 mt-6 max-w-md text-lg leading-relaxed">Tell me what you&apos;re building, or what you want to improve. A few sentences are a great start.</p>
+            <p className="studio-contact-description">A new product, a better website, or an extra pair of hands for your agency. Tell me what you have in mind.</p>
             <a href={site.socials.calendly} target="_blank" rel="noreferrer" className="button-primary service-contact-button">
               Book a 30-minute call <Arrow diagonal />
             </a>
-            <div className="border-default-200 mt-10 border-t pt-6">
+            <div className="studio-contact-direct">
               <p className="text-default-500 text-xs font-medium">Prefer email?</p>
               <a href={`mailto:${site.email}`} className="text-default-900 decoration-default-300 hover:text-primary mt-2 inline-block text-base font-medium break-all underline underline-offset-4 transition-colors">
                 {site.email}
@@ -67,9 +71,13 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
               </div>
             </div>
           </div>
-          <div className="border-default-200 rounded-3xl border bg-white p-6 sm:p-8 md:p-10">
-            <h2 className="text-2xl font-medium tracking-tight">A little about your project</h2>
-            <p className="text-default-500 mt-2 mb-8 text-sm leading-relaxed">I&apos;ll read your message and get back to you personally.</p>
+          <div className="studio-enquiry-panel">
+            <div className="studio-enquiry-top">
+              <span>YOUR NEXT CHAPTER</span>
+              <Arrow diagonal />
+            </div>
+            <h2>A little about your project.</h2>
+            <p className="studio-enquiry-intro">Straight to my inbox. I&apos;ll get back to you personally.</p>
             {selectedService && (
               <p className="service-contact-selected">
                 Let’s talk about<strong>{selectedService.title}</strong>You can change the service below.
@@ -79,10 +87,15 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
           </div>
         </div>
       </section>
-      <section className="border-default-200 border-t py-16 md:py-20">
-        <div className="container grid gap-8 md:grid-cols-[1fr_1.5fr] md:gap-20">
+      <section className="studio-contact-faq">
+        <div className="studio-contact-faq-grid container">
           <div>
-            <h2 className="text-3xl font-medium tracking-tight">Before we say hello.</h2>
+            <p className="studio-page-kicker">A few useful details</p>
+            <h2>
+              Before we
+              <br />
+              <em>say hello.</em>
+            </h2>
             <Link href="/services" className="text-primary mt-5 inline-flex items-center gap-3 text-sm font-semibold underline-offset-4 hover:underline">
               Explore services <span aria-hidden="true">↗</span>
             </Link>

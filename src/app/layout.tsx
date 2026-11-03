@@ -6,24 +6,10 @@ import { DEFAULT_PAGE_TITLE } from '@/config/constants'
 import { site } from '@/content/site'
 import { jsonLd, siteGraphJsonLd } from '@/lib/schema'
 import type { Metadata, Viewport } from 'next'
-import { Google_Sans_Flex, Instrument_Serif, Stack_Sans_Headline } from 'next/font/google'
+import { Inter } from 'next/font/google'
 
-const googleSansFlex = Google_Sans_Flex({
-  variable: '--font-body',
-  subsets: ['latin'],
-  display: 'swap',
-})
-
-const stackSansHeadline = Stack_Sans_Headline({
-  variable: '--font-heading',
-  subsets: ['latin'],
-  display: 'swap',
-})
-
-const editorialSerif = Instrument_Serif({
-  variable: '--font-editorial',
-  weight: '400',
-  style: 'italic',
+const inter = Inter({
+  variable: '--font-inter',
   subsets: ['latin'],
   display: 'swap',
 })
@@ -59,7 +45,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#f8f9fc',
+  themeColor: '#f5f3ee',
 }
 
 type RootLayoutProps = {
@@ -101,7 +87,7 @@ gtag('config', 'G-0X052TCNFT');`,
           }}
         />
       </head>
-      <body className={`bg-body-bg ${googleSansFlex.variable} ${stackSansHeadline.variable} ${editorialSerif.variable}`} suppressHydrationWarning>
+      <body className={`bg-body-bg ${inter.variable}`} suppressHydrationWarning>
         {/* WebSite + Person graph, emitted once. Page schemas reference these nodes by @id. */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(siteGraphJsonLd()) }} />
         <AppProvidersWrapper>{children}</AppProvidersWrapper>

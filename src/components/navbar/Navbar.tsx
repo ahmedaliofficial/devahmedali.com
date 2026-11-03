@@ -10,6 +10,7 @@ const items = [
   { label: 'Work', href: '/work' },
   { label: 'Services', href: '/services' },
   { label: 'About', href: '/about' },
+  { label: 'Writing', href: '/blog' },
 ]
 
 export default function Navbar() {
@@ -65,7 +66,7 @@ export default function Navbar() {
     >
       <div className="header-shell">
         <div className="header-inner">
-          <Logo showMark={false} className="header-brand" />
+          <Logo className="header-brand" />
           <nav aria-label="Main navigation" className="header-desktop-nav">
             {items.map((item) => (
               <Link key={item.href} href={item.href} aria-current={pathname.startsWith(item.href) ? 'page' : undefined} className="header-nav-link">
@@ -74,7 +75,10 @@ export default function Navbar() {
             ))}
           </nav>
           <Link href="/contact" className="header-contact-link header-project-link">
-            Start a project <Arrow diagonal />
+            Let’s talk{' '}
+            <span className="header-contact-arrow">
+              <Arrow diagonal />
+            </span>
           </Link>
           <button ref={toggle} type="button" onClick={() => setMenuPath(open ? null : pathname)} aria-label={open ? 'Close navigation' : 'Open navigation'} aria-expanded={open} aria-controls="mobile-navigation" className="header-menu-toggle">
             <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -90,7 +94,10 @@ export default function Navbar() {
             </Link>
           ))}
           <Link href="/contact" className="header-contact-link">
-            Start a project <Arrow diagonal />
+            Let’s talk{' '}
+            <span className="header-contact-arrow">
+              <Arrow diagonal />
+            </span>
           </Link>
         </nav>
       </div>

@@ -1,4 +1,5 @@
-﻿import ContactCta from '@/components/ContactCta'
+import ContactCta from '@/components/ContactCta'
+import Arrow from '@/components/ui/Arrow'
 import { PERSON_ID, site, WEBSITE_ID } from '@/content/site'
 import { jsonLd } from '@/lib/schema'
 import type { Metadata } from 'next'
@@ -34,99 +35,102 @@ export default function AboutPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(profileJsonLd) }} />
-      <section className="pt-36 pb-16 md:pt-44 md:pb-24">
-        <div className="container grid gap-12 lg:grid-cols-[1.3fr_0.8fr] lg:items-start lg:gap-20">
-          <div>
-            <p className="text-primary text-xs font-semibold tracking-[0.18em] uppercase">A little about me</p>
-            <h1 className="mt-5 text-[2.75rem] leading-[1.08] font-medium tracking-[-0.045em] md:text-[4.5rem]">
+      <section className="studio-about-hero">
+        <div className="studio-about-grid container">
+          <div className="studio-about-copy">
+            <p className="studio-page-kicker">
+              <span aria-hidden="true" /> The person behind the pixels
+            </p>
+            <h1 className="studio-page-title">
               Hi, I&apos;m Ahmed.
               <br />
-              <span className="text-primary">I build things that last.</span>
+              <em>
+                I build digital
+                <br />
+                products.
+              </em>
             </h1>
-            <div className="text-default-600 mt-7 max-w-xl space-y-5 text-base leading-relaxed md:text-lg">
-              <p>I&apos;m a software architect and engineering lead with {site.experience.words} of experience building products across FinTech, AI and SaaS.</p>
-              <p>My work connects the product your customers use with the systems that keep it running. I can help you go from a first idea to launch, or improve a platform you already have.</p>
+            <div className="studio-about-story">
+              <p>I&apos;m an independent developer, software architect and product partner. For {site.experience.words}, I&apos;ve been turning ambitious ideas into useful software across FinTech, AI and SaaS.</p>
+              <p>From the first screen to the systems behind it, I bring the pieces together. I work with founders, agencies and teams who care about how their product feels and how well it works.</p>
               <p>
-                I also founded{' '}
-                <Link href="/work/trackhrs" className="text-primary decoration-primary/30 hover:decoration-primary font-medium underline underline-offset-4">
-                  TrackHRS
-                </Link>
-                . Building my own product means I think about the things around the code too: onboarding, support, reliability and what makes a product useful every day.
+                I also founded <Link href="/work/trackhrs">TrackHRS</Link>. Building my own product means I think beyond the code: onboarding, support, reliability and the small details that make people come back.
               </p>
             </div>
-            <a href={site.socials.linkedin} target="_blank" rel="noreferrer" className="text-default-900 mt-7 inline-flex items-center gap-4 text-sm font-semibold underline-offset-4 hover:underline">
-              Find me on LinkedIn <span aria-hidden="true">↗</span>
+            <a href={site.socials.linkedin} target="_blank" rel="noreferrer" className="text-link studio-about-link">
+              A little more about me <Arrow diagonal />
             </a>
           </div>
-          <aside className="rounded-3xl bg-[#eaf0ff] p-7 md:p-10 lg:mt-10">
-            <span aria-hidden="true" className="bg-primary font-heading flex size-20 items-center justify-center rounded-2xl text-3xl font-medium tracking-tight text-white">
-              AA<span className="text-white/60">.</span>
-            </span>
-            <p className="text-default-900 mt-8 text-2xl font-medium">Ahmed Ali</p>
-            <p className="text-default-600 mt-2 text-sm leading-relaxed">
-              {site.roleFull}
-              <br />
-              Founder of TrackHRS
-            </p>
-            <dl className="border-primary/15 mt-8 space-y-5 border-t pt-6">
+          <aside className="studio-profile" aria-label="Ahmed Ali at a glance">
+            <div className="studio-profile-top">
+              <span>Independent by choice.</span>
+              <Arrow diagonal />
+            </div>
+            <div className="studio-profile-monogram" aria-hidden="true">
+              AA<span>.</span>
+            </div>
+            <div className="studio-profile-name">
+              <p>Ahmed Ali</p>
+              <span>{site.roleFull}</span>
+            </div>
+            <dl className="studio-profile-details">
               <div>
-                <dt className="text-default-500 text-xs">Experience</dt>
-                <dd className="text-default-900 mt-1 text-base font-medium">{site.experience.label} years building software</dd>
+                <dt>Experience</dt>
+                <dd>{site.experience.label} years building software</dd>
               </div>
               <div>
-                <dt className="text-default-500 text-xs">Working together</dt>
-                <dd className="text-default-900 mt-1 text-base leading-relaxed">{site.availability}</dd>
+                <dt>Also building</dt>
+                <dd>Founder of TrackHRS</dd>
               </div>
               <div>
-                <dt className="text-default-500 text-xs">Education</dt>
-                <dd className="text-default-900 mt-1 text-sm leading-relaxed">
-                  BS Software Engineering
-                  <br />
-                  Virtual University of Pakistan
-                </dd>
+                <dt>Working together</dt>
+                <dd>Remote, worldwide</dd>
               </div>
             </dl>
+            <p className="studio-profile-note">BS Software Engineering · Virtual University of Pakistan</p>
           </aside>
         </div>
       </section>
-      <section className="border-default-200 border-y bg-white py-16 md:py-24">
+      <section className="studio-principles">
         <div className="container">
-          <p className="text-primary text-xs font-semibold tracking-[0.18em] uppercase">What you can expect</p>
-          <h2 className="mt-4 max-w-xl text-3xl font-medium tracking-tight md:text-4xl">
-            Good software starts
-            <br />
-            with a good working relationship.
-          </h2>
-          <div className="mt-12 grid gap-9 md:grid-cols-3 md:gap-12">
+          <div className="studio-page-section-heading">
+            <p className="studio-page-kicker">The way I work</p>
+            <h2>
+              Good work.
+              <br />
+              <em>Even better together.</em>
+            </h2>
+          </div>
+          <div className="studio-principle-grid">
             {principles.map((principle) => (
-              <div key={principle.number} className="border-default-200 border-t pt-5">
-                <span className="text-primary text-xs font-semibold">{principle.number}</span>
-                <h3 className="mt-6 text-xl font-medium">{principle.title}</h3>
-                <p className="text-default-600 mt-3 text-base leading-relaxed">{principle.description}</p>
+              <div key={principle.number}>
+                <span>{principle.number}</span>
+                <h3>{principle.title}</h3>
+                <p>{principle.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
-      <section id="toolkit" className="scroll-mt-28 py-16 md:py-24">
-        <div className="container grid gap-8 md:grid-cols-2 md:gap-20">
-          <div>
-            <p className="text-primary text-xs font-semibold tracking-[0.18em] uppercase">Experience that connects</p>
-            <h2 className="mt-4 max-w-md text-3xl font-medium tracking-tight md:text-4xl">
-              From the first screen
+      <section id="toolkit" className="studio-toolkit">
+        <div className="studio-toolkit-grid container">
+          <div className="studio-page-section-heading">
+            <p className="studio-page-kicker">A wider perspective</p>
+            <h2>
+              The whole picture.
               <br />
-              to the systems behind it.
+              <em>Every little detail.</em>
             </h2>
           </div>
-          <div>
-            <p className="text-default-600 text-base leading-relaxed">I work across web products, backend systems, AI and cloud infrastructure. That breadth helps me see the whole picture and make the pieces work together.</p>
-            <p className="text-default-600 mt-4 text-base leading-relaxed">My usual tools include React, Next.js, NestJS, Go, Python, Kafka and Kubernetes. The choice always comes back to what your project needs.</p>
-            <div className="mt-7 flex flex-wrap gap-x-8 gap-y-4">
-              <Link href="/work" className="text-primary inline-flex items-center gap-3 text-sm font-semibold underline-offset-4 hover:underline">
-                Explore my work <span aria-hidden="true">↗</span>
+          <div className="studio-toolkit-copy">
+            <p>I work across web products, backend systems, AI and cloud infrastructure. That breadth helps me see the whole picture and make the pieces work together.</p>
+            <p>My usual tools include React, Next.js, NestJS, Go, Python, Kafka and Kubernetes. The choice always comes back to what your project needs.</p>
+            <div className="studio-toolkit-links">
+              <Link href="/work" className="text-link">
+                Explore my work <Arrow diagonal />
               </Link>
-              <Link href="/expertise" className="text-default-700 inline-flex items-center gap-3 text-sm font-semibold underline-offset-4 hover:underline">
-                Technical expertise <span aria-hidden="true">↗</span>
+              <Link href="/expertise" className="text-link">
+                Technical expertise <Arrow diagonal />
               </Link>
             </div>
           </div>

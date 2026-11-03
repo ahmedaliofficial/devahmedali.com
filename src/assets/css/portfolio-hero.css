@@ -1,0 +1,474 @@
+/* A full-width editorial opening, with real work as the visual proof. */
+.portfolio-hero {
+  padding-top: 136px;
+}
+.portfolio-hero-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 36px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--portfolio-muted);
+}
+.portfolio-hero-topline > p {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.portfolio-hero-topline > p > span {
+  color: #8c9186;
+}
+.portfolio-hero-availability {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  white-space: nowrap;
+}
+.portfolio-hero-availability > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4c6b2d;
+}
+.portfolio-hero h1 {
+  font-family: var(--font-heading), sans-serif;
+  font-size: clamp(64px, 7.75vw, 110px);
+  font-weight: 500;
+  letter-spacing: -0.06em;
+  line-height: 1.04;
+  text-wrap: initial;
+}
+.portfolio-hero h1 > span {
+  display: block;
+}
+.portfolio-hero h1 > span:last-child {
+  color: #66705a;
+}
+.portfolio-hero-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 72px;
+  margin-top: 32px;
+  margin-bottom: 48px;
+}
+.portfolio-hero-description > p {
+  max-width: 565px;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #54594e;
+}
+.portfolio-hero-description > span {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-top: 14px;
+  color: var(--portfolio-muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+.portfolio-hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 214px;
+}
+.portfolio-hero-actions .studio-button {
+  min-height: 56px;
+  padding-inline: 22px;
+  border-radius: 3px;
+}
+.portfolio-hero-work-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  min-height: 44px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #535d45;
+}
+.portfolio-hero-work-link svg {
+  width: 18px;
+  height: 18px;
+  transform: rotate(90deg);
+}
+.portfolio-hero-work-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.portfolio-hero-projects {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.portfolio-hero-project {
+  display: block;
+  min-width: 0;
+  border-radius: 3px;
+}
+.portfolio-hero-project-image {
+  position: relative;
+  height: clamp(245px, 23.5vw, 310px);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.portfolio-hero-product-mark {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 20px 22px;
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.portfolio-hero-product-mark > span {
+  display: grid;
+  place-items: center;
+  width: 23px;
+  height: 23px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  font-size: 11px;
+  letter-spacing: -0.04em;
+}
+.portfolio-hero-project-image img {
+  display: block;
+  position: absolute;
+  height: auto;
+  transition: transform 350ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.portfolio-hero-project:hover .portfolio-hero-project-image img {
+  transform: translateY(-4px);
+}
+.portfolio-hero-project-trackhrs {
+  background: #1f2930;
+}
+.portfolio-hero-project-trackhrs img {
+  width: calc(100% - 44px);
+  left: 22px;
+  top: 67px;
+  border-radius: 3px 3px 0 0;
+  box-shadow: 0 8px 30px #0002;
+}
+.portfolio-hero-project-agentx {
+  background: #ded9ed;
+}
+.portfolio-hero-project-agentx .portfolio-hero-product-mark {
+  color: #413653;
+}
+.portfolio-hero-project-agentx img {
+  width: 136%;
+  max-width: none;
+  left: -18%;
+  top: 65px;
+  mix-blend-mode: multiply;
+}
+.portfolio-hero-project-hysab {
+  background: #dce9e1;
+}
+.portfolio-hero-project-hysab .portfolio-hero-product-mark {
+  color: #2b5147;
+}
+.portfolio-hero-project-hysab img {
+  width: 86%;
+  max-width: none;
+  left: 7%;
+  top: 46px;
+}
+.portfolio-hero-project figcaption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-top: 16px;
+}
+.portfolio-hero-project figcaption strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+.portfolio-hero-project figcaption div > span {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--portfolio-muted);
+}
+.portfolio-hero-project figcaption > svg {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  transition: transform 200ms;
+}
+.portfolio-hero-project:hover figcaption > svg {
+  transform: translate(2px, -2px);
+}
+.portfolio-hero-image-note {
+  display: block;
+  margin-top: 7px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--portfolio-muted);
+}
+.portfolio-hero-baseline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 32px;
+  padding-block: 18px;
+  border-top: 1px solid var(--portfolio-line);
+  border-bottom: 1px solid var(--portfolio-line);
+  font-size: 12px;
+  color: var(--portfolio-muted);
+}
+.portfolio-hero-baseline > a {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-height: 44px;
+  color: var(--portfolio-ink);
+}
+.portfolio-hero-baseline > a:hover {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.portfolio-hero-baseline svg {
+  width: 16px;
+  height: 16px;
+  transform: rotate(90deg);
+}
+@media (max-width: 1100px) {
+  .portfolio-hero {
+    padding-top: 125px;
+  }
+  .portfolio-hero-topline {
+    margin-bottom: 30px;
+  }
+  .portfolio-hero h1 {
+    font-size: clamp(62px, 7.9vw, 86px);
+  }
+  .portfolio-hero-intro {
+    gap: 48px;
+    margin-bottom: 38px;
+  }
+  .portfolio-hero-projects {
+    gap: 16px;
+  }
+  .portfolio-hero-product-mark {
+    padding: 18px 16px;
+  }
+  .portfolio-hero-project-trackhrs img {
+    width: calc(100% - 32px);
+    left: 16px;
+    top: 64px;
+  }
+  .portfolio-hero-project-agentx img {
+    width: 154%;
+    left: -27%;
+    top: 72px;
+  }
+  .portfolio-hero-project-hysab img {
+    width: 100%;
+    left: 0;
+    top: 54px;
+  }
+}
+@media (max-width: 900px) {
+  .portfolio-hero-topline {
+    font-size: 11px;
+    gap: 16px;
+  }
+  .portfolio-hero-topline > p {
+    gap: 10px;
+  }
+  .portfolio-hero-availability {
+    font-size: 10px;
+  }
+  .portfolio-hero-intro {
+    gap: 30px;
+  }
+  .portfolio-hero-description > p {
+    font-size: 15px;
+  }
+  .portfolio-hero-actions {
+    min-width: 195px;
+  }
+  .portfolio-hero-project-image {
+    height: 220px;
+  }
+  .portfolio-hero-project-trackhrs img {
+    width: calc(100% - 24px);
+    left: 12px;
+  }
+  .portfolio-hero-product-mark {
+    padding: 17px 12px;
+    font-size: 12px;
+    gap: 5px;
+  }
+  .portfolio-hero-project figcaption {
+    gap: 8px;
+  }
+  .portfolio-hero-project figcaption strong {
+    font-size: 14px;
+  }
+  .portfolio-hero-project figcaption div > span {
+    font-size: 11px;
+  }
+  .portfolio-hero-image-note {
+    font-size: 10px;
+  }
+}
+@media (max-width: 767px) {
+  .portfolio-hero {
+    padding-top: 108px;
+  }
+  .portfolio-hero-topline {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .portfolio-hero-topline > p {
+    display: block;
+    max-width: 340px;
+    font-size: 11px;
+    line-height: 1.8;
+  }
+  .portfolio-hero-topline > p > span {
+    margin-inline: 7px;
+  }
+  .portfolio-hero-availability {
+    font-size: 11px;
+  }
+  .portfolio-hero h1 {
+    font-size: clamp(46px, 8.8vw, 64px);
+    line-height: 1.04;
+    letter-spacing: -0.05em;
+  }
+  .portfolio-hero h1 > span:last-child {
+    margin-top: 4px;
+  }
+  .portfolio-hero-intro {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 26px;
+    margin-bottom: 30px;
+  }
+  .portfolio-hero-description > p {
+    max-width: 510px;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .portfolio-hero-description > span {
+    font-size: 11px;
+    gap: 6px 8px;
+    margin-top: 12px;
+  }
+  .portfolio-hero-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 24px;
+  }
+  .portfolio-hero-actions .studio-button {
+    min-height: 52px;
+    padding-inline: 16px;
+    gap: 20px;
+    font-size: 13px;
+  }
+  .portfolio-hero-work-link {
+    font-size: 12px;
+    gap: 12px;
+  }
+  .portfolio-hero-projects {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .portfolio-hero-project-secondary {
+    display: none;
+  }
+  .portfolio-hero-project-image {
+    height: auto;
+    aspect-ratio: 1.55;
+  }
+  .portfolio-hero-product-mark {
+    padding: 17px 18px;
+    font-size: 13px;
+  }
+  .portfolio-hero-project-trackhrs img {
+    width: calc(100% - 36px);
+    left: 18px;
+    top: 60px;
+  }
+  .portfolio-hero-project figcaption {
+    margin-top: 14px;
+  }
+  .portfolio-hero-project figcaption strong {
+    font-size: 16px;
+  }
+  .portfolio-hero-project figcaption div > span {
+    font-size: 12px;
+  }
+  .portfolio-hero-image-note {
+    font-size: 11px;
+  }
+  .portfolio-hero-baseline {
+    margin-top: 24px;
+    padding-block: 14px;
+    gap: 12px;
+  }
+  .portfolio-hero-baseline p {
+    max-width: 220px;
+    font-size: 11px;
+    line-height: 1.7;
+  }
+  .portfolio-hero-baseline > a {
+    font-size: 11px;
+    gap: 8px;
+  }
+}
+@media (max-width: 480px) {
+  .portfolio-hero h1 {
+    font-size: clamp(44px, 12.4vw, 60px);
+  }
+  .portfolio-hero h1 > span > span {
+    display: block;
+  }
+}
+@media (max-width: 380px) {
+  .portfolio-hero h1 {
+    font-size: 44px;
+  }
+  .portfolio-hero-actions {
+    gap: 12px;
+  }
+  .portfolio-hero-actions .studio-button {
+    padding-inline: 16px;
+    gap: 16px;
+    font-size: 13px;
+  }
+  .portfolio-hero-work-link {
+    font-size: 11px;
+    gap: 8px;
+  }
+  .portfolio-hero-baseline {
+    align-items: flex-start;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-hero-project-image img,
+  .portfolio-hero-project figcaption > svg {
+    transition: none;
+  }
+  .portfolio-hero-project:hover .portfolio-hero-project-image img,
+  .portfolio-hero-project:hover figcaption > svg {
+    transform: none;
+  }
+}

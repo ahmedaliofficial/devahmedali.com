@@ -21,25 +21,35 @@ type BlogListingProps = {
  * Keeping one renderer means the four routes cannot drift apart.
  */
 const BlogListing = ({ eyebrow, title, description, posts, currentPage, pageCount, basePath, activeTagSlug }: BlogListingProps) => (
-  <>
-    <section className="page-intro container">
-      <p className="eyebrow">{eyebrow}</p>
-      <h1 className="max-w-4xl tracking-tight">{title}</h1>
-      <p>{description}</p>
+  <div className="studio-writing">
+    <section className="studio-writing-intro container">
+      <p className="studio-page-kicker">
+        <span aria-hidden="true" /> {eyebrow}
+      </p>
+      <div className="studio-writing-heading">
+        <h1>{title}</h1>
+        <p>{description}</p>
+      </div>
+      <div className="studio-writing-edition">
+        <span>THE FIELD NOTES</span>
+        <span>Ideas, decisions & lessons from the work.</span>
+      </div>
     </section>
 
-    <section className="pb-16 md:pb-24">
+    <section className="studio-writing-index">
       <div className="container">
-        <details className="mb-8 border-y border-[#e4e7ee] py-4" open={Boolean(activeTagSlug)}>
-          <summary className="cursor-pointer text-sm font-medium text-[#17202e]">Browse by topic</summary>
-          <TagNav activeSlug={activeTagSlug} className="mt-5" />
+        <details className="studio-writing-topics" open={Boolean(activeTagSlug)}>
+          <summary>
+            Browse by topic <span aria-hidden="true">+</span>
+          </summary>
+          <TagNav activeSlug={activeTagSlug} className="studio-writing-topic-links" />
         </details>
 
         {posts.length === 0 ? (
           <p className="text-default-500 text-lg">No posts published yet. The first ones are on their way.</p>
         ) : (
           <>
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <div className="studio-writing-grid">
               {posts.map((post) => (
                 <PostCard key={post.slug} post={post} />
               ))}
@@ -52,7 +62,7 @@ const BlogListing = ({ eyebrow, title, description, posts, currentPage, pageCoun
     </section>
 
     <ContactCta />
-  </>
+  </div>
 )
 
 export default BlogListing
