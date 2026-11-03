@@ -1,12 +1,15 @@
-﻿import ContactCta from '@/components/ContactCta'
+import ContactCta from '@/components/ContactCta'
+import ServiceExplorer from '@/components/portfolio/ServiceExplorer'
+import Arrow from '@/components/ui/Arrow'
+import { clientServices, getClientService } from '@/content/client-services'
 import { site } from '@/content/site'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-const SERVICES_DESCRIPTION = 'Web products, AI automation and software architecture by Ahmed Ali. From a new idea to a reliable product your customers can use.'
+const SERVICES_DESCRIPTION = 'SaaS products, websites, AI agents, automation, ecommerce, mobile and desktop apps. Work directly with Ahmed Ali from the first plan to a useful release.'
 
 export const metadata: Metadata = {
-  title: 'Product Development, AI & Architecture Services',
+  title: 'Web, App & AI Development Services',
   description: SERVICES_DESCRIPTION,
   alternates: { canonical: '/services' },
   keywords: [...site.seo.keywords],
@@ -14,49 +17,16 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image', title: 'Work with Ahmed Ali', description: SERVICES_DESCRIPTION },
 }
 
-const services = [
-  {
-    number: '01',
-    id: 'product-development',
-    title: 'Build your product.',
-    for: 'For founders and growing businesses',
-    description: 'Turn an idea into a website, app or platform people can actually use. I connect the customer experience with the systems behind it, from the first plan through launch.',
-    deliverables: ['Websites, SaaS apps & MVPs', 'Ecommerce, dashboards & portals', 'APIs, payments & integrations'],
-    project: 'See TrackHRS',
-    href: '/work/trackhrs',
-  },
-  {
-    number: '02',
-    id: 'ai-automation',
-    title: 'Put AI to work.',
-    for: 'For teams spending too much time on manual work',
-    description: 'Give your team tools that find information, connect your systems and handle repetitive tasks. Built around a clear use case, with human review where it matters.',
-    deliverables: ['AI assistants & document search', 'Agents & business workflows', 'Evaluation, monitoring & handover'],
-    project: 'See AgentX',
-    href: '/work/agentx',
-  },
-  {
-    number: '03',
-    id: 'architecture-scaling',
-    title: 'Make growth easier.',
-    for: 'For products outgrowing their first version',
-    description: 'Understand what is slowing your product down, then make a practical plan to fix it. I help with architecture, performance and infrastructure, and work alongside your team to deliver the changes.',
-    deliverables: ['Architecture & code reviews', 'Performance & cloud optimisation', 'Technical direction & team support'],
-    project: 'See Hysab Kytab',
-    href: '/work/hysab-kytab',
-  },
-]
-
-const steps = [
-  { number: '01', title: 'Talk it through', description: 'We discuss your goals, users and what needs to change.' },
-  { number: '02', title: 'Agree on a plan', description: 'You get a clear scope, priorities and delivery milestones.' },
-  { number: '03', title: 'Build together', description: 'Regular demos keep you involved and the work on track.' },
-  { number: '04', title: 'Launch with clarity', description: 'Testing, documentation and a handover your team can use.' },
+const engagements = [
+  { number: '01', title: 'Find the starting point.', description: 'Bring an idea, a prototype or a problem. A focused review helps us agree on the priorities and a sensible scope.' },
+  { number: '02', title: 'Build something useful.', description: 'A defined project with milestones, working demos and room for your feedback throughout the build.' },
+  { number: '03', title: 'Keep moving forward.', description: 'Continue with improvements, product releases or technical support alongside your existing team.' },
 ]
 
 const faqs = [
   { question: 'Can we start with a small piece of work?', answer: 'Yes. We can begin with a review, a prototype or one clearly defined feature, then decide on the next step together.' },
   { question: 'Can you work with our existing team?', answer: 'Yes. I can own a project or join your team as a software architect and engineering lead. We will agree on responsibilities and how we communicate before starting.' },
+  { question: 'What if my project needs several services?', answer: 'That is common. A SaaS product might need a website, payments and an AI assistant. Tell me about the overall goal and we can shape one plan around it.' },
   { question: 'How much will my project cost?', answer: 'The scope, existing system and timeline determine the cost. Share a short brief and we can discuss a suitable approach before committing to the work.' },
 ]
 
@@ -66,92 +36,82 @@ const faqJsonLd = {
   mainEntity: faqs.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })),
 }
 
-export default function ServicesPage() {
+type ServicesPageProps = { searchParams: Promise<{ service?: string | string[] }> }
+
+export default async function ServicesPage({ searchParams }: ServicesPageProps) {
+  const requestedService = getClientService((await searchParams).service)
+  const initialService = requestedService || clientServices[0]
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
-      <section className="pt-36 pb-16 md:pt-44 md:pb-24">
-        <div className="container">
-          <p className="text-primary text-xs font-semibold tracking-[0.18em] uppercase">How I can help</p>
-          <h1 className="mt-5 max-w-3xl text-[2.75rem] leading-[1.08] font-medium tracking-[-0.045em] md:text-[4.5rem]">
-            Your next idea.
-            <br />
-            <span className="text-primary">Built to work.</span>
-          </h1>
-          <p className="text-default-600 mt-6 max-w-xl text-lg leading-relaxed">A new product, a smarter workflow, or a system ready to grow. Let&apos;s make the next step clear.</p>
-          <Link href="/contact" className="bg-primary mt-8 inline-flex items-center gap-8 rounded-full px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#2446c4]">
-            Tell me about your project <span aria-hidden="true">↗</span>
-          </Link>
+      <section className="service-intro">
+        <div className="service-intro-grid container">
+          <div>
+            <p className="service-kicker">Good ideas deserve good execution</p>
+            <h1>
+              What do you
+              <br />
+              want to <em>build?</em>
+            </h1>
+          </div>
+          <div className="service-intro-copy">
+            <p>A new product. A better website. A smarter way of working. Choose your starting point and we’ll shape the right solution.</p>
+            <Link href="/contact" className="text-link">
+              Talk through your idea <Arrow diagonal />
+            </Link>
+          </div>
         </div>
       </section>
-      <section aria-label="Services" className="pb-16 md:pb-24">
-        <div className="border-default-200 container border-t">
-          {services.map((service) => (
-            <article key={service.id} id={service.id} className="border-default-200 grid scroll-mt-28 gap-6 border-b py-10 md:grid-cols-[60px_1fr_1.15fr] md:gap-10 md:py-14">
-              <span className="text-default-500 text-sm">{service.number}</span>
-              <div>
-                <h2 className="text-3xl font-medium tracking-tight md:text-4xl">{service.title}</h2>
-                <p className="text-default-500 mt-3 max-w-xs text-sm leading-relaxed">{service.for}</p>
-              </div>
-              <div>
-                <p className="text-default-600 max-w-xl text-base leading-relaxed">{service.description}</p>
-                <ul className="mt-6 space-y-3">
-                  {service.deliverables.map((deliverable) => (
-                    <li key={deliverable} className="text-default-700 flex gap-3 text-sm leading-relaxed">
-                      <span aria-hidden="true" className="text-primary">
-                        ✓
-                      </span>
-                      {deliverable}
-                    </li>
-                  ))}
-                </ul>
-                <Link href={service.href} className="text-primary mt-7 inline-flex items-center gap-3 text-sm font-semibold underline-offset-4 hover:underline">
-                  {service.project}
-                  <span aria-hidden="true">↗</span>
-                </Link>
-              </div>
-            </article>
-          ))}
+      <section className="service-catalogue" aria-label="Explore development services">
+        <div className="container">
+          <div className="service-catalogue-topline">
+            <p className="service-kicker">{String(clientServices.length).padStart(2, '0')} ways I can help</p>
+            <p>Select a service to see what we can do together.</p>
+          </div>
+          <ServiceExplorer key={initialService.slug} initialId={initialService.slug} />
         </div>
       </section>
-      <section className="bg-white py-16 md:py-24">
+      <section className="service-engagements" aria-labelledby="engagement-heading">
         <div className="container">
-          <p className="text-primary text-xs font-semibold tracking-[0.18em] uppercase">Working together</p>
-          <h2 className="mt-4 max-w-xl text-3xl font-medium tracking-tight md:text-4xl">
-            A simple process.
-            <br />
-            No guessing what happens next.
-          </h2>
-          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {steps.map((step) => (
-              <div key={step.number} className="border-default-200 border-t pt-5">
-                <span className="text-primary text-xs font-semibold">{step.number}</span>
-                <h3 className="mt-6 text-lg font-medium">{step.title}</h3>
-                <p className="text-default-600 mt-3 text-sm leading-relaxed">{step.description}</p>
-              </div>
+          <div className="service-section-heading">
+            <div>
+              <p className="service-kicker">Working together</p>
+              <h2 id="engagement-heading">Start where you are.</h2>
+            </div>
+            <p>You work directly with me. We agree on the scope, stay close to the work and make the next step clear.</p>
+          </div>
+          <div className="service-engagement-grid">
+            {engagements.map((engagement) => (
+              <article key={engagement.number} className="service-engagement">
+                <span>{engagement.number}</span>
+                <h3>{engagement.title}</h3>
+                <p>{engagement.description}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
-      <section className="py-16 md:py-24">
-        <div className="container grid gap-8 md:grid-cols-[1fr_1.5fr] md:gap-20">
-          <h2 className="text-3xl font-medium tracking-tight">A few useful answers.</h2>
+      <section className="service-faq" aria-labelledby="service-faq-heading">
+        <div className="service-faq-grid container">
+          <div>
+            <p className="service-kicker">Before we begin</p>
+            <h2 id="service-faq-heading">A few useful answers.</h2>
+          </div>
           <div>
             {faqs.map((faq) => (
-              <details key={faq.question} className="group border-default-200 border-b py-5 first:border-t">
-                <summary className="text-default-900 flex cursor-pointer list-none items-center justify-between gap-5 text-base font-medium [&::-webkit-details-marker]:hidden">
+              <details key={faq.question}>
+                <summary>
                   {faq.question}
-                  <span aria-hidden="true" className="text-primary shrink-0 text-xl font-normal transition-transform group-open:rotate-45">
-                    +
-                  </span>
+                  <span aria-hidden="true">+</span>
                 </summary>
-                <p className="text-default-600 mt-4 pr-8 text-sm leading-relaxed">{faq.answer}</p>
+                <p>{faq.answer}</p>
               </details>
             ))}
           </div>
         </div>
       </section>
-      <ContactCta heading="Have something in mind?" description="Share what you want to build. We can figure out the right starting point together." />
+      <ContactCta heading="Let’s make it happen." description="Share the idea, the challenge or the product you already have. We’ll figure out a useful next step." />
     </>
   )
 }

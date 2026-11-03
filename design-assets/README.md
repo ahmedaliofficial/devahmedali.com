@@ -29,3 +29,21 @@ All AI-generated visuals are labelled as mockups in the interface. Hysab Kytab i
 Production compilation, TypeScript, content lint, representative HTTP routes, internal homepage links and image optimization were checked. Contact API validation was exercised without sending an email. Browser interaction and viewport screenshot verification could not be completed because the browser access host was unavailable.
 
 The redesign is a local repository change. No live deployment was performed.
+
+## Service and design refinement — 3 November 2026
+
+The first redesign was checkpointed in commit `6cc52d0` before this refinement. The homepage now uses a typographic opening, asymmetric project composition without duplicate covers, a dark service index and a short collaboration timeline. Instrument Serif supplies the editorial accent; existing project artwork remains the visual proof.
+
+Eight shared service records cover SaaS/MVPs, AI agents, automation/integrations, websites, ecommerce, mobile applications, desktop applications, and product rescue. See [the marketplace research](freelance-market-research-2026-11.md) for the primary sources and limits behind this positioning. Desktop is a separate, explicitly requested offer supported by the TrackHRS tracker work.
+
+Service links select the relevant detail panel and carry the choice into the enquiry form. Unknown or repeated query values fall back to the general form. Mobile selections focus and reveal the updated heading, respecting reduced-motion preferences. Shared input focus indicators and image disclosures were also improved.
+
+Validation of this refinement:
+
+- Production build, including TypeScript and 203 generated pages, passed. Existing fallback-font warnings for Google Sans Flex and Stack Sans Headline remain.
+- All eight service-to-enquiry paths, eight invalid-query fallbacks, 19 homepage links, three optimized homepage images, and six representative work/content routes passed HTTP checks. Invalid contact payloads returned 400 and missing projects returned 404. No email was sent.
+- Content lint passed for 59 files; changed CSS parsed successfully and `git diff --check` passed.
+- Scoped ESLint passed with zero errors and one existing analytics-script warning. ESLint 10 exceeded the installed React and accessibility plugins' supported peer ranges and crashed on a removed API. The development-only dependency is now pinned to compatible ESLint 9.39.5, with the lockfile updated. ESLint 9 is deprecated upstream, so this is an interim compatibility pin until the plugins support ESLint 10; no rules were disabled. All 11 direct runtime dependencies retain their prior specifiers and resolved versions.
+- Browser access remained unavailable, so viewport screenshots and real browser interaction checks remain unverified. The responsive layout and contrast were reviewed in source; those checks do not replace visual verification.
+
+No deployment or remote push was performed.

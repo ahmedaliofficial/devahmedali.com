@@ -48,9 +48,3 @@ export const projectPresentation: Record<
     color: '#e9eef2',
   },
 }
-
-export const offers = [
-  { number: '01', title: 'Build your product', description: 'From an early idea to a web app, SaaS platform or customer-facing website that is ready to launch.', tags: 'Web apps / SaaS / Ecommerce' },
-  { number: '02', title: 'Put AI to work', description: 'Useful AI assistants and automations that connect to your tools and take repetitive work off your team.', tags: 'AI agents / Integrations / Automation' },
-  { number: '03', title: 'Make it scale', description: 'A stronger foundation for your existing product, with better architecture, performance and reliability.', tags: 'Architecture / Backend / Cloud' },
-] as const

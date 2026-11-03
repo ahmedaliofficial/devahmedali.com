@@ -30,11 +30,18 @@
 select,
 input,
 textarea {
-    @apply transition-all duration-200 focus:border-primary focus:ring-0 focus:outline-0;
+    @apply transition-all duration-200 focus:border-primary focus:ring-0;
 }
 
 
 
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+}
 
 .container {
     @apply lg:px-0 md:px-5 px-3.5 max-w-300 mx-auto;

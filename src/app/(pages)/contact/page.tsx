@@ -1,4 +1,6 @@
-﻿import { site } from '@/content/site'
+﻿import Arrow from '@/components/ui/Arrow'
+import { getClientService } from '@/content/client-services'
+import { site } from '@/content/site'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import ContactForm from './components/ContactForm'
@@ -25,22 +27,26 @@ const faqJsonLd = {
   mainEntity: faqs.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })),
 }
 
-export default function ContactPage() {
+type ContactPageProps = { searchParams: Promise<{ service?: string | string[] }> }
+
+export default async function ContactPage({ searchParams }: ContactPageProps) {
+  const selectedService = getClientService((await searchParams).service)
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <section className="pt-36 pb-16 md:pt-44 md:pb-24">
         <div className="container grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
           <div>
-            <p className="text-primary text-xs font-semibold tracking-[0.18em] uppercase">Let's work together</p>
+            <p className="text-primary text-xs font-semibold tracking-[0.18em] uppercase">Let’s work together</p>
             <h1 className="mt-5 text-[2.75rem] leading-[1.08] font-medium tracking-[-0.045em] md:text-[4.5rem]">
               Big idea?
               <br />
-              <span className="text-primary">Let's talk.</span>
+              <span className="text-primary">Let’s talk.</span>
             </h1>
             <p className="text-default-600 mt-6 max-w-md text-lg leading-relaxed">Tell me what you&apos;re building, or what you want to improve. A few sentences are a great start.</p>
-            <a href={site.socials.calendly} target="_blank" rel="noreferrer" className="bg-primary mt-8 inline-flex items-center gap-8 rounded-full px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#2446c4]">
-              Book a 30-minute call <span aria-hidden="true">↗</span>
+            <a href={site.socials.calendly} target="_blank" rel="noreferrer" className="button-primary service-contact-button">
+              Book a 30-minute call <Arrow diagonal />
             </a>
             <div className="border-default-200 mt-10 border-t pt-6">
               <p className="text-default-500 text-xs font-medium">Prefer email?</p>
@@ -64,7 +70,12 @@ export default function ContactPage() {
           <div className="border-default-200 rounded-3xl border bg-white p-6 sm:p-8 md:p-10">
             <h2 className="text-2xl font-medium tracking-tight">A little about your project</h2>
             <p className="text-default-500 mt-2 mb-8 text-sm leading-relaxed">I&apos;ll read your message and get back to you personally.</p>
-            <ContactForm />
+            {selectedService && (
+              <p className="service-contact-selected">
+                Let’s talk about<strong>{selectedService.title}</strong>You can change the service below.
+              </p>
+            )}
+            <ContactForm initialService={selectedService?.slug} />
           </div>
         </div>
       </section>

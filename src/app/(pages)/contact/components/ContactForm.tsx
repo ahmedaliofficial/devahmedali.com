@@ -1,5 +1,7 @@
 ﻿'use client'
 
+import Arrow from '@/components/ui/Arrow'
+import { clientServices, getClientService } from '@/content/client-services'
 import { site } from '@/content/site'
 import Link from 'next/link'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
@@ -15,7 +17,7 @@ const createEmailHref = (formData: FormData) => {
   return `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
 }
 
-export default function ContactForm() {
+export default function ContactForm({ initialService }: { initialService?: string }) {
   const [state, setState] = useState<FormState>('idle')
   const [error, setError] = useState('')
   const [emailHref, setEmailHref] = useState(`mailto:${site.email}`)
@@ -103,12 +105,14 @@ export default function ContactForm() {
           <label htmlFor="subject" className={labelClasses}>
             What can I help with? <span className="text-default-500 font-normal">(optional)</span>
           </label>
-          <select id="subject" name="subject" defaultValue="" className={`${inputClasses} pr-10`}>
+          <select key={initialService || 'general'} id="subject" name="subject" defaultValue={getClientService(initialService)?.enquirySubject || ''} className={`${inputClasses} pr-10`}>
             <option value="">Choose a starting point</option>
-            <option value="Product development">A website, app or new product</option>
-            <option value="AI and automation">AI or workflow automation</option>
-            <option value="Architecture and scaling">Improving an existing system</option>
-            <option value="Project discussion">Something else / not sure yet</option>
+            {clientServices.map((service) => (
+              <option key={service.slug} value={service.enquirySubject}>
+                {service.title}
+              </option>
+            ))}
+            <option value="Project discussion">I’m not sure yet / something else</option>
           </select>
         </div>
         <div>
@@ -130,9 +134,9 @@ export default function ContactForm() {
           <p className="text-default-600 mt-1 text-xs leading-relaxed">Opens your email app with your current details and message filled in.</p>
         </div>
       )}
-      <button type="submit" disabled={state === 'sending'} className="bg-primary mt-6 flex w-full items-center justify-between gap-5 rounded-full px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#2446c4] disabled:cursor-wait disabled:opacity-60">
+      <button type="submit" disabled={state === 'sending'} className="button-primary service-form-submit">
         <span aria-live="polite">{state === 'sending' ? 'Sending your message…' : 'Send project enquiry'}</span>
-        <span aria-hidden="true">{state === 'sending' ? '…' : '↗'}</span>
+        {state === 'sending' ? <span aria-hidden="true">…</span> : <Arrow diagonal />}
       </button>
       <p className="text-default-500 mt-4 text-xs leading-relaxed">
         Your details are used to respond to your enquiry.{' '}

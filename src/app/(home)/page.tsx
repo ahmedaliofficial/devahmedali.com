@@ -1,12 +1,11 @@
 ﻿import ContactCta from '@/components/ContactCta'
-import CaseStudyCard from '@/components/portfolio/CaseStudyCard'
+import CaseStudyCard, { ProjectVisual } from '@/components/portfolio/CaseStudyCard'
 import Arrow from '@/components/ui/Arrow'
 import { DEFAULT_PAGE_TITLE } from '@/config/constants'
 import { getCaseStudy } from '@/content/case-studies'
-import { offers } from '@/content/portfolio'
+import { clientServices } from '@/content/client-services'
 import { site } from '@/content/site'
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -15,170 +14,147 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
 }
 
+const process = [
+  { number: '01', title: 'Find the right starting point.', description: 'We turn your goals, users, and priorities into a focused scope.', deliverable: 'A clear plan & milestones' },
+  { number: '02', title: 'See your idea take shape.', description: 'Try working versions, share feedback, and make decisions together.', deliverable: 'Working software to review' },
+  { number: '03', title: 'Launch with a clear handover.', description: 'Get the product, documentation, and a plan for what comes next.', deliverable: 'Launch, handover & next steps' },
+]
+
 export default function Page() {
   return (
     <>
-      <section className="home-hero">
-        <div className="container">
-          <div className="studio-topline">
-            <p className="eyebrow">Ahmed Ali / Independent software engineer</p>
-            <p className="availability">
-              <span /> Available for select projects
-            </p>
-          </div>
-          <div className="studio-intro">
-            <h1>
-              Your next idea.
-              <br />
-              <span>Built beautifully.</span>
-            </h1>
-            <div className="studio-description">
-              <p>I turn ambitious ideas into thoughtful digital products. Web, mobile, and AI — designed to work beautifully, built to grow.</p>
-              <Link href="/contact" className="button-primary">
-                Let’s build something <Arrow diagonal />
-              </Link>
-              <p className="studio-experience">{site.experience.label} years of building. One dedicated partner.</p>
-            </div>
-          </div>
-          <div className="studio-showcase">
-            <Link href="/work/trackhrs" className="studio-project studio-project-trackhrs" aria-label="Explore TrackHRS case study">
-              <div className="studio-project-top">
-                <span>01 / TrackHRS</span>
-                <Arrow diagonal />
-              </div>
-              <Image src="/images/work/trackhrs-mockup.webp" alt="TrackHRS work platform displayed on a laptop, based on real product documentation" width={1536} height={1024} sizes="(max-width: 767px) 100vw, 65vw" preload />
-              <div className="studio-project-bottom">
-                <span>
-                  A whole business.
-                  <br />
-                  <strong>Working together.</strong>
-                </span>
-                <span className="showcase-label">SaaS platform</span>
-              </div>
+      <section className="masthead container" aria-labelledby="intro-heading">
+        <div className="masthead-topline">
+          <p className="eyebrow">Ahmed Ali / Independent software engineer</p>
+          <p className="project-availability">
+            <span aria-hidden="true" /> Available for select projects
+          </p>
+        </div>
+        <div className="masthead-title">
+          <h1 id="intro-heading">
+            Big ideas.
+            <br />
+            <em className="editorial-accent">Beautifully built.</em>
+          </h1>
+          <a href="#selected-work" className="work-jump" aria-label="Explore selected work">
+            <span aria-hidden="true">
+              <Arrow />
+            </span>
+            Explore the work
+          </a>
+        </div>
+        <div className="masthead-bottom">
+          <p className="masthead-intro">I build websites, mobile & desktop apps, and AI systems that move your business forward.</p>
+          <div className="masthead-action">
+            <Link href="/contact" className="button-primary">
+              Let’s build your next thing <Arrow diagonal />
             </Link>
-            <Link href="/work/agentx" className="studio-project studio-project-agentx" aria-label="Explore AgentX case study">
-              <div className="studio-project-top">
-                <span>02 / AgentX</span>
-                <Arrow diagonal />
-              </div>
-              <Image src="/images/work/agentx-mockup.webp" alt="AgentX AI app builder with a real website preview, presented in a desktop mockup" width={1536} height={1024} sizes="(max-width: 767px) 100vw, 40vw" />
-              <div className="studio-project-bottom">
-                <span>
-                  An idea, a prompt.
-                  <br />
-                  <strong>A product.</strong>
-                </span>
-                <span className="showcase-label">AI workspace</span>
-              </div>
+            <span>{site.experience.label} years of experience. Direct collaboration.</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="selected-work" className="selected-work container" aria-labelledby="work-heading">
+        <div className="section-rule">
+          <h2 id="work-heading">
+            Selected work <span>/ 01—03</span>
+          </h2>
+          <Link href="/work" className="text-link">
+            All projects <Arrow diagonal />
+          </Link>
+        </div>
+        <div className="editorial-projects">
+          {['trackhrs', 'agentx'].map((slug, index) => {
+            const study = getCaseStudy(slug)
+            return study && <CaseStudyCard key={slug} study={study} className={'editorial-project editorial-project-' + (index + 1)} preload={index === 0} />
+          })}
+        </div>
+        <article className="fintech-feature">
+          <div className="fintech-copy">
+            <p className="eyebrow">03 / FinTech & financial platforms</p>
+            <h3>
+              <Link href="/work/hysab-kytab">
+                Better clarity.
+                <br />
+                <em className="editorial-accent">Better money habits.</em>
+              </Link>
+            </h3>
+            <p>Behind Hysab Kytab’s everyday money experiences: backend architecture, financial data, and connected systems.</p>
+            <p className="project-role">My contribution: backend & distributed systems</p>
+            <Link href="/work/hysab-kytab" className="text-link">
+              Explore Hysab Kytab <Arrow diagonal />
             </Link>
           </div>
-          <p className="studio-image-caption">Product mockups based on documentation. Demo content shown.</p>
-        </div>
-        <div className="experience-strip container">
-          <span>From first idea to what’s next.</span>
-          <div>
-            <span>Web & SaaS</span>
-            <span>AI & automation</span>
-            <span>Backend & cloud</span>
+          <div className="fintech-artwork">
+            <Link href="/work/hysab-kytab" className="project-visual-link" aria-label="Explore the Hysab Kytab case study">
+              <ProjectVisual slug="hysab-kytab" />
+            </Link>
+            <p className="image-note">Official Hysab Kytab product artwork.</p>
           </div>
-          <span className="strip-note">Working with teams worldwide ↗</span>
-        </div>
+        </article>
       </section>
 
-      <section id="selected-work" className="section-space">
-        <div className="container">
-          <div className="section-intro">
-            <div>
-              <p className="eyebrow">Selected work</p>
-              <h2>
-                Real products.
-                <br />
-                Thoughtfully built.
-              </h2>
-            </div>
-            <div>
-              <p>
-                A few things I’ve helped bring to life,
-                <br className="hidden md:block" /> from SaaS platforms to AI systems.
-              </p>
-              <Link href="/work" className="text-link mt-5">
-                View all work <Arrow diagonal />
-              </Link>
-            </div>
-          </div>
-          <div className="work-grid">
-            {['trackhrs', 'hysab-kytab', 'agentx'].map((slug, index) => {
-              const study = getCaseStudy(slug)
-              return study && <CaseStudyCard key={slug} study={study} size={index === 0 ? 'large' : 'default'} />
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section className="services-section section-space">
-        <div className="container">
-          <div className="section-intro">
-            <div>
-              <p className="eyebrow">How I can help</p>
-              <h2>
-                Your next step,
-                <br />
-                made simpler.
-              </h2>
-            </div>
-            <p>
-              One partner for the product your customers see
-              <br className="hidden md:block" /> and the engineering that makes it work.
-            </p>
-          </div>
-          <div className="offer-grid">
-            {offers.map((offer) => (
-              <Link key={offer.number} href="/services" className="offer-card">
-                <div className="offer-top">
-                  <span>{offer.number}</span>
-                  <Arrow diagonal />
-                </div>
-                <h3>{offer.title}</h3>
-                <p>{offer.description}</p>
-                <div className="offer-tags">{offer.tags}</div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section-space">
-        <div className="approach-grid container">
-          <div>
-            <p className="eyebrow">A person, not a pipeline</p>
-            <h2>
-              Big-picture thinking.
+      <section className="capabilities" aria-labelledby="services-heading">
+        <div className="capabilities-grid container">
+          <div className="capabilities-intro">
+            <p className="eyebrow">What can we build?</p>
+            <h2 id="services-heading">
+              Your ambition.
               <br />
-              Hands-on building.
+              <em className="editorial-accent">My expertise.</em>
             </h2>
-            <p className="approach-intro">You work directly with the person building your product. I bring the technical direction, practical decisions, and care it takes to get from “what if” to launch.</p>
-            <Link href="/about" className="text-link mt-6">
-              A little more about me <Arrow diagonal />
+            <p>A new product, a better website, or less manual work. Start with what your business needs.</p>
+            <Link href="/services" className="button-white">
+              Explore services <Arrow diagonal />
             </Link>
+            <span className="capabilities-note">From a focused project to an ongoing partnership.</span>
           </div>
-          <div className="process-list">
-            {[
-              ['01', 'Start with a conversation', 'We talk about your goals, your users, and what success looks like.'],
-              ['02', 'Make a clear plan', 'You get a practical scope, priorities, and a shared direction before we build.'],
-              ['03', 'Build, review, launch', 'Stay involved with regular progress updates and a product you can try along the way.'],
-            ].map(([number, title, description]) => (
-              <div key={number}>
-                <span>{number}</span>
+          <div className="capabilities-index">
+            {clientServices.map((service) => (
+              <Link key={service.slug} href={'/services?service=' + service.slug + '#service-detail'} className="capability-row">
+                <span className="capability-number">{service.number}</span>
                 <div>
-                  <h3>{title}</h3>
-                  <p>{description}</p>
+                  <h3>{service.title}</h3>
+                  <p>{service.outcome}</p>
                 </div>
-              </div>
+                <Arrow diagonal />
+              </Link>
             ))}
           </div>
         </div>
       </section>
-      <ContactCta />
+
+      <section className="collaboration-section container" aria-labelledby="collaboration-heading">
+        <div className="collaboration-intro">
+          <div>
+            <p className="eyebrow">Good work starts with a good conversation</p>
+            <h2 id="collaboration-heading">
+              One partner.
+              <br />
+              <em className="editorial-accent">From idea to launch.</em>
+            </h2>
+          </div>
+          <div>
+            <p>You work directly with me. Clear priorities, regular progress, and thoughtful engineering at every step.</p>
+            <Link href="/about" className="text-link">
+              Meet your developer <Arrow diagonal />
+            </Link>
+          </div>
+        </div>
+        <ol className="delivery-steps">
+          {process.map((step) => (
+            <li key={step.number}>
+              <span className="delivery-number">{step.number}</span>
+              <h3>{step.title}</h3>
+              <p>{step.description}</p>
+              <span className="delivery-result">
+                <span aria-hidden="true">↗</span> {step.deliverable}
+              </span>
+            </li>
+          ))}
+        </ol>
+      </section>
+      <ContactCta heading="Something good starts here." description="A new website, an app, or a workflow that needs fixing. Tell me what you have in mind." />
     </>
   )
 }

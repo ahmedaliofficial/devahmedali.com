@@ -47,17 +47,17 @@ export function ProjectVisual({ slug, preload = false }: { slug: string; preload
   return <Image src={presentation.image} alt={presentation.alt} width={1536} height={1024} sizes="(max-width: 767px) 100vw, 70vw" preload={preload} className="project-image" />
 }
 
-export default function CaseStudyCard({ study, size = 'default', className = '' }: { study: CaseStudy; size?: 'default' | 'large'; className?: string }) {
+export default function CaseStudyCard({ study, size = 'default', className = '', preload = false }: { study: CaseStudy; size?: 'default' | 'large'; className?: string; preload?: boolean }) {
   const p = projectPresentation[study.slug]
   return (
     <article className={'project-card ' + (size === 'large' ? 'project-featured ' : '') + className}>
       <Link href={'/work/' + study.slug} className="project-visual-link" aria-label={'View ' + study.hero.title + ' case study'} style={{ background: p?.color }}>
-        <ProjectVisual slug={study.slug} />
+        <ProjectVisual slug={study.slug} preload={preload} />
         <span className="project-open">
           <Arrow diagonal />
         </span>
-        <span className="image-note">{study.slug === 'hysab-kytab' ? 'Official product artwork' : study.slug === 'trackhrs' || study.slug === 'agentx' ? 'Product mockup · Demo data' : 'Illustrative workflow'}</span>
       </Link>
+      <p className="image-note">{study.slug === 'hysab-kytab' ? 'Official product artwork' : study.slug === 'trackhrs' || study.slug === 'agentx' ? 'Product mockup · Demo data' : 'Illustrative workflow'}</p>
       <div className="project-info">
         <div>
           <p className="eyebrow">{p?.category ?? study.hero.eyebrow}</p>
