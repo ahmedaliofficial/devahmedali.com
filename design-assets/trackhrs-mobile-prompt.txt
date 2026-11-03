@@ -1,0 +1,19 @@
+TrackHRS mobile source-based concept mockup
+Generator: built-in image_gen tool (no CLI fallback).
+Date: 2026-11-03
+Source: parent's direct source research of TrackHRS mobile Home/Projects screens, design tokens and bottom navigation.
+This is a source-based mockup with illustrative demo data, not an actual production screenshot. Website caption must label it as a mockup. It shows no running timer or time-capture controls.
+PNG: trackhrs-mobile-mockup.png
+Optimized WebP: trackhrs-mobile-mockup.webp
+Dimensions: 1536 x 1024
+
+Prompt:
+Use case: product-mockup
+Asset type: Landscape 3:2 portfolio project cover, source-based concept of the TrackHRS mobile application; not an actual app screenshot.
+Primary request: A premium editorial composition of two slim modern phones, near-front portrait screens, softly angled against a pale ice-blue and teal seamless studio backdrop with subtle realistic shadows. Full devices visible, restrained clean composition, no surrounding headline or labels.
+Visual style: Photorealistic device mockup with crisp believable mobile app UI based on the following exact product design. Plus Jakarta Sans typography. App background #F3F4F7, white rounded cards, dark navy #0F172A text, teal #0F9D8A controls, thin quiet separators, generous spacing.
+Phone 1 - Home screen: Header gradient from teal #0F9D8A to blue #2563EB with rounded 28px bottom corners. Small wordmark "TrackHRS" at top, greeting "Good morning, Ahmed". Three translucent small metric tiles labelled "Due today", "Overdue", "Open for me" with demo values 3, 1, 8. Below header on pale grey background, heading "Focus today", with three white compact task rows: "Review homepage", "Update project brief", "Share launch checklist", using small subtle status icons and due labels. Below, "At a glance" with two small summary cards, followed by a small project card with a progress bar. At bottom a floating rounded white navigation bar with five simple monochrome icons and text labels "Home", "My work", "Inbox", "Chat", "More"; Home active teal.
+Phone 2 - Projects screen: Top header "Projects" and small search icon. Compact horizontal filters "Active", "Mine", "Completed", "Archived", with Active selected teal. Three generous white project cards titled "Website redesign", "Client onboarding", "Product launch", each with a small "Active" badge, slim teal progress bar, task count and overlapping tiny initials avatars. Bottom same floating rounded navigation bar.
+Composition: Two phones dominate image, left slightly taller and forward, right slightly behind, large enough for main labels to read. Studio lighting, refined charcoal metallic frames, calm professional finish, 1536x1024.
+Constraints: This is illustrative demo data and source-based mobile mockup, not verified production screenshot. No running timer, no time-capture or play timer control, no app store badges, no invented additional mobile features, no customer claims, no real customer names, no people or hands, no coins or floating decorations, no watermark, no text outside devices.
+

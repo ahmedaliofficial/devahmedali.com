@@ -14,15 +14,24 @@ pnpm build    # production build
 
 ## Where the content lives
 
-All copy is data, not markup. You edit content files, never components.
+Project narratives and shared identity live in content files. Homepage composition and short page-specific copy live in their route components.
 
-| What | File |
-|---|---|
-| Name, role, tagline, email, socials, SEO defaults | `src/content/site.ts` |
-| Services on the homepage | `src/content/services.ts` |
-| Tech stack, marquee logos, headline stats | `src/content/skills.ts` |
-| Case studies | `src/content/case-studies/*.ts` |
-| Blog posts | `src/content/blog/*.mdx` |
+| What                                                | File                            |
+| --------------------------------------------------- | ------------------------------- |
+| Name, role, tagline, email, socials, SEO defaults   | `src/content/site.ts`           |
+| Homepage offers and concise project summaries       | `src/content/portfolio.ts`      |
+| Tech stack, marquee logos, headline stats           | `src/content/skills.ts`         |
+| Case studies                                        | `src/content/case-studies/*.ts` |
+| Blog posts                                          | `src/content/blog/*.mdx`        |
+| Shared portfolio visual styles                      | `src/assets/css/portfolio.css`  |
+| Optimized project imagery                           | `public/images/work/`           |
+| Original artwork, generation prompts and provenance | `design-assets/`                |
+
+### Portfolio presentation
+
+The homepage is intentionally short: a product-led introduction, selected work, three services, a working process and contact. Case-study pages keep architecture detail inside an expandable section. TrackHRS includes a seven-screen product gallery and a source-based mobile mockup. AgentX keeps its original public name and uses documentation-based mockups. Hysab Kytab uses official product artwork and clearly identifies the contribution as backend engineering.
+
+The contact form posts to the existing `/api/contact` route. Configure the Resend values from `.env.example` for delivery. If delivery fails, visitors can open their email application with their current form contents preserved. The browser form does not claim success unless the API confirms it.
 
 ### Adding a case study
 
@@ -75,23 +84,23 @@ The `/expertise` section is one article per role (software architect, backend en
 
 ```mdx
 ---
-title: 'Backend engineering for event-driven, high-throughput systems'   # H1
-seoTitle: 'Backend Engineer in Karachi, Pakistan'                          # <title>, keep under ~48 chars
+title: 'Backend engineering for event-driven, high-throughput systems' # H1
+seoTitle: 'Backend Engineer in Karachi, Pakistan' # <title>, keep under ~48 chars
 description: 'Under 155 characters. Used for meta, OG and the hero lead.'
-role: 'Backend Engineer'      # card title, Occupation name, prev/next label
-kind: role                    # role | technology
+role: 'Backend Engineer' # card title, Occupation name, prev/next label
+kind: role # role | technology
 eyebrow: 'Expertise · Backend'
 icon: 'lucide:server'
 order: 3
 published: '2026-09-08'
-updated: '2026-09-08'         # bump by hand when the content changes; drives sitemap + dateModified
+updated: '2026-09-08' # bump by hand when the content changes; drives sitemap + dateModified
 keywords: ['backend engineer Pakistan', 'remote backend engineer']
-stats:                        # exactly three, rendered as a StatsBand
+stats: # exactly three, rendered as a StatsBand
   - { value: '100K+', label: 'Events per day', description: 'Kafka in production' }
-caseStudies: ['hysab-kytab']  # slugs from src/content/case-studies; a typo fails the build
-skillGroups: ['Backend & APIs']  # titles from src/content/skills.ts; a typo fails the build
-blogTags: ['Kafka']           # related posts are ranked by tag overlap
-relatedPosts: []              # optional explicit post slugs, shown first
+caseStudies: ['hysab-kytab'] # slugs from src/content/case-studies; a typo fails the build
+skillGroups: ['Backend & APIs'] # titles from src/content/skills.ts; a typo fails the build
+blogTags: ['Kafka'] # related posts are ranked by tag overlap
+relatedPosts: [] # optional explicit post slugs, shown first
 faq:
   - question: '...'
     answer: >-

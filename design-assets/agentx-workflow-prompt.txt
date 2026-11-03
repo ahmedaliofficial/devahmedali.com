@@ -1,0 +1,23 @@
+AgentX workflow documentation-based mockup
+Generator: built-in image_gen tool (no CLI fallback).
+Date: 2026-11-03
+Inputs inspected before generation:
+- E:/github/agentx-mvp/public/media/docs/en/code-editor.webp
+- E:/github/agentx-mvp/public/media/docs/en/mobile-preview.webp
+User requested AgentX naming. Original WYAAN branding in documentation is replaced with AgentX in this mockup.
+This is a generated mockup based on documentation, not a raw application screenshot. It includes source demonstration projects and illustrative UI content, not real customer claims.
+PNG: agentx-workflow-mockup.png
+Optimized WebP: agentx-workflow-mockup.webp
+Dimensions: 1536 x 1024
+
+Prompt:
+Use case: compositing
+Asset type: Landscape 3:2 software portfolio mockup, 1536x1024.
+Primary request: Use the two supplied ACTUAL documentation screenshots as the visual content of a polished product mockup, with only the company branding renamed to AgentX. This is a mockup based on documentation, not a raw screenshot.
+Input image 1: actual code editor screenshot, preserve its dark interface structure, left assistant chat, file tree, syntax-highlighted code editor, top toolbar and violet accents. It is the dominant large browser frame in the background left/centre.
+Input image 2: actual mobile-preview screenshot, preserve its dark interface, preview toolbar and the central Pulse Fitness phone preview with lime accents, dark screen, gym photograph and three lower tabs. This becomes the overlapping smaller browser frame floating to the right foreground.
+Scene/backdrop: Pale lavender studio background with subtle soft realistic shadows beneath two very thin graphite browser frames. Clean near-front perspective, only a slight tilt for depth; screens should be faithful and readable, not dramatically skewed. Both frames fully visible with generous outer margins, large enough to show the UI. Main editor occupies roughly 70 percent width, second frame about 45 percent width, overlapping lower-right portion.
+Mandatory text replacement: Replace EVERY visible occurrence of the old product name "WYAAN" with exact "AgentX", including top-left wordmark and chat input placeholder ("Ask AgentX to build..."). No WYAAN text should remain anywhere. Preserve the existing purple symbol mark if useful. The product name must be AgentX only. Keep sample project names "Sweet Crumbs Bakery" and "Fitness Studio App" from references.
+Style/medium: Premium editorial software product photography/render with accurate screenshot compositing. Retain dark navy/charcoal source screens against pale lilac exterior. Minimal shadows and subtle edges.
+Constraints: Do not invent new controls, capabilities, claims, charts, badges or extra screen contents. Do not add outside captions, headings or decorative particles. No watermark. Preserve actual UI as closely as possible while rebranding, framing and compositing. The source demo data must remain distinguishable as preview content.
+

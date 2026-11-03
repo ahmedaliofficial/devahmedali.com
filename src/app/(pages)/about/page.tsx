@@ -1,35 +1,19 @@
-import ContactCta from '@/components/ContactCta'
-import StatsBand from '@/components/portfolio/StatsBand'
-import Chip from '@/components/ui/Chip'
-import SectionHeading from '@/components/ui/SectionHeading'
+﻿import ContactCta from '@/components/ContactCta'
 import { PERSON_ID, site, WEBSITE_ID } from '@/content/site'
-import { headlineStats, skillGroups } from '@/content/skills'
 import { jsonLd } from '@/lib/schema'
-import { Icon } from '@iconify/react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-const ABOUT_DESCRIPTION = `Ahmed Ali is a software architect and engineering lead with ${site.experience.words} across FinTech, AI and SaaS. How I work and what I believe about architecture.`
+const ABOUT_DESCRIPTION = `Meet Ahmed Ali, a software architect, engineering lead and founder of TrackHRS with ${site.experience.words} of experience across FinTech, AI and SaaS.`
 
 export const metadata: Metadata = {
   title: 'About',
   description: ABOUT_DESCRIPTION,
   alternates: { canonical: '/about' },
-  openGraph: {
-    type: 'profile',
-    title: 'About Ahmed Ali',
-    description: ABOUT_DESCRIPTION,
-    url: '/about',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'About Ahmed Ali',
-    description: ABOUT_DESCRIPTION,
-  },
+  openGraph: { type: 'profile', title: 'About Ahmed Ali', description: ABOUT_DESCRIPTION, url: '/about' },
+  twitter: { card: 'summary_large_image', title: 'About Ahmed Ali', description: ABOUT_DESCRIPTION },
 }
 
-// The full Person node (alumniOf, address, occupations) is emitted once in the root layout;
-// this page just declares itself the profile page for it.
 const profileJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ProfilePage',
@@ -41,207 +25,114 @@ const profileJsonLd = {
 }
 
 const principles = [
-  {
-    title: 'Architecture is a series of trade-offs, stated out loud',
-    description: 'There is no best design, only the one whose costs you have chosen deliberately. I would rather write down why we picked Kafka over a queue than let the reason evaporate in six months.',
-    icon: 'lucide:scale',
-  },
-  {
-    title: 'Design the failure path first',
-    description: 'The happy path is not the one that wakes you at 3am. Retries, circuit breakers and dead-letter queues belong in the first diagram, not the second incident review.',
-    icon: 'lucide:shield-alert',
-  },
-  {
-    title: 'Boundaries are an organisational tool',
-    description: 'Service boundaries decide who can ship without asking permission. Getting them right cut cross-team integration issues by more than half on my current team.',
-    icon: 'lucide:git-fork',
-  },
-  {
-    title: 'Build for the engineer who inherits it',
-    description: 'Clever code is a liability the moment its author moves on. I optimise for the person reading it a year from now, which is often me.',
-    icon: 'lucide:users',
-  },
+  { number: '01', title: 'Start with your business.', description: 'The best technical choice is the one that fits your users, budget and plans. I ask those questions before choosing the tools.' },
+  { number: '02', title: 'Keep you in the loop.', description: 'Clear priorities, regular demos and honest conversations about trade-offs. You should always know what is being built and why.' },
+  { number: '03', title: 'Make the handover easy.', description: 'Readable code, useful documentation and systems your team can run. The work should stay valuable after launch.' },
 ]
 
-const domains = [
-  {
-    title: 'FinTech & regulated systems',
-    description: 'Personal finance platforms delivered to digital banks, where precision is non-negotiable and downtime is a headline. Multi-database consolidation, encrypted transaction flow, audit trails and bank-grade availability.',
-    tags: ['Golang', 'Kafka', 'Multi-database', 'gRPC'],
-    icon: 'lucide:landmark',
-  },
-  {
-    title: 'AI & intelligent products',
-    description: 'Real-time computer vision and alerting, RAG pipelines, advisory chatbots and multi-agent platforms that generate working software. AI built as a service with evaluation and failure paths, not a demo.',
-    tags: ['LangChain', 'FastAPI', 'Multi-agent', 'MCP'],
-    icon: 'lucide:brain-circuit',
-  },
-  {
-    title: 'SaaS & product engineering',
-    description: 'Founding and shipping a live SaaS end to end: desktop agent, microservices, billing, admin portal and the deployment pipeline underneath. Plus MVPs taken from nothing to production for other teams.',
-    tags: ['NestJS', 'Rust · Tauri', 'Kubernetes', 'BullMQ'],
-    icon: 'lucide:rocket',
-  },
-  {
-    title: 'Ecommerce, CMS & ERP delivery',
-    description: 'Hundreds of client platforms across ecommerce, content management and ERP integration, covering high-traffic storefronts, admin systems and the third-party integrations that hold a business together.',
-    tags: ['Next.js', 'Laravel', 'REST', 'Integrations'],
-    icon: 'lucide:shopping-cart',
-  },
-]
-
-const leadership = [
-  { value: '20+', label: 'Engineers led', description: 'Across AI, ecommerce and CMS product lines' },
-  { value: '50%+', label: 'Fewer integration issues', description: 'From clear service boundaries and ownership' },
-  { value: '~70%', label: 'Less deployment effort', description: 'Kubernetes and Docker replacing manual releases' },
-]
-
-const certifications = ['Microservices Foundations (Kong)', 'Docker Foundations (Docker)', 'Microsoft Azure AI Essentials (Microsoft)', 'Generative AI with Multi-Agent LangChain', 'Machine Learning Foundations: Statistics']
-
-const Page = () => (
-  <>
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(profileJsonLd) }} />
-
-    <section className="pt-32.5 pb-12 md:pt-40 md:pb-16 lg:pt-50">
-      <div className="container">
-        <p className="text-default-500 text-sm font-medium tracking-wide uppercase">About</p>
-        <h1 className="font-heading text-default-900 mt-3 max-w-4xl text-4xl leading-tight font-medium tracking-tight md:text-6xl lg:text-7xl">I build the systems underneath the product</h1>
-
-        <div className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-7">
-            <div className="text-default-500 flex flex-col gap-4 text-lg md:text-xl">
+export default function AboutPage() {
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(profileJsonLd) }} />
+      <section className="pt-36 pb-16 md:pt-44 md:pb-24">
+        <div className="container grid gap-12 lg:grid-cols-[1.3fr_0.8fr] lg:items-start lg:gap-20">
+          <div>
+            <p className="text-primary text-xs font-semibold tracking-[0.18em] uppercase">A little about me</p>
+            <h1 className="mt-5 text-[2.75rem] leading-[1.08] font-medium tracking-[-0.045em] md:text-[4.5rem]">
+              Hi, I&apos;m Ahmed.
+              <br />
+              <span className="text-primary">I build things that last.</span>
+            </h1>
+            <div className="text-default-600 mt-7 max-w-xl space-y-5 text-base leading-relaxed md:text-lg">
+              <p>I&apos;m a software architect and engineering lead with {site.experience.words} of experience building products across FinTech, AI and SaaS.</p>
+              <p>My work connects the product your customers use with the systems that keep it running. I can help you go from a first idea to launch, or improve a platform you already have.</p>
               <p>
-                I&apos;m {site.name}, a software architect and engineering lead. After {site.experience.words} in the industry, my work has moved from writing FinTech backends to designing the systems around them and leading the teams that build them.
-              </p>
-              <p>Most of what I do sits at the point where a product starts outgrowing its original architecture. That is rarely a coding problem. It is usually a boundaries problem, a data-flow problem, or a set of trade-offs nobody wrote down when the first version shipped.</p>
-              <p>I also founded TrackHRS, which taught me the parts of software that architecture diagrams leave out: pricing, support, deployment on a Sunday, and the difference between a system that works and a product people pay for.</p>
-              <p>
-                If you want the detail, I&apos;ve written up{' '}
-                <Link href="/expertise" className="text-default-900 font-medium underline decoration-2 underline-offset-4 transition-opacity hover:opacity-70">
-                  how that plays out role by role
+                I also founded{' '}
+                <Link href="/work/trackhrs" className="text-primary decoration-primary/30 hover:decoration-primary font-medium underline underline-offset-4">
+                  TrackHRS
                 </Link>
-                : architecture, backend, full-stack, AI and leading teams.
+                . Building my own product means I think about the things around the code too: onboarding, support, reliability and what makes a product useful every day.
               </p>
             </div>
+            <a href={site.socials.linkedin} target="_blank" rel="noreferrer" className="text-default-900 mt-7 inline-flex items-center gap-4 text-sm font-semibold underline-offset-4 hover:underline">
+              Find me on LinkedIn <span aria-hidden="true">↗</span>
+            </a>
           </div>
-
-          <div className="lg:col-span-5">
-            <div className="border-default-200 rounded-3xl border bg-white p-6 md:p-8">
-              <h2 className="font-heading text-default-900 text-lg font-semibold">At a glance</h2>
-              <dl className="mt-5 flex flex-col gap-4">
-                <div>
-                  <dt className="text-default-500 text-sm">Role</dt>
-                  <dd className="text-default-900 font-medium">{site.roleFull}</dd>
-                  <dd className="text-default-500 mt-0.5 text-sm">{site.specialisms}</dd>
-                </div>
-                <div>
-                  <dt className="text-default-500 text-sm">Availability</dt>
-                  <dd className="text-default-900 font-medium">{site.availability}</dd>
-                </div>
-                <div>
-                  <dt className="text-default-500 text-sm">Education</dt>
-                  <dd className="text-default-900 font-medium">BS Software Engineering, Virtual University of Pakistan</dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-default-200 mt-12 border-t pt-10">
-          <StatsBand stats={headlineStats} columns={4} />
-        </div>
-      </div>
-    </section>
-
-    <section className="py-12 md:py-20">
-      <div className="container">
-        <SectionHeading align="left" eyebrow="How I work" title="Four things I keep coming back to" />
-
-        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
-          {principles.map((principle) => (
-            <div key={principle.title} className="border-default-200 rounded-3xl border bg-white p-6 md:p-8">
-              <span className="bg-default-100 text-default-700 mb-5 inline-grid size-11 place-items-center rounded-full">
-                <Icon icon={principle.icon} className="size-5" />
-              </span>
-              <h3 className="font-heading text-default-900 text-lg font-semibold md:text-xl">{principle.title}</h3>
-              <p className="text-default-500 mt-2.5 text-base">{principle.description}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section className="py-12 md:py-20">
-      <div className="container">
-        <SectionHeading align="left" eyebrow="Domains" title="Where I've done it" description="The kinds of systems I've spent the most time inside, and what each one taught me about designing for its particular failure mode." />
-
-        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
-          {domains.map((domain) => (
-            <div key={domain.title} className="border-default-200 rounded-3xl border bg-white p-6 md:p-8">
-              <span className="bg-default-100 text-default-700 mb-5 inline-grid size-11 place-items-center rounded-full">
-                <Icon icon={domain.icon} className="size-5" />
-              </span>
-
-              <h3 className="font-heading text-default-900 text-xl font-semibold">{domain.title}</h3>
-              <p className="text-default-500 mt-2.5 text-base">{domain.description}</p>
-
-              <div className="mt-5 flex flex-wrap gap-1.5">
-                {domain.tags.map((tag) => (
-                  <Chip key={tag}>{tag}</Chip>
-                ))}
+          <aside className="rounded-3xl bg-[#eaf0ff] p-7 md:p-10 lg:mt-10">
+            <span aria-hidden="true" className="bg-primary font-heading flex size-20 items-center justify-center rounded-2xl text-3xl font-medium tracking-tight text-white">
+              AA<span className="text-white/60">.</span>
+            </span>
+            <p className="text-default-900 mt-8 text-2xl font-medium">Ahmed Ali</p>
+            <p className="text-default-600 mt-2 text-sm leading-relaxed">
+              {site.roleFull}
+              <br />
+              Founder of TrackHRS
+            </p>
+            <dl className="border-primary/15 mt-8 space-y-5 border-t pt-6">
+              <div>
+                <dt className="text-default-500 text-xs">Experience</dt>
+                <dd className="text-default-900 mt-1 text-base font-medium">{site.experience.label} years building software</dd>
               </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="border-default-200 mt-10 rounded-3xl border bg-white p-6 md:p-8">
-          <h3 className="font-heading text-default-900 text-base font-semibold">Leading teams</h3>
-          <p className="text-default-500 mt-2 max-w-2xl text-base">Alongside the architecture work, I lead engineering teams, setting standards, drawing service boundaries and mentoring engineers on system design and what it takes to run production well.</p>
-          <div className="mt-6">
-            <StatsBand stats={leadership} columns={3} />
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="toolkit" className="scroll-mt-32 py-12 md:py-20">
-      <div className="container">
-        <SectionHeading align="left" eyebrow="Toolkit" title="What I work with" />
-
-        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {skillGroups.map((group) => (
-            <div key={group.title} className="border-default-200 rounded-2xl border bg-white p-6">
-              <div className="flex items-center gap-2.5">
-                <span className="bg-default-100 text-default-700 grid size-9 place-items-center rounded-full">
-                  <Icon icon={group.icon} className="size-4.5" />
-                </span>
-                <h3 className="font-heading text-default-900 text-base font-semibold">{group.title}</h3>
+              <div>
+                <dt className="text-default-500 text-xs">Working together</dt>
+                <dd className="text-default-900 mt-1 text-base leading-relaxed">{site.availability}</dd>
               </div>
-              <div className="mt-4 flex flex-wrap gap-1.5">
-                {group.items.map((item) => (
-                  <Chip key={item}>{item}</Chip>
-                ))}
+              <div>
+                <dt className="text-default-500 text-xs">Education</dt>
+                <dd className="text-default-900 mt-1 text-sm leading-relaxed">
+                  BS Software Engineering
+                  <br />
+                  Virtual University of Pakistan
+                </dd>
               </div>
-            </div>
-          ))}
+            </dl>
+          </aside>
         </div>
-
-        <div className="border-default-200 mt-10 rounded-2xl border bg-white p-6 md:p-8">
-          <h3 className="font-heading text-default-900 text-base font-semibold">Certifications</h3>
-          <ul className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2">
-            {certifications.map((certification) => (
-              <li key={certification} className="text-default-600 flex items-start gap-2.5 text-base">
-                <Icon icon="lucide:circle-check" className="text-default-400 mt-1 size-4 shrink-0" />
-                {certification}
-              </li>
+      </section>
+      <section className="border-default-200 border-y bg-white py-16 md:py-24">
+        <div className="container">
+          <p className="text-primary text-xs font-semibold tracking-[0.18em] uppercase">What you can expect</p>
+          <h2 className="mt-4 max-w-xl text-3xl font-medium tracking-tight md:text-4xl">
+            Good software starts
+            <br />
+            with a good working relationship.
+          </h2>
+          <div className="mt-12 grid gap-9 md:grid-cols-3 md:gap-12">
+            {principles.map((principle) => (
+              <div key={principle.number} className="border-default-200 border-t pt-5">
+                <span className="text-primary text-xs font-semibold">{principle.number}</span>
+                <h3 className="mt-6 text-xl font-medium">{principle.title}</h3>
+                <p className="text-default-600 mt-3 text-base leading-relaxed">{principle.description}</p>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
-      </div>
-    </section>
-
-    <ContactCta />
-  </>
-)
-
-export default Page
+      </section>
+      <section id="toolkit" className="scroll-mt-28 py-16 md:py-24">
+        <div className="container grid gap-8 md:grid-cols-2 md:gap-20">
+          <div>
+            <p className="text-primary text-xs font-semibold tracking-[0.18em] uppercase">Experience that connects</p>
+            <h2 className="mt-4 max-w-md text-3xl font-medium tracking-tight md:text-4xl">
+              From the first screen
+              <br />
+              to the systems behind it.
+            </h2>
+          </div>
+          <div>
+            <p className="text-default-600 text-base leading-relaxed">I work across web products, backend systems, AI and cloud infrastructure. That breadth helps me see the whole picture and make the pieces work together.</p>
+            <p className="text-default-600 mt-4 text-base leading-relaxed">My usual tools include React, Next.js, NestJS, Go, Python, Kafka and Kubernetes. The choice always comes back to what your project needs.</p>
+            <div className="mt-7 flex flex-wrap gap-x-8 gap-y-4">
+              <Link href="/work" className="text-primary inline-flex items-center gap-3 text-sm font-semibold underline-offset-4 hover:underline">
+                Explore my work <span aria-hidden="true">↗</span>
+              </Link>
+              <Link href="/expertise" className="text-default-700 inline-flex items-center gap-3 text-sm font-semibold underline-offset-4 hover:underline">
+                Technical expertise <span aria-hidden="true">↗</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+      <ContactCta heading="Let's build something useful." description="Tell me where you are now and where you want to go. We'll work out the next step together." />
+    </>
+  )
+}

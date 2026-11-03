@@ -1,0 +1,30 @@
+Generated portfolio concept imagery
+Generator: built-in image_gen tool (no CLI fallback).
+Date: 2026-11-03
+
+These visuals are illustrative portfolio concepts. They are not real screenshots of Hysab Kytab or AgentX and should be labelled as concept visuals wherever a visitor might otherwise mistake them for shipped UI. Any numbers are synthetic display content, not customer or business metrics.
+
+File: hysab-kytab-concept.png
+Dimensions: 1536 x 1024
+Prompt:
+Use case: product-mockup
+Asset type: portfolio case-study cover, landscape 3:2 aspect ratio.
+Primary request: A premium editorial product mockup of two elegant modern smartphones showing an illustrative personal finance application. This is conceptual imagery, not a screenshot of a real existing product.
+Scene/backdrop: Seamless pale sage and warm cream studio backdrop, subtle grain and soft daylight shadows. The two smartphones sit at slightly different depths with calm asymmetric balance, occupy about 70% of composition. Mostly front-facing screens angled just enough for depth. Full devices visible.
+Style/medium: Photorealistic high-end product photography with immaculate screen graphics, clean industrial design, thin charcoal metallic frames.
+Screen content: warm white finance UI, simple navy text, muted green and cobalt accent. One screen shows a monthly spending chart and a balance card; the second shows a tasteful ring spending chart and a short category list. Use only these short labels: "Overview", "Balance", "Monthly spending", "Spending". Small believable illustrative numbers only. Plenty of white space inside UI.
+Color palette: Sage, cream, dark navy, restrained cobalt blue.
+Constraints: No real bank logos, no brand logos, no customer names or claims, no floating decorations, no coins, no hands, no watermark, no captions outside devices, no extraneous text. Calm refined composition suitable for an elegant software architect portfolio.
+
+File: agentx-concept.png
+Dimensions: 1536 x 1024
+Prompt:
+Use case: ui-mockup
+Asset type: landscape 3:2 portfolio project cover.
+Primary request: A premium conceptual product visualization for an AI application builder. Two elegantly layered near-front-view browser windows floating just above a pale lavender-blue studio surface. A larger bright-white application preview on right and a slightly smaller prompt panel on left, both fully within frame with generous outer breathing room.
+Scene/backdrop: Seamless pale periwinkle background, very subtle studio gradient and soft realistic shadows; no landscape or real environment.
+Style/medium: Polished 3D editorial product render with razor sharp front-facing screen graphics. Sophisticated software studio portfolio aesthetic. Subtle perspective only.
+Screen content: The left white browser panel shows a simple navy heading "What would you like to build?" and a prompt field saying "A workspace for my team", with a small cobalt action button and 3 compact rows beneath labelled "Plan", "Build", "Review". The right white browser window shows a clean project dashboard preview with a navy narrow sidebar, the heading "Team workspace", three small summary cards and a restrained blue bar chart, plus a few simple task rows. Tiny code panel layered along the bottom edge of the larger window: charcoal background with abstract syntax lines in muted blue, white and green. Precise generous spacing, neat UI, readable large labels.
+Palette: white, pale lavender, cobalt #3159ee, dark navy #17202e.
+Constraints: Conceptual illustration only; no real company logos, no customer names, no claims of measured results, no fake glowing AI brains, no particles, no decorative floating spheres, no caption outside windows, no watermark. Keep windows large enough to read as a thumbnail and the entire scene calm and minimal.
+

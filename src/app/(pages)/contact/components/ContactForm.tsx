@@ -1,122 +1,145 @@
-'use client'
+﻿'use client'
 
 import { site } from '@/content/site'
-import { Icon } from '@iconify/react'
-import { useState } from 'react'
+import Link from 'next/link'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 
 type FormState = 'idle' | 'sending' | 'sent' | 'error'
 
-const inputClasses = 'border-default-200 bg-default-100 text-default-900 placeholder:text-default-400 focus:border-default-400 w-full rounded-2xl border px-4 py-3 text-base transition-all focus:outline-none'
+const inputClasses = 'w-full rounded-xl border border-default-200 bg-[#f8f9fc] px-4 py-3 text-base text-default-900 placeholder:text-default-500 transition-colors focus:border-primary focus:outline-2 focus:outline-offset-2 focus:outline-primary disabled:opacity-70'
+const labelClasses = 'mb-2 block text-sm font-medium text-default-800'
 
-const ContactForm = () => {
+const createEmailHref = (formData: FormData) => {
+  const subject = String(formData.get('subject') || 'New project enquiry')
+  const body = `Name: ${String(formData.get('name') || '')}\nEmail: ${String(formData.get('email') || '')}\n\n${String(formData.get('message') || '')}`
+  return `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+}
+
+export default function ContactForm() {
   const [state, setState] = useState<FormState>('idle')
   const [error, setError] = useState('')
+  const [emailHref, setEmailHref] = useState(`mailto:${site.email}`)
+  const feedbackRef = useRef<HTMLDivElement>(null)
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    if (state === 'sent' || state === 'error') feedbackRef.current?.focus()
+  }, [state])
+
+  const handleChange = (event: FormEvent<HTMLFormElement>) => {
+    setEmailHref(createEmailHref(new FormData(event.currentTarget)))
+    if (state === 'error') setError('Your changes have not been sent. Try again or send the updated message by email.')
+  }
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setState('sending')
-    setError('')
+    if (state === 'sending') return
 
     const formData = new FormData(event.currentTarget)
     const payload = Object.fromEntries(formData.entries())
+    setEmailHref(createEmailHref(formData))
+    setState('sending')
+    setError('')
+
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 15000)
 
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
+        signal: controller.signal,
       })
-
       const data = await response.json().catch(() => ({}))
-
-      if (response.ok) {
+      if (response.ok && data.ok === true) {
         setState('sent')
-        return
+      } else {
+        setError(data.fallback ? 'Your message has not been sent. Please send it by email using the link below.' : typeof data.error === 'string' ? data.error : 'Your message could not be sent. Please try again or send it by email.')
+        setState('error')
       }
-
-      setState('error')
-      setError(data.error ?? 'Something went wrong sending your message.')
     } catch {
+      setError('We could not confirm delivery. Your message is still here. Please try again or send it by email.')
       setState('error')
-      setError('Could not reach the server.')
+    } finally {
+      clearTimeout(timeout)
     }
   }
 
   if (state === 'sent') {
     return (
-      <div className="flex flex-col items-start">
-        <span className="bg-primary-2/10 text-primary-2 mb-5 inline-grid size-12 place-items-center rounded-full">
-          <Icon icon="lucide:check" className="size-6" />
+      <div ref={feedbackRef} tabIndex={-1} role="status" className="rounded-2xl bg-[#edf7f2] p-6 focus:outline-none">
+        <span aria-hidden="true" className="mb-5 grid size-10 place-items-center rounded-full bg-[#25816a] text-white">
+          ✓
         </span>
-        <h2 className="font-heading text-default-900 text-2xl font-semibold">Message sent</h2>
-        <p className="text-default-500 mt-2.5 text-base">Thanks for reaching out. I&apos;ll get back to you within a day or so. If it&apos;s urgent, email me directly at {site.email}.</p>
+        <h3 className="text-2xl font-medium">Your message is on its way.</h3>
+        <p className="text-default-600 mt-3 text-base leading-relaxed">Thanks for telling me about your project. I&apos;ll get back to you personally.</p>
+        <Link href="/work" className="text-primary mt-6 inline-flex items-center gap-3 text-sm font-semibold underline-offset-4 hover:underline">
+          Explore my work <span aria-hidden="true">↗</span>
+        </Link>
       </div>
     )
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      {/* Honeypot: hidden from people, tempting to bots */}
-      <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="pointer-events-none absolute h-0 w-0 opacity-0" />
-
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div>
-          <label htmlFor="name" className="text-default-700 mb-1.5 block text-sm font-medium">
-            Name
-          </label>
-          <input id="name" name="name" type="text" required maxLength={100} placeholder="Your name" className={inputClasses} />
+    <form onSubmit={handleSubmit} onChange={handleChange} aria-busy={state === 'sending'}>
+      <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" aria-label="Leave this field empty" className="pointer-events-none absolute h-0 w-0 opacity-0" />
+      <fieldset disabled={state === 'sending'} className="flex min-w-0 flex-col gap-5">
+        <legend className="sr-only">Your contact details and project</legend>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label htmlFor="name" className={labelClasses}>
+              Your name <span className="text-primary">*</span>
+            </label>
+            <input id="name" name="name" autoComplete="name" type="text" required maxLength={100} placeholder="Alex Taylor" className={inputClasses} />
+          </div>
+          <div>
+            <label htmlFor="email" className={labelClasses}>
+              Email address <span className="text-primary">*</span>
+            </label>
+            <input id="email" name="email" autoComplete="email" type="email" required maxLength={200} placeholder="alex@company.com" className={inputClasses} />
+          </div>
         </div>
-
         <div>
-          <label htmlFor="email" className="text-default-700 mb-1.5 block text-sm font-medium">
-            Email
+          <label htmlFor="subject" className={labelClasses}>
+            What can I help with? <span className="text-default-500 font-normal">(optional)</span>
           </label>
-          <input id="email" name="email" type="email" required maxLength={200} placeholder="you@company.com" className={inputClasses} />
+          <select id="subject" name="subject" defaultValue="" className={`${inputClasses} pr-10`}>
+            <option value="">Choose a starting point</option>
+            <option value="Product development">A website, app or new product</option>
+            <option value="AI and automation">AI or workflow automation</option>
+            <option value="Architecture and scaling">Improving an existing system</option>
+            <option value="Project discussion">Something else / not sure yet</option>
+          </select>
         </div>
-      </div>
-
-      <div>
-        <label htmlFor="subject" className="text-default-700 mb-1.5 block text-sm font-medium">
-          Subject
-        </label>
-        <input id="subject" name="subject" type="text" maxLength={200} placeholder="What's this about?" className={inputClasses} />
-      </div>
-
-      <div>
-        <label htmlFor="message" className="text-default-700 mb-1.5 block text-sm font-medium">
-          Message
-        </label>
-        <textarea id="message" name="message" required rows={6} maxLength={5000} placeholder="Tell me what you're building, and where it's getting hard." className={`${inputClasses} resize-y`} />
-      </div>
-
-      {state === 'error' && (
-        <div className="border-default-200 bg-default-100 rounded-2xl border p-4">
-          <p className="text-default-700 text-sm">{error}</p>
-          <p className="text-default-500 mt-1 text-sm">
-            You can always email me directly at{' '}
-            <a href={`mailto:${site.email}`} className="text-default-900 font-medium underline decoration-2 underline-offset-4">
-              {site.email}
-            </a>
-            .
+        <div>
+          <label htmlFor="message" className={labelClasses}>
+            Tell me a little more <span className="text-primary">*</span>
+          </label>
+          <textarea id="message" name="message" required rows={5} maxLength={5000} placeholder="What would you like to build or improve? Share any goals, timeline or links that would help." aria-describedby="message-help" className={`${inputClasses} resize-y`} />
+          <p id="message-help" className="text-default-500 mt-2 text-xs leading-relaxed">
+            No technical brief needed. Just tell me what you have in mind.
           </p>
         </div>
+      </fieldset>
+      {state === 'error' && (
+        <div ref={feedbackRef} role="alert" tabIndex={-1} className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 focus:outline-none">
+          <p className="text-default-800 text-sm leading-relaxed">{error}</p>
+          <a href={emailHref} className="text-primary mt-3 inline-flex items-center gap-2 text-sm font-semibold underline underline-offset-4">
+            Send this message by email <span aria-hidden="true">↗</span>
+          </a>
+          <p className="text-default-600 mt-1 text-xs leading-relaxed">Opens your email app with your current details and message filled in.</p>
+        </div>
       )}
-
-      <button type="submit" disabled={state === 'sending'} className="bg-default-900 mt-2 inline-flex items-center justify-center gap-2 self-start rounded-full px-8 py-3.5 text-sm font-medium text-white transition-all hover:scale-95 disabled:cursor-not-allowed disabled:opacity-60">
-        {state === 'sending' ? (
-          <>
-            <Icon icon="lucide:loader-circle" className="size-4.5 animate-spin" />
-            Sending
-          </>
-        ) : (
-          <>
-            Send message
-            <Icon icon="lucide:arrow-right" className="size-4.5" />
-          </>
-        )}
+      <button type="submit" disabled={state === 'sending'} className="bg-primary mt-6 flex w-full items-center justify-between gap-5 rounded-full px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#2446c4] disabled:cursor-wait disabled:opacity-60">
+        <span aria-live="polite">{state === 'sending' ? 'Sending your message…' : 'Send project enquiry'}</span>
+        <span aria-hidden="true">{state === 'sending' ? '…' : '↗'}</span>
       </button>
+      <p className="text-default-500 mt-4 text-xs leading-relaxed">
+        Your details are used to respond to your enquiry.{' '}
+        <Link href="/privacy-policy" className="hover:text-default-900 underline underline-offset-2">
+          Privacy policy
+        </Link>
+      </p>
     </form>
   )
 }
-
-export default ContactForm

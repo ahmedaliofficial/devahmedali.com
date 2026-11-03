@@ -1,0 +1,26 @@
+﻿Hysab Kytab official product artwork
+Retrieved: 2026-11-03
+Provenance page: https://www.hysabkytab.com/
+
+hysab-official.png / hysab-official.webp
+https://www.hysabkytab.com/_next/static/media/hero%20section%20mockups.23fb92aa.png
+Official homepage hero: two mobile device mockups.
+Original: 2256 x 2800 RGBA PNG. WebP: resized to 1200px wide, transparency retained.
+
+hysab-pfm.svg / hysab-pfm.webp
+https://www.hysabkytab.com/pfm-hero.svg
+Official PFM statement feature illustration.
+Original SVG viewBox: 0 0 517 564. WebP: rendered at 800px wide, transparency retained.
+
+hysab-insights.svg / hysab-insights.webp
+https://www.hysabkytab.com/insights-1.svg
+Official spending insights feature illustration.
+Original SVG viewBox: 0 0 448 563. WebP: rendered at 800px wide, transparency retained.
+
+hysab-savings.svg / hysab-savings.webp
+https://www.hysabkytab.com/saving-goals-1.svg
+Official savings goals feature illustration.
+Original SVG viewBox: 0 0 517 589. WebP: rendered at 800px wide, transparency retained.
+
+Original images are copied unchanged. WebP derivatives only render/resize and compress the official artwork.
+Product interface artwork belongs to Hysab Kytab. Ahmed Ali's portfolio role is backend architecture and distributed systems; these images do not assert interface design authorship.

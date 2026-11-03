@@ -6,8 +6,8 @@ export const site = {
   roleFull: 'Software Architect & Engineering Lead',
   /** Supporting line that carries the breadth the title alone cannot */
   specialisms: 'Distributed systems · AI platforms · Full-stack delivery',
-  tagline: 'I design systems that scale.',
-  intro: 'I architect event-driven backends, cloud infrastructure and production AI systems, from first diagram to live traffic.',
+  tagline: 'Your next idea. Built beautifully.',
+  intro: 'I help businesses turn ideas into useful software, from web products and SaaS platforms to AI and automation.',
   availability: 'Open to remote and hybrid work worldwide',
   /** Years in the industry. One source so the hero stats, About copy and articles never disagree. */
   experience: { years: 6, label: '6+', words: 'six years' },
@@ -36,7 +36,7 @@ export const site = {
     calendly: 'https://calendly.com/ahmedalidev786/30min',
   },
   seo: {
-    description: 'Ahmed Ali is a software architect and engineering lead specialising in distributed systems, event-driven microservices and production AI systems.',
+    description: 'Turn your next idea into a product with Ahmed Ali. Web apps, SaaS platforms, AI automation and software architecture, from first conversation to launch.',
     keywords: [
       'software architect',
       'engineering lead',

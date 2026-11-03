@@ -1,60 +1,40 @@
-import ContactCta from '@/components/ContactCta'
+﻿import ContactCta from '@/components/ContactCta'
 import CaseStudyCard from '@/components/portfolio/CaseStudyCard'
-import { caseStudies } from '@/content/case-studies'
+import { getCaseStudy } from '@/content/case-studies'
 import { site } from '@/content/site'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Case Studies: Distributed Systems, FinTech & AI',
-  description: 'Case studies in distributed systems, FinTech, real-time AI and SaaS, each one walking the architecture from first constraint to production pipeline.',
+  title: 'Selected Work & Case Studies',
+  description: 'Explore software built by Ahmed Ali: TrackHRS, financial platforms, AI agents and real-time safety systems.',
   alternates: { canonical: '/work' },
 }
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'ItemList',
-  itemListElement: caseStudies.map((study, index) => ({
-    '@type': 'ListItem',
-    position: index + 1,
-    name: study.hero.title,
-    url: `${site.url}/work/${study.slug}`,
-  })),
-}
+const studies = ['trackhrs', 'hysab-kytab', 'agentx', 'omnivision'].map(getCaseStudy).filter((study) => study !== undefined)
 
-const Page = () => {
-  const [flagship, ...rest] = caseStudies
-
+export default function Page() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-
-      <section className="pt-32.5 pb-12 md:pt-40 md:pb-16 lg:pt-50">
-        <div className="container">
-          <p className="text-default-500 text-sm font-medium tracking-wide uppercase">Case studies</p>
-          <h1 className="font-heading text-default-900 mt-3 max-w-4xl text-4xl leading-tight font-medium tracking-tight md:text-6xl lg:text-7xl">Systems I designed and shipped</h1>
-          <p className="text-default-500 mt-5 max-w-3xl text-lg md:text-xl">
-            Each of these platforms had a different constraint at its centre: throughput, precision, latency or ambiguity. The write-ups follow the architecture rather than the feature list, because the architecture is where the decisions live.
-          </p>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: studies.map((study, i) => ({ '@type': 'ListItem', position: i + 1, name: study.hero.title, url: site.url + '/work/' + study.slug })) }) }}
+      />
+      <section className="page-intro container">
+        <p className="eyebrow">The portfolio</p>
+        <h1>
+          Ideas made real<span className="text-primary">.</span>
+        </h1>
+        <p>A selection of products and platforms I’ve built, with the thinking behind them.</p>
+      </section>
+      <section className="container pb-20">
+        <h2 className="sr-only">Selected projects</h2>
+        <div className="work-grid">
+          {studies.map((study, i) => (
+            <CaseStudyCard key={study.slug} study={study} size={i === 0 ? 'large' : 'default'} />
+          ))}
         </div>
       </section>
-
-      <section className="pb-16 md:pb-24">
-        <div className="container">
-          <div className="flex flex-col gap-4">
-            {flagship && <CaseStudyCard study={flagship} size="large" />}
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {rest.map((study) => (
-                <CaseStudyCard key={study.slug} study={study} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       <ContactCta />
     </>
   )
 }
-
-export default Page

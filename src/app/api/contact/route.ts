@@ -2,6 +2,9 @@ import { site } from '@/content/site'
 import { NextResponse } from 'next/server'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const MAX_NAME_LENGTH = 100
+const MAX_EMAIL_LENGTH = 200
+const MAX_SUBJECT_LENGTH = 200
 const MAX_MESSAGE_LENGTH = 5000
 
 type ContactPayload = {
@@ -20,7 +23,11 @@ export const POST = async (request: Request) => {
   let payload: ContactPayload
 
   try {
-    payload = await request.json()
+    const body: unknown = await request.json()
+    if (body === null || typeof body !== 'object' || Array.isArray(body)) {
+      return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 })
+    }
+    payload = body as ContactPayload
   } catch {
     return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 })
   }
@@ -37,6 +44,10 @@ export const POST = async (request: Request) => {
 
   if (!name || !email || !message) {
     return NextResponse.json({ error: 'Name, email and message are all required.' }, { status: 400 })
+  }
+
+  if (name.length > MAX_NAME_LENGTH || email.length > MAX_EMAIL_LENGTH || subject.length > MAX_SUBJECT_LENGTH) {
+    return NextResponse.json({ error: 'Please keep your name under 100 characters, and your email and project type under 200 characters.' }, { status: 400 })
   }
 
   if (!EMAIL_PATTERN.test(email)) {

@@ -3,33 +3,32 @@ import type { CaseStudy } from './types'
 export const hysabKytab: CaseStudy = {
   slug: 'hysab-kytab',
   meta: {
-    title: 'Hysab Kytab: FinTech platform for digital banks',
-    description: 'Backend architecture for a B2B/B2C finance platform serving digital banks: Golang and NestJS microservices, 100K+ Kafka events a day, five databases.',
+    title: 'Hysab Kytab: personal finance for financial institutions',
+    description: 'Backend architecture and distributed systems for a personal finance platform that connects financial data with budgeting, spending insights and savings goals.',
   },
   hero: {
     eyebrow: 'FinTech · Personal Finance Platform',
     title: 'Hysab Kytab',
-    subtitle: 'A B2B/B2C personal finance platform used by digital banks, where a rounding error is a customer complaint and downtime is a headline.',
+    subtitle: 'Personal finance tools that help banking customers understand spending, manage budgets and track savings. My work focused on the backend systems behind the experience.',
     role: 'Backend Architecture & Distributed Systems',
-    links: [{ label: 'Visit hysabkytab.com', href: 'https://hysabkytab.com', icon: 'lucide:external-link' }],
+    links: [{ label: 'Visit hysabkytab.com', href: 'https://www.hysabkytab.com/', icon: 'lucide:external-link' }],
   },
   stats: [
-    { value: '100K+', label: 'Financial events per day', description: 'Across a three-broker Kafka cluster' },
-    { value: '5', label: 'Databases unified', description: 'PostgreSQL, MongoDB, MySQL, Oracle and SQL Server' },
-    { value: '60%+', label: 'Lower read latency', description: 'From a Redis cache-first strategy' },
+    { value: 'Unified', label: 'Financial data', description: 'Connected sources behind a shared service layer' },
+    { value: 'Personal', label: 'Spending insights', description: 'Categorization, budgeting and savings goals' },
+    { value: 'API-first', label: 'Bank integrations', description: 'Personal finance tools for financial institutions' },
   ],
   overview: {
-    heading: 'One financial picture from many disagreeing sources',
+    heading: 'Making financial data useful to people',
     paragraphs: [
-      'Hysab Kytab gives banking customers a single view of their money, covering balances, spending, categories and insights, aggregated across multiple banks. It is delivered to digital banking leaders including Temenos and Interswitch, which means it inherits their reliability expectations rather than a startup’s.',
-      'The core difficulty was consolidation. Every upstream source had its own database, its own format and its own idea of when data is correct: PostgreSQL, MongoDB, MySQL, Oracle and SQL Server all had to end up behind one coherent service layer without losing precision or slowing the app down.',
-      'I architected a distributed microservices ecosystem in Golang and NestJS, using Golang for the performance-critical core services and event-driven processing to keep aggregation off the request path entirely.',
+      'Hysab Kytab provides personal finance tools for financial institutions, bringing together transaction categorization, budgeting, statements, spending insights and savings goals. Its API-first approach lets banks add these capabilities to their customer experience.',
+      'My contribution focused on backend architecture and distributed systems: connecting financial data sources through Golang and NestJS services, processing events asynchronously, and supporting responsive APIs with Redis. The product screens shown here are official Hysab Kytab visuals.',
     ],
   },
   problems: [
     {
       title: 'Disparate data sources',
-      description: 'Five database engines and multiple bank feeds had to become one low-latency, consistent financial picture.',
+      description: 'Different database engines and bank feeds needed a consistent service layer for financial views.',
       icon: 'lucide:database',
     },
     {
@@ -38,8 +37,8 @@ export const hysabKytab: CaseStudy = {
       icon: 'lucide:scale',
     },
     {
-      title: 'Bank-grade availability',
-      description: 'High availability and data integrity expectations set by enterprise banking clients, not by us.',
+      title: 'Reliable integrations',
+      description: 'Financial integrations need clear service boundaries, monitoring and traceable event processing.',
       icon: 'lucide:shield-check',
     },
   ],
@@ -49,9 +48,9 @@ export const hysabKytab: CaseStudy = {
     layers: [
       {
         title: 'Client layer',
-        caption: 'B2B bank integrations and B2C apps',
+        caption: 'Financial institutions and personal finance experiences',
         nodes: [
-          { name: 'Digital bank apps', tech: 'Temenos · Interswitch', icon: 'lucide:building-2' },
+          { name: 'Banking integrations', tech: 'PFM APIs', icon: 'lucide:building-2' },
           { name: 'Consumer app', tech: 'Personal finance', icon: 'lucide:smartphone' },
           { name: 'Admin & ops console', tech: 'Web', icon: 'lucide:layout-dashboard' },
         ],
@@ -69,16 +68,16 @@ export const hysabKytab: CaseStudy = {
       },
       {
         title: 'Event & cache layer',
-        caption: '100K+ financial events per day',
+        caption: 'Financial event processing and responsive reads',
         nodes: [
-          { name: 'Kafka cluster', tech: '3 brokers · audit & alerting', icon: 'lucide:git-branch' },
+          { name: 'Kafka cluster', tech: 'Events · audit & alerting', icon: 'lucide:git-branch' },
           { name: 'RabbitMQ', tech: 'Routed processing', icon: 'lucide:split' },
           { name: 'Redis', tech: 'Cache-first reads', icon: 'lucide:zap' },
         ],
       },
       {
         title: 'Data layer',
-        caption: 'Five engines, one service contract',
+        caption: 'Different engines, one service contract',
         nodes: [
           { name: 'PostgreSQL', tech: 'Core relational', icon: 'lucide:database' },
           { name: 'MongoDB', tech: 'Flexible documents', icon: 'lucide:database' },
@@ -101,11 +100,17 @@ export const hysabKytab: CaseStudy = {
     steps: [
       { step: 1, title: 'Multi-bank aggregation', description: 'Connectors pull account and transaction data from multiple banking sources, each with its own format and refresh cadence.', tech: ['Golang', 'REST'], icon: 'lucide:building-2' },
       { step: 2, title: 'Encrypted ingest', description: 'End-to-end encryption in Golang protects financial payloads in transit across service boundaries.', tech: ['Golang', 'E2E encryption'], icon: 'lucide:lock' },
-      { step: 3, title: 'Kafka event backbone', description: 'Over 100,000 financial events a day flow through a three-broker cluster feeding monitoring, audit trails and real-time alerting.', tech: ['Apache Kafka', 'RabbitMQ'], icon: 'lucide:git-branch' },
+      { step: 3, title: 'Kafka event backbone', description: 'Financial events flow through Kafka for downstream processing, monitoring, audit trails and alerting.', tech: ['Apache Kafka', 'RabbitMQ'], icon: 'lucide:git-branch' },
       { step: 4, title: 'gRPC service mesh', description: 'NestJS, Golang and Spring Boot services communicate over gRPC, coordinated through Kafka and RabbitMQ.', tech: ['gRPC', 'NestJS', 'Spring Boot'], icon: 'lucide:network' },
-      { step: 5, title: 'Multi-database persistence', description: 'PostgreSQL, MongoDB, Oracle and SQL Server unified behind one cohesive service layer, each used where it is genuinely the right tool.', tech: ['PostgreSQL', 'MongoDB', 'Oracle', 'SQL Server'], icon: 'lucide:database' },
+      {
+        step: 5,
+        title: 'Multi-database persistence',
+        description: 'PostgreSQL, MongoDB, Oracle and SQL Server unified behind one cohesive service layer, each used where it is genuinely the right tool.',
+        tech: ['PostgreSQL', 'MongoDB', 'Oracle', 'SQL Server'],
+        icon: 'lucide:database',
+      },
       { step: 6, title: 'AI expense intelligence', description: 'LangChain RAG pipelines and a Shariah-compliant multi-agent advisory chatbot turn raw transactions into guidance.', tech: ['LangChain', 'RAG'], icon: 'lucide:brain' },
-      { step: 7, title: 'Cache-first delivery', description: 'A Redis cache-first read strategy cut average read latency by more than 60%, keeping the customer app responsive.', tech: ['Redis'], icon: 'lucide:zap' },
+      { step: 7, title: 'Cache-first delivery', description: 'Redis-backed reads reduce repeated aggregation work when serving financial views to customer applications.', tech: ['Redis'], icon: 'lucide:zap' },
     ],
   },
   techDecisions: [
@@ -115,24 +120,19 @@ export const hysabKytab: CaseStudy = {
     { area: 'Persistence', choice: 'Polyglot by design', rationale: 'Bank integrations dictated the engines; the service layer absorbed that complexity so product teams never had to.' },
   ],
   achievements: [
-    { title: '99.9% data integrity', description: 'Maintained across a five-engine database landscape serving financial applications.', icon: 'lucide:shield-check' },
-    { title: '60%+ latency reduction', description: 'A Redis cache-first strategy measurably improved the customer-facing experience.', icon: 'lucide:zap' },
-    { title: '25% lower cloud costs', description: 'GCP infrastructure optimisation and better observability, with no loss of reliability.', icon: 'lucide:trending-down' },
-    { title: 'Trusted by digital banks', description: 'Delivered to global digital banking leaders including Temenos and Interswitch.', icon: 'lucide:building-2' },
+    { title: 'Connected financial data', description: 'Different database technologies brought together behind consistent service contracts.', icon: 'lucide:database' },
+    { title: 'Cache-backed APIs', description: 'Redis supports responsive reads for frequently accessed financial views.', icon: 'lucide:zap' },
+    { title: 'Production operations', description: 'GCP infrastructure work and observability support the backend service ecosystem.', icon: 'lucide:cloud' },
+    { title: 'Financial technology ecosystem', description: 'Hysab Kytab names Temenos and Interswitch among its technology partners.', icon: 'lucide:building-2' },
   ],
   scalability: [
     'Event-driven aggregation keeps slow bank calls off the request path',
     'gRPC between services for low-overhead internal communication',
-    'Three-broker Kafka cluster with consumer groups per domain',
+    'Kafka consumer groups per domain',
     'Redis cache-first reads for customer-facing views',
     'Independently scalable services per banking integration',
   ],
-  security: [
-    'End-to-end encryption implemented in Golang for financial payloads',
-    'Enforced REST and gRPC security standards across services',
-    'Audit trails built on the Kafka event log',
-    'Real-time monitoring and alerting on financial event streams',
-  ],
+  security: ['End-to-end encryption implemented in Golang for financial payloads', 'Enforced REST and gRPC security standards across services', 'Audit trails built on the Kafka event log', 'Real-time monitoring and alerting on financial event streams'],
   stack: ['Golang', 'NestJS', 'Spring Boot', 'Apache Kafka', 'RabbitMQ', 'gRPC', 'Redis', 'PostgreSQL', 'MongoDB', 'Oracle', 'SQL Server', 'LangChain', 'GCP'],
   featured: true,
   order: 2,

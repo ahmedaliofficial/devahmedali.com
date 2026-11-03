@@ -1,27 +1,17 @@
-import { site } from '@/content/site'
+﻿import { site } from '@/content/site'
 import Link from 'next/link'
 
-type LogoProps = {
-  tone?: 'light' | 'dark'
-  showWordmark?: boolean
-  className?: string
-}
-
-const Logo = ({ tone = 'light', showWordmark = true, className = '' }: LogoProps) => {
-  const markClasses = tone === 'dark' ? 'bg-white text-default-900' : 'bg-default-900 text-white'
-  const wordClasses = tone === 'dark' ? 'text-white' : 'text-default-900'
-
+export default function Logo({ tone = 'light', showWordmark = true, className = '' }: { tone?: 'light' | 'dark'; showWordmark?: boolean; className?: string }) {
   return (
-    <Link href="/" aria-label={`${site.name} home`} className={`group inline-flex items-center gap-2.5 ${className}`}>
-      <span className={`font-heading grid size-9 shrink-0 place-items-center rounded-full text-sm font-semibold transition-transform duration-300 group-hover:scale-95 md:size-10 ${markClasses}`}>{site.initials}</span>
+    <Link href="/" aria-label={site.name + ' home'} className={'inline-flex items-center gap-2.5 ' + className}>
+      <span className={tone === 'dark' ? 'logo-mark logo-mark-light' : 'logo-mark'}>
+        a<span>.</span>
+      </span>
       {showWordmark && (
-        <span className="flex flex-col leading-tight">
-          <span className={`font-heading text-base font-semibold ${wordClasses}`}>{site.name}</span>
-          <span className="text-default-500 hidden text-[11px] font-medium tracking-wide uppercase sm:block">{site.role}</span>
+        <span className={'text-base font-semibold tracking-[-0.04em] ' + (tone === 'dark' ? 'text-white' : 'text-default-900')}>
+          ahmed ali<span className="text-primary">.</span>
         </span>
       )}
     </Link>
   )
 }
-
-export default Logo
