@@ -1,5 +1,6 @@
 ﻿import ContactCta from '@/components/ContactCta'
 import CaseStudyCard, { ProjectVisual } from '@/components/portfolio/CaseStudyCard'
+import InteractiveHero from '@/components/portfolio/InteractiveHero'
 import Arrow from '@/components/ui/Arrow'
 import { DEFAULT_PAGE_TITLE } from '@/config/constants'
 import { getCaseStudy } from '@/content/case-studies'
@@ -23,36 +24,7 @@ const process = [
 export default function Page() {
   return (
     <>
-      <section className="masthead container" aria-labelledby="intro-heading">
-        <div className="masthead-topline">
-          <p className="eyebrow">Ahmed Ali / Independent software engineer</p>
-          <p className="project-availability">
-            <span aria-hidden="true" /> Available for select projects
-          </p>
-        </div>
-        <div className="masthead-title">
-          <h1 id="intro-heading">
-            Big ideas.
-            <br />
-            <em className="editorial-accent">Beautifully built.</em>
-          </h1>
-          <a href="#selected-work" className="work-jump" aria-label="Explore selected work">
-            <span aria-hidden="true">
-              <Arrow />
-            </span>
-            Explore the work
-          </a>
-        </div>
-        <div className="masthead-bottom">
-          <p className="masthead-intro">I build websites, mobile & desktop apps, and AI systems that move your business forward.</p>
-          <div className="masthead-action">
-            <Link href="/contact" className="button-primary">
-              Let’s build your next thing <Arrow diagonal />
-            </Link>
-            <span>{site.experience.label} years of experience. Direct collaboration.</span>
-          </div>
-        </div>
-      </section>
+      <InteractiveHero />
 
       <section id="selected-work" className="selected-work container" aria-labelledby="work-heading">
         <div className="section-rule">
@@ -66,7 +38,7 @@ export default function Page() {
         <div className="editorial-projects">
           {['trackhrs', 'agentx'].map((slug, index) => {
             const study = getCaseStudy(slug)
-            return study && <CaseStudyCard key={slug} study={study} className={'editorial-project editorial-project-' + (index + 1)} preload={index === 0} />
+            return study && <CaseStudyCard key={slug} study={study} className={'editorial-project editorial-project-' + (index + 1)} />
           })}
         </div>
         <article className="fintech-feature">

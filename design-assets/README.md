@@ -47,3 +47,11 @@ Validation of this refinement:
 - Browser access remained unavailable, so viewport screenshots and real browser interaction checks remain unverified. The responsive layout and contrast were reviewed in source; those checks do not replace visual verification.
 
 No deployment or remote push was performed.
+
+## Interactive header and hero — 3 November 2026
+
+The header now uses a contained wordmark layout, balanced desktop navigation and an expandable mobile menu with its own project CTA. The hero is an interactive product preview: visitors select a website, mobile app, AI product or automation and see corresponding evidence and a matching enquiry link. Mouse movement adds restrained depth to the preview, while touch and reduced-motion users retain the same controls without tilt.
+
+TrackHRS documentation, the existing mobile mockup and AgentX workflow mockup supply the imagery. The automation option is a local, clearly labelled sample workflow with replay; it performs no network, email or storage actions. Its timers are cleaned up on unmount and reduced motion completes the sequence immediately. Mobile choices reveal the preview, with a return link to the controls.
+
+Production build/TypeScript, scoped ESLint, CSS parsing, all four enquiry destinations and three optimized preview images passed. The development server at port 3000 serves the revised header and hero successfully. Keyboard behavior, responsive sizing and contrast were reviewed in source; browser interaction and rendered screenshot verification remain unavailable because the browser access host is offline.

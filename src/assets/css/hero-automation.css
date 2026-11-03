@@ -1,0 +1,198 @@
+/* A self-contained, local-only workflow example for the interactive hero. */
+.automation-demo {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #e1e5ed;
+  border-radius: 14px;
+  background: #fff;
+  color: #17202e;
+  box-shadow: 0 12px 30px rgb(23 32 46 / 5%);
+}
+.automation-demo-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.automation-demo-heading > p {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+.automation-demo-heading > span {
+  flex-shrink: 0;
+  padding: 3px 7px;
+  border-radius: 5px;
+  background: #eeebfa;
+  color: #615174;
+  font-size: 10px;
+  line-height: 1.4;
+}
+.automation-demo-flow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.automation-demo-node {
+  position: relative;
+  min-width: 0;
+  text-align: center;
+}
+.automation-demo-node:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: calc(50% + 22px);
+  width: calc(100% - 44px);
+  height: 1px;
+  background: #d9dfeb;
+  transition: background 0.2s;
+}
+.automation-demo-icon {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-inline: auto;
+  border: 1px solid #dfe4ee;
+  border-radius: 10px;
+  background: #f8f9fc;
+  color: #657084;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
+}
+.automation-demo-icon svg {
+  width: 19px;
+  height: 19px;
+}
+.automation-demo-node[data-state='active'] .automation-demo-icon {
+  border-color: #3159ee;
+  background: #edf1ff;
+  color: #3159ee;
+  box-shadow: 0 0 0 4px rgb(49 89 238 / 8%);
+}
+.automation-demo-node[data-state='complete'] .automation-demo-icon {
+  border-color: #b9d9cc;
+  background: #eaf5ef;
+  color: #257054;
+}
+.automation-demo-node[data-state='complete']::after {
+  background: #89b8a2;
+}
+.automation-demo-label {
+  display: block;
+  min-height: 30px;
+  max-width: 105px;
+  margin: 8px auto 0;
+  padding-inline: 3px;
+  color: #49566c;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.automation-demo-sample {
+  min-height: 90px;
+  margin-top: 12px;
+  padding: 12px 13px;
+  border: 1px solid #e3e7f0;
+  border-radius: 9px;
+  background: #f6f8fc;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+.automation-demo-sample[data-complete='true'] {
+  border-color: #c8dfd4;
+  background: #f0f8f3;
+}
+.automation-demo-sample-label {
+  color: #606c7e;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.automation-demo-sample-message {
+  margin-top: 7px;
+  color: #28384e;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.automation-demo-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+.automation-demo-run {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: #3159ee;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  transition: background 0.2s;
+}
+.automation-demo-run svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.automation-demo-run:hover:not(:disabled) {
+  background: #2446c4;
+}
+.automation-demo-run:disabled {
+  background: #e9edfa;
+  color: #50628c;
+  cursor: wait;
+}
+.automation-demo-run:focus-visible {
+  outline: 3px solid #3159ee;
+  outline-offset: 3px;
+}
+.automation-demo-progress {
+  max-width: 100px;
+  color: #606c7e;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.automation-demo-disclosure {
+  margin-top: 9px;
+  color: #606c7e;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.automation-demo-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .automation-demo *,
+  .automation-demo *::after {
+    transition: none;
+  }
+}

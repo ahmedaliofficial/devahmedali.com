@@ -13,5 +13,8 @@ File: Style CSS entry
 @import './_config.css';
 @import './_general.css';
 @import './portfolio.css';
+@import './navigation.css';
 @import './home.css';
+@import './interactive-hero.css';
+@import './hero-automation.css';
 @import './services.css';
